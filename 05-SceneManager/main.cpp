@@ -22,8 +22,8 @@ HOW TO INSTALL Microsoft.DXSDK.D3DX
 ================================================================ */
 
 #include <windows.h>
-#include <d3d10.h>
-#include <d3dx10.h>
+#include <d3d9.h>
+#include <d3dx9.h>
 #include <list>
 
 #include "debug.h"
@@ -78,22 +78,25 @@ void Update(DWORD dt)
 */
 void Render()
 {
-	ID3D10Device* pD3DDevice = g->GetDirect3DDevice();
-	IDXGISwapChain* pSwapChain = g->GetSwapChain();
-	ID3D10RenderTargetView* pRenderTargetView = g->GetRenderTargetView();
-	ID3DX10Sprite* spriteHandler = g->GetSpriteHandler();
+	LPDIRECT3DDEVICE9 d3ddv = game->GetDirect3DDevice();
+	LPDIRECT3DSURFACE9 bb = game->GetBackBuffer();
+	LPD3DXSPRITE spriteHandler = game->GetSpriteHandler();
 
-	pD3DDevice->ClearRenderTargetView(pRenderTargetView, BACKGROUND_COLOR);
+	if (SUCCEEDED(d3ddv->BeginScene()))
+	{
+		// Clear back buffer with a color
+		d3ddv->ColorFill(bb, NULL, BACKGROUND_COLOR);
 
-	spriteHandler->Begin(D3DX10_SPRITE_SORT_TEXTURE);
+		spriteHandler->Begin(D3DXSPRITE_ALPHABLEND);
 
-	FLOAT NewBlendFactor[4] = { 0,0,0,0 };
-	pD3DDevice->OMSetBlendState(g->GetAlphaBlending(), NewBlendFactor, 0xffffffff);
+		CGame::GetInstance()->GetCurrentScene()->Render();
 
-	CGame::GetInstance()->GetCurrentScene()->Render();
+		spriteHandler->End();
+		d3ddv->EndScene();
+	}
 
-	spriteHandler->End();
-	pSwapChain->Present(0, 0);
+	// Display back buffer content to the screen
+	d3ddv->Present(NULL, NULL, NULL, NULL);
 }
 
 HWND CreateGameWindow(HINSTANCE hInstance, int nCmdShow, int ScreenWidth, int ScreenHeight)

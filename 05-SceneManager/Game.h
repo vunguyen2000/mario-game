@@ -86,7 +86,7 @@ public:
 	IDXGISwapChain* GetSwapChain() { return this->pSwapChain; }
 	ID3D10RenderTargetView* GetRenderTargetView() { return this->pRenderTargetView; }
 	LPDIRECT3DSURFACE9 GetBackBuffer() { return backBuffer; }
-	ID3DX10Sprite* GetSpriteHandler() { return this->spriteObject; }
+	LPD3DXSPRITE GetSpriteHandler() { return this->spriteHandler; }
 
 	ID3D10BlendState* GetAlphaBlending() { return pBlendStateAlpha; };
 

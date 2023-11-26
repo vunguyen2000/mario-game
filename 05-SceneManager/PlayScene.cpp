@@ -54,29 +54,6 @@ CPlayScene::CPlayScene(int id, LPCWSTR filePath):
 
 #define MAX_SCENE_LINE 1024
 
-void CPlayScene::_ParseSection_SPRITES(string line)
-{
-	vector<string> tokens = split(line);
-
-	if (tokens.size() < 6) return; // skip invalid lines
-
-	int ID = atoi(tokens[0].c_str());
-	int l = atoi(tokens[1].c_str());
-	int t = atoi(tokens[2].c_str());
-	int r = atoi(tokens[3].c_str());
-	int b = atoi(tokens[4].c_str());
-	int texID = atoi(tokens[5].c_str());
-
-	LPDIRECT3DTEXTURE9 tex = CTextures::GetInstance()->Get(texID);
-	if (tex == NULL)
-	{
-		DebugOut(L"[ERROR] Texture ID %d not found!\n", texID);
-		return; 
-	}
-
-	CSprites::GetInstance()->Add(ID, l, t, r, b, tex);
-}
-
 void CPlayScene::_ParseSection_TEXTURES(string line)
 {
 	vector<string> tokens = split(line);
