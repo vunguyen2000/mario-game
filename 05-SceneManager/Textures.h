@@ -1,8 +1,7 @@
 #pragma once
 #include <unordered_map>
-#include <d3dx10.h>
-
-#include "Texture.h"
+#include <d3dx9.h>
+#include "Textures.h"
 
 using namespace std;
 

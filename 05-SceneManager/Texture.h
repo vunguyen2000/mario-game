@@ -1,48 +1,22 @@
 #pragma once
 
-#include <d3d10.h>
-#include <d3dx10.h>
-
+#include <d3dx9.h>
+#include <unordered_map>
 //
 // Warpper class to simplify texture manipulation. See also CGame::LoadTexture
 //
-class CTexture
+class CTextures
 {
-protected:
-	ID3D10Texture2D* _tex;
-	ID3D10ShaderResourceView* _rsview;
-	int _width;
-	int _height;
+	static CTextures* __instance;
+
+	unordered_map<int, LPDIRECT3DTEXTURE9> textures;
+
 public:
-	CTexture()
-	{
-		_tex = NULL;
-		_rsview = NULL;
-		_width = -1;
-		_height = -1;
-	}
+	CTextures();
+	void Add(int id, LPCWSTR filePath, D3DCOLOR transparentColor);
+	LPDIRECT3DTEXTURE9 Get(unsigned int i);
 
-	CTexture(ID3D10Texture2D* tex, ID3D10ShaderResourceView* rsview)
-	{
-		this->_tex = tex;
-		this->_rsview = rsview;
-
-		D3D10_TEXTURE2D_DESC desc;
-		this->_tex->GetDesc(&desc);
-		this->_width = desc.Width;
-		this->_height = desc.Height;
-	}
-
-	ID3D10ShaderResourceView* getShaderResourceView() { return this->_rsview; }
-
-	int getWidth() { return this->_width; }
-	int getHeight() { return this->_height; }
-
-	~CTexture()
-	{
-		if (_rsview != NULL) this->_rsview->Release();
-		if (_tex != NULL) this->_tex->Release();
-	}
+	void Clear();
+	static CTextures* GetInstance();
 };
 
-typedef CTexture* LPDIRECT3DTEXTURE9;

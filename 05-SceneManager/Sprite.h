@@ -1,8 +1,8 @@
 #pragma once
 
-#include "Texture.h"
 #include "Game.h"
-
+#include <Windows.h>
+#include <d3dx9.h>
 class CSprite
 {
 	int id;				// Sprite ID in the sprite database

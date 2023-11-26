@@ -1,8 +1,11 @@
 #include <Windows.h>
 
+#include <d3d9.h>
+#include <d3dx9.h>
 #include "debug.h"
 #include "Game.h"
-#include "textures.h"
+#include "Utils.h"
+#include "Textures.h"
 
 CTextures* CTextures::__instance = NULL;
 

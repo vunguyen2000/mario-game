@@ -74,71 +74,16 @@ void CGame::SetPointSamplerState()
 	NOTE: This function is very inefficient because it has to convert
 	from texture to sprite every time we need to draw it
 */
-void CGame::Draw(float x, float y, LPDIRECT3DTEXTURE9 tex, RECT* rect, float alpha, int sprite_width, int sprite_height)
+void CGame::Draw(float x, float y, LPDIRECT3DTEXTURE9 texture, int left, int top, int right, int bottom, int alpha)
 {
-	if (tex == NULL) return;
-
-	int spriteWidth = sprite_width;
-	int spriteHeight = sprite_height;
-
-	D3DX10_SPRITE sprite;
-
-	// Set the sprite’s shader resource view
-	sprite.pTexture = tex->getShaderResourceView();
-
-	if (rect == NULL)
-	{
-		// top-left location in U,V coords
-		sprite.TexCoord.x = 0;
-		sprite.TexCoord.y = 0;
-
-		// Determine the texture size in U,V coords
-		sprite.TexSize.x = 1.0f;
-		sprite.TexSize.y = 1.0f;
-
-		if (spriteWidth==0) spriteWidth = tex->getWidth();
-		if (spriteHeight==0) spriteHeight = tex->getHeight();
-	}
-	else
-	{
-		sprite.TexCoord.x = rect->left / (float)tex->getWidth();
-		sprite.TexCoord.y = rect->top / (float)tex->getHeight();
-
-		if (spriteWidth == 0) spriteWidth = (rect->right - rect->left + 1);
-		if (spriteHeight == 0) spriteHeight = (rect->bottom - rect->top + 1);
-
-		sprite.TexSize.x = spriteWidth / (float)tex->getWidth();
-		sprite.TexSize.y = spriteHeight / (float)tex->getHeight();
-	}
-
-	// Set the texture index. Single textures will use 0
-	sprite.TextureIndex = 0;
-
-	// The color to apply to this sprite, full color applies white.
-	//sprite.ColorModulate = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
-	sprite.ColorModulate = D3DXCOLOR(1.0f, 1.0f, 1.0f, alpha);
-
-
-	//
-	// Build the rendering matrix based on sprite location 
-	//
-
-	// The translation matrix to be created
-	D3DXMATRIX matTranslation;
-
-	// Create the translation matrix
-	D3DXMatrixTranslation(&matTranslation, x, (backBufferHeight - y), 0.1f);
-
-	// Scale the sprite to its correct width and height because by default, DirectX draws it with width = height = 1.0f 
-	D3DXMATRIX matScaling;
-	D3DXMatrixScaling(&matScaling, (FLOAT)spriteWidth, (FLOAT)spriteHeight, 1.0f);
-
-	// Setting the sprite’s position and size
-	sprite.matWorld = (matScaling * matTranslation);
-
-	spriteObject->DrawSpritesImmediate(&sprite, 1, 0, 0);
+	D3DXVECTOR3 p(x - cam_x, y - cam_y, 0);
+	RECT r;
+	r.left = left;
+	r.top = top;
+	r.right = right;
+	r.bottom = bottom;
+	spriteHandler->Draw(texture, &r, NULL, &p, D3DCOLOR_ARGB(alpha, 255, 255, 255));
 }
-
 /*
 	Utility function to wrap D3DXCreateTextureFromFileEx
 */
