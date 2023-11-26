@@ -4,7 +4,6 @@
 #include "debug.h"
 #include "Utils.h"
 
-#include "Texture.h"
 #include "Animations.h"
 #include "PlayScene.h"
 #include <d3d9.h>

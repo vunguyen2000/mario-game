@@ -10,7 +10,6 @@ using namespace std;
 #define DIRECTINPUT_VERSION 0x0800
 #include <dinput.h>
 
-#include "Texture.h"
 #include "KeyEventHandler.h"
 #include "Scene.h"
 #include <d3d9.h>

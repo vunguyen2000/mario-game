@@ -8,8 +8,6 @@
 #include "Sprites.h"
 #include "Portal.h"
 #include "Coin.h"
-#include "Platform.h"
-
 #include "SampleKeyEventHandler.h"
 
 using namespace std;
@@ -168,14 +166,15 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 	objects.push_back(obj);
 }
 
-void CPlayScene::LoadAssets(LPCWSTR assetFile)
+void CPlayScene::Load()
 {
-	DebugOut(L"[INFO] Start loading assets from : %s \n", assetFile);
+	DebugOut(L"[INFO] Start loading scene from : %s \n", sceneFilePath);
 
 	ifstream f;
-	f.open(assetFile);
+	f.open(sceneFilePath);
 
-	int section = SCENE_SECTION_UNKNOWN;
+	// current resource section flag
+	int section = SCENE_SECTION_UNKNOWN;					
 
 	char str[MAX_SCENE_LINE];
 	while (f.getline(str, MAX_SCENE_LINE))
@@ -215,41 +214,6 @@ void CPlayScene::LoadAssets(LPCWSTR assetFile)
 		case SCENE_SECTION_ANIMATION_SETS: _ParseSection_ANIMATION_SETS(line); break;
 		case SCENE_SECTION_OBJECTS: _ParseSection_OBJECTS(line); break;
 		case SCENE_SECTION_GRID: _ParseSection_GRID(line); break;
-		}
-	}
-
-	f.close();
-
-	DebugOut(L"[INFO] Done loading assets from %s\n", assetFile);
-}
-
-void CPlayScene::Load()
-{
-	DebugOut(L"[INFO] Start loading scene from : %s \n", sceneFilePath);
-
-	ifstream f;
-	f.open(sceneFilePath);
-
-	// current resource section flag
-	int section = SCENE_SECTION_UNKNOWN;					
-
-	char str[MAX_SCENE_LINE];
-	while (f.getline(str, MAX_SCENE_LINE))
-	{
-		string line(str);
-
-		if (line[0] == '#') continue;	// skip comment lines	
-		if (line == "[ASSETS]") { section = SCENE_SECTION_ASSETS; continue; };
-		if (line == "[OBJECTS]") { section = SCENE_SECTION_OBJECTS; continue; };
-		if (line[0] == '[') { section = SCENE_SECTION_UNKNOWN; continue; }	
-
-		//
-		// data section
-		//
-		switch (section)
-		{ 
-			case SCENE_SECTION_ASSETS: _ParseSection_ASSETS(line); break;
-			case SCENE_SECTION_OBJECTS: _ParseSection_OBJECTS(line); break;
 		}
 	}
 

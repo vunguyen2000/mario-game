@@ -37,7 +37,6 @@ HOW TO INSTALL Microsoft.DXSDK.D3DX
 #include "Brick.h"
 #include "Goomba.h"
 #include "Coin.h"
-#include "Platform.h"
 
 #include "SampleKeyEventHandler.h"
 

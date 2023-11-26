@@ -1,7 +1,5 @@
 #pragma once
 
-#include "Sprite.h"
-
 /*
 	Sprite animation
 */
