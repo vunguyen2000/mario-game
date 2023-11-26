@@ -4,7 +4,7 @@
 #include <d3dx10.h>
 #include <unordered_map>
 #include <string>
-
+#include <d3dx9.h>
 using namespace std;
 
 #define DIRECTINPUT_VERSION 0x0800
@@ -13,6 +13,7 @@ using namespace std;
 #include "Texture.h"
 #include "KeyEventHandler.h"
 #include "Scene.h"
+#include <d3d9.h>
 
 #define MAX_FRAME_RATE 100
 #define KEYBOARD_BUFFER_SIZE 1024
@@ -30,12 +31,12 @@ class CGame
 
 	int backBufferWidth = 0;					// Backbuffer width & height, will be set during Direct3D initialization
 	int backBufferHeight = 0;
-
+	LPDIRECT3D9 d3d = NULL;
 	ID3D10Device* pD3DDevice = NULL;
 	IDXGISwapChain* pSwapChain = NULL;
 	ID3D10RenderTargetView* pRenderTargetView = NULL;
 	ID3D10BlendState* pBlendStateAlpha = NULL;			// To store alpha blending state
-
+	LPDIRECT3DSURFACE9 backBuffer = NULL;
 	LPD3DX10SPRITE spriteObject;						// Sprite handling object, BIG MYSTERY: it has to be in this place OR will lead to access violation in D3D11.dll ????
 
 	LPDIRECTINPUT8       di;		// The DirectInput object         
@@ -43,12 +44,16 @@ class CGame
 
 	BYTE  keyStates[KEYBOARD_STATE_SIZE];			// DirectInput keyboard state buffer 
 	DIDEVICEOBJECTDATA keyEvents[KEYBOARD_BUFFER_SIZE];		// Buffered keyboard data
+	LPDIRECT3DDEVICE9 d3ddv = NULL;
+	LPD3DXSPRITE spriteHandler = NULL;
 
 	LPKEYEVENTHANDLER keyHandler;
 
 	float cam_x = 0.0f;
 	float cam_y = 0.0f;
-
+	int screen_width;
+	int screen_height;
+	int gameTime = 300;
 	HINSTANCE hInstance;
 
 	ID3D10SamplerState* pPointSamplerState;
@@ -62,15 +67,10 @@ class CGame
 
 public:
 	// Init DirectX, Sprite Handler
-	void Init(HWND hWnd, HINSTANCE hInstance);
+	void Init(HWND hWnd);
+	void Draw(float x, float y, LPDIRECT3DTEXTURE9 tex, RECT* rect = NULL, float alpha = 1.0f, int sprite_width = 0, int sprite_height = 0);
 
-	//
-	// Draw a portion or ALL the texture at position (x,y) on the screen. (x,y) is at the CENTER of the image
-	// rect : if NULL, the whole texture will be drawn
-	//        if NOT NULL, only draw that portion of the texture 
-	void Draw(float x, float y, LPTEXTURE tex, RECT* rect = NULL, float alpha = 1.0f, int sprite_width = 0, int sprite_height = 0);
-
-	void Draw(float x, float y, LPTEXTURE tex, int l, int t, int r, int b, float alpha = 1.0f, int sprite_width = 0, int sprite_height = 0)
+	void Draw(float x, float y, LPDIRECT3DTEXTURE9 tex, int l, int t, int r, int b, float alpha = 1.0f, int sprite_width = 0, int sprite_height = 0)
 	{
 		RECT rect;
 		rect.left = l;
@@ -80,7 +80,7 @@ public:
 		this->Draw(x, y, tex, &rect, alpha, sprite_width, sprite_height);
 	}
 
-	LPTEXTURE LoadTexture(LPCWSTR texturePath);
+	LPDIRECT3DTEXTURE9 LoadTexture(LPCWSTR texturePath);
 
 	// Keyboard related functions 
 	void InitKeyboard();
@@ -88,11 +88,15 @@ public:
 	void ProcessKeyboard();
 	void SetKeyHandler(LPKEYEVENTHANDLER handler) { keyHandler = handler; }
 
+	float GetCamPosX() { return cam_x; };
+	float GetCamPosY() { return cam_y; };
+	int GetGameTime() { return gameTime; };
 
-	ID3D10Device* GetDirect3DDevice() { return this->pD3DDevice; }
+
+	LPDIRECT3DDEVICE9 GetDirect3DDevice() { return this->d3ddv; }
 	IDXGISwapChain* GetSwapChain() { return this->pSwapChain; }
 	ID3D10RenderTargetView* GetRenderTargetView() { return this->pRenderTargetView; }
-
+	LPDIRECT3DSURFACE9 GetBackBuffer() { return backBuffer; }
 	ID3DX10Sprite* GetSpriteHandler() { return this->spriteObject; }
 
 	ID3D10BlendState* GetAlphaBlending() { return pBlendStateAlpha; };
@@ -109,11 +113,8 @@ public:
 
 	LPSCENE GetCurrentScene() { return scenes[current_scene]; }
 	void Load(LPCWSTR gameFile);
-	void SwitchScene();
+	void SwitchScene(int scene_id);
 	void InitiateSwitchScene(int scene_id);
-
-	void _ParseSection_TEXTURES(string line);
-
 
 	~CGame();
 };

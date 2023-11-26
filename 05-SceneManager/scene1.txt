@@ -1813,9 +1813,6 @@
 0	10	20	1
 
 
-#HUD
-7	27	120	9000
-
 # --- SCENE PORTAL ----
 # type	l	t	ani_set_id	r	b	scene_id
 

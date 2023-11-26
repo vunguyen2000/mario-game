@@ -7,7 +7,7 @@
 #include "Texture.h"
 #include "Animations.h"
 #include "PlayScene.h"
-
+#include <d3d9.h>
 CGame * CGame::__instance = NULL;
 
 /*
@@ -15,144 +15,51 @@ CGame * CGame::__instance = NULL;
 	rendering 2D images
 	- hWnd: Application window handle
 */
-void CGame::Init(HWND hWnd, HINSTANCE hInstance)
+void CGame::Init(HWND hWnd)
 {
+	LPDIRECT3D9 d3d = Direct3DCreate9(D3D_SDK_VERSION);
+
 	this->hWnd = hWnd;
-	this->hInstance = hInstance;
 
-	// retrieve client area width & height so that we can create backbuffer height & width accordingly 
+	D3DPRESENT_PARAMETERS d3dpp;
+	LPDIRECT3DDEVICE9 d3ddv = NULL;
+
+	ZeroMemory(&d3dpp, sizeof(d3dpp));
+
+	d3dpp.Windowed = TRUE;
+	d3dpp.SwapEffect = D3DSWAPEFFECT_DISCARD;
+	d3dpp.BackBufferFormat = D3DFMT_X8R8G8B8;
+	d3dpp.BackBufferCount = 1;
+
 	RECT r;
-	GetClientRect(hWnd, &r);
+	GetClientRect(hWnd, &r);	// retrieve Window width & height 
 
-	backBufferWidth = r.right + 1;
-	backBufferHeight = r.bottom + 1;
+	d3dpp.BackBufferHeight = r.bottom + 1;
+	d3dpp.BackBufferWidth = r.right + 1;
 
-	DebugOut(L"[INFO] Window's client area: width= %d, height= %d\n", r.right - 1, r.bottom - 1);
+	screen_height = r.bottom + 1;
+	screen_width = r.right + 1;
 
-	// Create & clear the DXGI_SWAP_CHAIN_DESC structure
-	DXGI_SWAP_CHAIN_DESC swapChainDesc;
-	ZeroMemory(&swapChainDesc, sizeof(swapChainDesc));
+	d3d->CreateDevice(
+		D3DADAPTER_DEFAULT,
+		D3DDEVTYPE_HAL,
+		hWnd,
+		D3DCREATE_SOFTWARE_VERTEXPROCESSING,
+		&d3dpp,
+		&d3ddv);
 
-	// Fill in the needed values
-	swapChainDesc.BufferCount = 1;
-	swapChainDesc.BufferDesc.Width = backBufferWidth;
-	swapChainDesc.BufferDesc.Height = backBufferHeight;
-	swapChainDesc.BufferDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
-	swapChainDesc.BufferDesc.RefreshRate.Numerator = 60;
-	swapChainDesc.BufferDesc.RefreshRate.Denominator = 1;
-	swapChainDesc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
-	swapChainDesc.OutputWindow = hWnd;
-	swapChainDesc.SampleDesc.Count = 1;
-	swapChainDesc.SampleDesc.Quality = 0;
-	swapChainDesc.Windowed = TRUE;
-
-	// Create the D3D device and the swap chain
-	HRESULT hr = D3D10CreateDeviceAndSwapChain(NULL,
-		D3D10_DRIVER_TYPE_HARDWARE,
-		NULL,
-		0,
-		D3D10_SDK_VERSION,
-		&swapChainDesc,
-		&pSwapChain,
-		&pD3DDevice);
-
-	if (hr != S_OK)
+	if (d3ddv == NULL)
 	{
-		DebugOut((wchar_t*)L"[ERROR] D3D10CreateDeviceAndSwapChain has failed %s %d", _W(__FILE__), __LINE__);
+		OutputDebugString(L"[ERROR] CreateDevice failed\n");
 		return;
 	}
 
-	// Get the back buffer from the swapchain
-	ID3D10Texture2D* pBackBuffer;
-	hr = pSwapChain->GetBuffer(0, __uuidof(ID3D10Texture2D), (LPVOID*)&pBackBuffer);
-	if (hr != S_OK)
-	{
-		DebugOut((wchar_t*)L"[ERROR] pSwapChain->GetBuffer has failed %s %d", _W(__FILE__), __LINE__);
-		return;
-	}
+	d3ddv->GetBackBuffer(0, 0, D3DBACKBUFFER_TYPE_MONO, &backBuffer);
 
-	// create the render target view
-	hr = pD3DDevice->CreateRenderTargetView(pBackBuffer, NULL, &pRenderTargetView);
+	// Initialize sprite helper from Direct3DX helper library
+	D3DXCreateSprite(d3ddv, &spriteHandler);
 
-	pBackBuffer->Release();
-	if (hr != S_OK)
-	{
-		DebugOut((wchar_t*)L"[ERROR] CreateRenderTargetView has failed %s %d", _W(__FILE__), __LINE__);
-		return;
-	}
-
-	// set the render target
-	pD3DDevice->OMSetRenderTargets(1, &pRenderTargetView, NULL);
-
-	// create and set the viewport
-	D3D10_VIEWPORT viewPort;
-	viewPort.Width = backBufferWidth;
-	viewPort.Height = backBufferHeight;
-	viewPort.MinDepth = 0.0f;
-	viewPort.MaxDepth = 1.0f;
-	viewPort.TopLeftX = 0;
-	viewPort.TopLeftY = 0;
-	pD3DDevice->RSSetViewports(1, &viewPort);
-
-	//
-	//
-	//
-
-	D3D10_SAMPLER_DESC desc; 
-	desc.Filter = D3D10_FILTER_MIN_MAG_POINT_MIP_LINEAR;
-	desc.AddressU = D3D10_TEXTURE_ADDRESS_CLAMP;
-	desc.AddressV = D3D10_TEXTURE_ADDRESS_CLAMP;
-	desc.AddressW = D3D10_TEXTURE_ADDRESS_CLAMP;
-	desc.MipLODBias = 0;
-	desc.MaxAnisotropy = 1;
-	desc.ComparisonFunc = D3D10_COMPARISON_NEVER;
-	desc.BorderColor[0] = 1.0f;
-	desc.BorderColor[1] = 1.0f;
-	desc.BorderColor[2] = 1.0f;
-	desc.BorderColor[3] = 1.0f;
-	desc.MinLOD = -FLT_MAX;
-	desc.MaxLOD = FLT_MAX;
-
-	pD3DDevice->CreateSamplerState(&desc, &this->pPointSamplerState);
-
-	// create the sprite object to handle sprite drawing 
-	hr = D3DX10CreateSprite(pD3DDevice, 0, &spriteObject);
-
-	if (hr != S_OK)
-	{
-		DebugOut((wchar_t*)L"[ERROR] D3DX10CreateSprite has failed %s %d", _W(__FILE__), __LINE__);
-		return;
-	}
-
-	D3DXMATRIX matProjection;
-
-	// Create the projection matrix using the values in the viewport
-	D3DXMatrixOrthoOffCenterLH(&matProjection,
-		(float)viewPort.TopLeftX,
-		(float)viewPort.Width,
-		(float)viewPort.TopLeftY,
-		(float)viewPort.Height,
-		0.1f,
-		10);
-	hr = spriteObject->SetProjectionTransform(&matProjection);
-
-	// Initialize the blend state for alpha drawing
-	D3D10_BLEND_DESC StateDesc;
-	ZeroMemory(&StateDesc, sizeof(D3D10_BLEND_DESC));
-	StateDesc.AlphaToCoverageEnable = FALSE;
-	StateDesc.BlendEnable[0] = TRUE;
-	StateDesc.SrcBlend = D3D10_BLEND_SRC_ALPHA;
-	StateDesc.DestBlend = D3D10_BLEND_INV_SRC_ALPHA;
-	StateDesc.BlendOp = D3D10_BLEND_OP_ADD;
-	StateDesc.SrcBlendAlpha = D3D10_BLEND_ZERO;
-	StateDesc.DestBlendAlpha = D3D10_BLEND_ZERO;
-	StateDesc.BlendOpAlpha = D3D10_BLEND_OP_ADD;
-	StateDesc.RenderTargetWriteMask[0] = D3D10_COLOR_WRITE_ENABLE_ALL;
-	pD3DDevice->CreateBlendState(&StateDesc, &this->pBlendStateAlpha);
-
-	DebugOut((wchar_t*)L"[INFO] InitDirectX has been successful\n");
-
-	return;
+	OutputDebugString(L"[INFO] InitGame done;\n");
 }
 
 void CGame::SetPointSamplerState()
@@ -167,7 +74,7 @@ void CGame::SetPointSamplerState()
 	NOTE: This function is very inefficient because it has to convert
 	from texture to sprite every time we need to draw it
 */
-void CGame::Draw(float x, float y, LPTEXTURE tex, RECT* rect, float alpha, int sprite_width, int sprite_height)
+void CGame::Draw(float x, float y, LPDIRECT3DTEXTURE9 tex, RECT* rect, float alpha, int sprite_width, int sprite_height)
 {
 	if (tex == NULL) return;
 
@@ -235,7 +142,7 @@ void CGame::Draw(float x, float y, LPTEXTURE tex, RECT* rect, float alpha, int s
 /*
 	Utility function to wrap D3DXCreateTextureFromFileEx
 */
-LPTEXTURE CGame::LoadTexture(LPCWSTR texturePath)
+LPDIRECT3DTEXTURE9 CGame::LoadTexture(LPCWSTR texturePath)
 {
 	ID3D10Resource* pD3D10Resource = NULL;
 	ID3D10Texture2D* tex = NULL;
@@ -482,14 +389,7 @@ void CGame::Load(LPCWSTR gameFile)
 		if (line[0] == '#') continue;	// skip comment lines	
 
 		if (line == "[SETTINGS]") { section = GAME_FILE_SECTION_SETTINGS; continue; }
-		if (line == "[TEXTURES]") { section = GAME_FILE_SECTION_TEXTURES; continue; }
 		if (line == "[SCENES]") { section = GAME_FILE_SECTION_SCENES; continue; }
-		if (line[0] == '[') 
-		{ 
-			section = GAME_FILE_SECTION_UNKNOWN; 
-			DebugOut(L"[ERROR] Unknown section: %s\n", ToLPCWSTR(line));
-			continue; 
-		}
 
 		//
 		// data section
@@ -498,30 +398,28 @@ void CGame::Load(LPCWSTR gameFile)
 		{
 		case GAME_FILE_SECTION_SETTINGS: _ParseSection_SETTINGS(line); break;
 		case GAME_FILE_SECTION_SCENES: _ParseSection_SCENES(line); break;
-		case GAME_FILE_SECTION_TEXTURES: _ParseSection_TEXTURES(line); break;
 		}
 	}
 	f.close();
 
 	DebugOut(L"[INFO] Loading game file : %s has been loaded successfully\n", gameFile);
 
-	SwitchScene();
+	SwitchScene(current_scene);
 }
 
-void CGame::SwitchScene()
+void CGame::SwitchScene(int scene_id)
 {
-	if (next_scene < 0 || next_scene == current_scene) return; 
+	DebugOut(L"[INFO] Switching to scene %d\n", scene_id);
 
-	DebugOut(L"[INFO] Switching to scene %d\n", next_scene);
+	scenes[current_scene]->Unload();;
 
-	scenes[current_scene]->Unload();
-
+	CTextures::GetInstance()->Clear();
 	CSprites::GetInstance()->Clear();
 	CAnimations::GetInstance()->Clear();
 
-	current_scene = next_scene;
-	LPSCENE s = scenes[next_scene];
-	this->SetKeyHandler(s->GetKeyEventHandler());
+	current_scene = scene_id;
+	LPSCENE s = scenes[scene_id];
+	CGame::GetInstance()->SetKeyHandler(s->GetKeyEventHandler());
 	s->Load();
 }
 
@@ -529,20 +427,6 @@ void CGame::InitiateSwitchScene(int scene_id)
 {
 	next_scene = scene_id;
 }
-
-
-void CGame::_ParseSection_TEXTURES(string line)
-{
-	vector<string> tokens = split(line);
-
-	if (tokens.size() < 2) return;
-
-	int texID = atoi(tokens[0].c_str());
-	wstring path = ToWSTR(tokens[1]);
-
-	CTextures::GetInstance()->Add(texID, path.c_str());
-}
-
 
 CGame::~CGame()
 {

@@ -45,4 +45,4 @@ public:
 	}
 };
 
-typedef CTexture* LPTEXTURE;
+typedef CTexture* LPDIRECT3DTEXTURE9;

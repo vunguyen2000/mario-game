@@ -21,14 +21,38 @@ CPlayScene::CPlayScene(int id, LPCWSTR filePath):
 	key_handler = new CSampleKeyHandler(this);
 }
 
-
 #define SCENE_SECTION_UNKNOWN -1
-#define SCENE_SECTION_ASSETS	1
-#define SCENE_SECTION_OBJECTS	2
+#define SCENE_SECTION_TEXTURES 2
+#define SCENE_SECTION_SPRITES 3
+#define SCENE_SECTION_ANIMATIONS 4
+#define SCENE_SECTION_ANIMATION_SETS	5
+#define SCENE_SECTION_OBJECTS	6
+#define SCENE_SECTION_MAP				7
+#define SCENE_SECTION_GRID				8
 
-#define ASSETS_SECTION_UNKNOWN -1
-#define ASSETS_SECTION_SPRITES 1
-#define ASSETS_SECTION_ANIMATIONS 2
+#define OBJECT_TYPE_MARIO	0
+#define OBJECT_TYPE_BRICK	1
+#define OBJECT_TYPE_GOOMBA	2
+#define OBJECT_TYPE_KOOPAS	3
+#define OBJECT_TYPE_NOCOLLISION	4
+#define OBJECT_TYPE_BOX	5
+#define OBJECT_TYPE_DRAIN	6
+#define OBJECT_TYPE_COIN	8
+#define OBJECT_TYPE_BRICK_QUESTION	9
+#define OBJECT_TYPE_FLOWER_RED	10
+#define OBJECT_TYPE_FLOWER_FIRE	11
+#define OBJECT_TYPE_BRICK_QUESTION_SPECIAL	12
+#define OBJECT_TYPE_GOOMBAPARA	13
+#define OBJECT_TYPE_KOOPAPARA	14
+#define OBJECT_TYPE_FLOWER_GREEN	15
+#define OBJECT_TYPE_FLOWER_NORMAL	16
+#define OBJECT_TYPE_BRICK_BROKEN	25
+#define OBJECT_TYPE_BRICK_QUESTION_EFFECT	26
+#define OBJECT_TYPE_BRICK_QUESTION_SPECIAL_GREEN	27
+
+#define OBJECT_TYPE_BRICK_QUESTION_LEAF	39
+#define OBJECT_TYPE_BOX_START	40
+#define OBJECT_TYPE_BOX_END	41
 
 #define MAX_SCENE_LINE 1024
 
@@ -45,7 +69,7 @@ void CPlayScene::_ParseSection_SPRITES(string line)
 	int b = atoi(tokens[4].c_str());
 	int texID = atoi(tokens[5].c_str());
 
-	LPTEXTURE tex = CTextures::GetInstance()->Get(texID);
+	LPDIRECT3DTEXTURE9 tex = CTextures::GetInstance()->Get(texID);
 	if (tex == NULL)
 	{
 		DebugOut(L"[ERROR] Texture ID %d not found!\n", texID);
@@ -120,24 +144,7 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 	case OBJECT_TYPE_BRICK: obj = new CBrick(x,y); break;
 	case OBJECT_TYPE_COIN: obj = new CCoin(x, y); break;
 
-	case OBJECT_TYPE_PLATFORM:
-	{
 
-		float cell_width = (float)atof(tokens[3].c_str());
-		float cell_height = (float)atof(tokens[4].c_str());
-		int length = atoi(tokens[5].c_str());
-		int sprite_begin = atoi(tokens[6].c_str());
-		int sprite_middle = atoi(tokens[7].c_str());
-		int sprite_end = atoi(tokens[8].c_str());
-
-		obj = new CPlatform(
-			x, y,
-			cell_width, cell_height, length,
-			sprite_begin, sprite_middle, sprite_end
-		);
-
-		break;
-	}
 
 	case OBJECT_TYPE_PORTAL:
 	{
@@ -168,7 +175,7 @@ void CPlayScene::LoadAssets(LPCWSTR assetFile)
 	ifstream f;
 	f.open(assetFile);
 
-	int section = ASSETS_SECTION_UNKNOWN;
+	int section = SCENE_SECTION_UNKNOWN;
 
 	char str[MAX_SCENE_LINE];
 	while (f.getline(str, MAX_SCENE_LINE))
@@ -177,8 +184,23 @@ void CPlayScene::LoadAssets(LPCWSTR assetFile)
 
 		if (line[0] == '#') continue;	// skip comment lines	
 
-		if (line == "[SPRITES]") { section = ASSETS_SECTION_SPRITES; continue; };
-		if (line == "[ANIMATIONS]") { section = ASSETS_SECTION_ANIMATIONS; continue; };
+		if (line == "[TEXTURES]") { section = SCENE_SECTION_TEXTURES; continue; }
+		if (line == "[MAP]") { section = SCENE_SECTION_MAP; continue; }
+		if (line == "[SPRITES]") {
+			section = SCENE_SECTION_SPRITES; continue;
+		}
+		if (line == "[ANIMATIONS]") {
+			section = SCENE_SECTION_ANIMATIONS; continue;
+		}
+		if (line == "[ANIMATION_SETS]") {
+			section = SCENE_SECTION_ANIMATION_SETS; continue;
+		}
+		if (line == "[OBJECTS]") {
+			section = SCENE_SECTION_OBJECTS; continue;
+		}
+		if (line == "[GRID]") {
+			section = SCENE_SECTION_GRID; continue;
+		}
 		if (line[0] == '[') { section = SCENE_SECTION_UNKNOWN; continue; }
 
 		//
@@ -186,8 +208,13 @@ void CPlayScene::LoadAssets(LPCWSTR assetFile)
 		//
 		switch (section)
 		{
-		case ASSETS_SECTION_SPRITES: _ParseSection_SPRITES(line); break;
-		case ASSETS_SECTION_ANIMATIONS: _ParseSection_ANIMATIONS(line); break;
+		case SCENE_SECTION_TEXTURES: _ParseSection_TEXTURES(line); break;
+		case SCENE_SECTION_MAP: _ParseSection_MAP(line); break;
+		case SCENE_SECTION_SPRITES: _ParseSection_SPRITES(line); break;
+		case SCENE_SECTION_ANIMATIONS: _ParseSection_ANIMATIONS(line); break;
+		case SCENE_SECTION_ANIMATION_SETS: _ParseSection_ANIMATION_SETS(line); break;
+		case SCENE_SECTION_OBJECTS: _ParseSection_OBJECTS(line); break;
+		case SCENE_SECTION_GRID: _ParseSection_GRID(line); break;
 		}
 	}
 

@@ -52,6 +52,8 @@ HOW TO INSTALL Microsoft.DXSDK.D3DX
 #define SCREEN_WIDTH 320
 #define SCREEN_HEIGHT 240
 
+CGame* game;
+
 LRESULT CALLBACK WinProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
 	switch (message) {
@@ -61,7 +63,6 @@ LRESULT CALLBACK WinProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	default:
 		return DefWindowProc(hWnd, message, wParam, lParam);
 	}
-
 	return 0;
 }
 
@@ -172,12 +173,9 @@ int Run()
 		if (dt >= tickPerFrame)
 		{
 			frameStart = now;
-
 			CGame::GetInstance()->ProcessKeyboard();			
 			Update(dt);
 			Render();
-
-			CGame::GetInstance()->SwitchScene();
 		}
 		else
 			Sleep(tickPerFrame - dt);	
@@ -186,25 +184,16 @@ int Run()
 	return 1;
 }
 
-int WINAPI WinMain(
-	_In_ HINSTANCE hInstance,
-	_In_opt_ HINSTANCE hPrevInstance,
-	_In_ LPSTR lpCmdLine,
-	_In_ int nCmdShow
-) {
+int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
+{
 	HWND hWnd = CreateGameWindow(hInstance, nCmdShow, SCREEN_WIDTH, SCREEN_HEIGHT);
 
-	SetDebugWindow(hWnd);
-
-	LPGAME game = CGame::GetInstance();
-	game->Init(hWnd, hInstance);
+	game = CGame::GetInstance();
+	game->Init(hWnd);
 	game->InitKeyboard();
+	game->Load(L"mario-sample.txt");
 
-
-	//IMPORTANT: this is the only place where a hardcoded file name is allowed ! 
-	game->Load(L"mario-sample.txt");  
-
-	SetWindowPos(hWnd, 0, 0, 0, SCREEN_WIDTH*2, SCREEN_HEIGHT*2, SWP_NOMOVE | SWP_NOOWNERZORDER | SWP_NOZORDER);
+	SetWindowPos(hWnd, 0, 0, 0, SCREEN_WIDTH * 2, SCREEN_HEIGHT * 2, SWP_NOMOVE | SWP_NOOWNERZORDER | SWP_NOZORDER);
 
 	Run();
 
