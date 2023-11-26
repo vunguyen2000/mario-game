@@ -1,8 +1,8 @@
 #pragma once
-#include "Cell.h"
 #include "Utils.h"
 #include "Game.h"
 #include "GameObject.h"
+#include "Cell.h"
 
 #define GRID_SECTION_SETTINGS	1
 #define GRID_SECTION_OBJECTS	2
