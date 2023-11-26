@@ -1,35 +1,29 @@
 #pragma once
 
+#include <d3dx9.h>
 #include "KeyEventHandler.h"
 
-/*
-*  Abstract class for a game scene
-*/
 class CScene
 {
 protected:
-	LPKEYEVENTHANDLER key_handler;
+	CKeyEventHandler * key_handler;
 	int id;
 	LPCWSTR sceneFilePath;
 
 public: 
-	CScene(int id, LPCWSTR filePath)
-	{
-		this->id = id;
-		this->sceneFilePath = filePath;
-		this->key_handler = NULL;
-	}
+	CScene(int id, LPCWSTR filePath);
 
-	LPKEYEVENTHANDLER GetKeyEventHandler() { return key_handler; }
+	CKeyEventHandler * GetKeyEventHandler() { return key_handler; }
 	virtual void Load() = 0;
 	virtual void Unload() = 0;
 	virtual void Update(DWORD dt) = 0;
 	virtual void Render() = 0; 
+	int GetId() { return id; }
 };
 typedef CScene * LPSCENE;
 
 
-class CSceneKeyHandler : public CKeyEventHandler
+class CScenceKeyHandler : public CKeyEventHandler
 {
 protected: 
 	CScene * scence; 
@@ -38,7 +32,6 @@ public:
 	virtual void KeyState(BYTE *states) = 0;
 	virtual void OnKeyDown(int KeyCode) = 0;
 	virtual void OnKeyUp(int KeyCode) = 0;
-	CSceneKeyHandler(LPSCENE s) :CKeyEventHandler() { scence = s; }
+	CScenceKeyHandler(CScene *s) :CKeyEventHandler() { scence = s; }
+	LPSCENE getScence() { return scence; };
 };
-
-typedef CSceneKeyHandler* LPSCENEKEYHANDLER;

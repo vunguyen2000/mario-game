@@ -111,27 +111,14 @@ class CMario : public CGameObject
 	BOOLEAN isOnPlatform;
 	int coin; 
 
-	void OnCollisionWithGoomba(LPCOLLISIONEVENT e);
-	void OnCollisionWithCoin(LPCOLLISIONEVENT e);
-	void OnCollisionWithPortal(LPCOLLISIONEVENT e);
+	float start_x;			// initial position of Mario at scene
+	float start_y;
 
 	int GetAniIdBig();
 	int GetAniIdSmall();
 
 public:
-	CMario(float x, float y) : CGameObject(x, y)
-	{
-		isSitting = false;
-		maxVx = 0.0f;
-		ax = 0.0f;
-		ay = MARIO_GRAVITY; 
-
-		level = MARIO_LEVEL_BIG;
-		untouchable = 0;
-		untouchable_start = -1;
-		isOnPlatform = false;
-		coin = 0;
-	}
+	CMario(float x = 0.0f, float y = 0.0f);
 	void Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects);
 	void Render();
 	void SetState(int state);
@@ -144,7 +131,6 @@ public:
 	int IsBlocking() { return (state != MARIO_STATE_DIE && untouchable==0); }
 
 	void OnNoCollision(DWORD dt);
-	void OnCollisionWith(LPCOLLISIONEVENT e);
 
 	void SetLevel(int l);
 	void StartUntouchable() { untouchable = 1; untouchable_start = GetTickCount64(); }

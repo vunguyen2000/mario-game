@@ -8,7 +8,18 @@
 #include "Coin.h"
 #include "Portal.h"
 
-#include "Collision.h"
+
+CMario::CMario(float x, float y) : CGameObject()
+{
+	level = MARIO_LEVEL_SMALL;
+	untouchable = 0;
+	SetState(MARIO_STATE_IDLE);
+	start_x = x;
+	start_y = y;
+	this->x = x;
+	this->y = y;
+}
+
 
 void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 {
@@ -26,7 +37,6 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 
 	isOnPlatform = false;
 
-	CCollision::GetInstance()->Process(this, dt, coObjects);
 }
 
 void CMario::OnNoCollision(DWORD dt)
@@ -35,72 +45,6 @@ void CMario::OnNoCollision(DWORD dt)
 	y += vy * dt;
 }
 
-void CMario::OnCollisionWith(LPCOLLISIONEVENT e)
-{
-	if (e->ny != 0 && e->obj->IsBlocking())
-	{
-		vy = 0;
-		if (e->ny < 0) isOnPlatform = true;
-	}
-	else 
-	if (e->nx != 0 && e->obj->IsBlocking())
-	{
-		vx = 0;
-	}
-
-	if (dynamic_cast<CGoomba*>(e->obj))
-		OnCollisionWithGoomba(e);
-	else if (dynamic_cast<CCoin*>(e->obj))
-		OnCollisionWithCoin(e);
-	else if (dynamic_cast<CPortal*>(e->obj))
-		OnCollisionWithPortal(e);
-}
-
-void CMario::OnCollisionWithGoomba(LPCOLLISIONEVENT e)
-{
-	CGoomba* goomba = dynamic_cast<CGoomba*>(e->obj);
-
-	// jump on top >> kill Goomba and deflect a bit 
-	if (e->ny < 0)
-	{
-		if (goomba->GetState() != GOOMBA_STATE_DIE)
-		{
-			goomba->SetState(GOOMBA_STATE_DIE);
-			vy = -MARIO_JUMP_DEFLECT_SPEED;
-		}
-	}
-	else // hit by Goomba
-	{
-		if (untouchable == 0)
-		{
-			if (goomba->GetState() != GOOMBA_STATE_DIE)
-			{
-				if (level > MARIO_LEVEL_SMALL)
-				{
-					level = MARIO_LEVEL_SMALL;
-					StartUntouchable();
-				}
-				else
-				{
-					DebugOut(L">>> Mario DIE >>> \n");
-					SetState(MARIO_STATE_DIE);
-				}
-			}
-		}
-	}
-}
-
-void CMario::OnCollisionWithCoin(LPCOLLISIONEVENT e)
-{
-	e->obj->Delete();
-	coin++;
-}
-
-void CMario::OnCollisionWithPortal(LPCOLLISIONEVENT e)
-{
-	CPortal* p = (CPortal*)e->obj;
-	CGame::GetInstance()->InitiateSwitchScene(p->GetSceneId());
-}
 
 //
 // Get animation ID for small Mario

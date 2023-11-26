@@ -5,17 +5,16 @@
 #include <unordered_map>
 #include <string>
 #include <d3dx9.h>
-using namespace std;
-
-#define DIRECTINPUT_VERSION 0x0800
 #include <dinput.h>
-
 #include "KeyEventHandler.h"
-#include "Scene.h"
 #include <d3d9.h>
+
+
+using namespace std;
 
 #define MAX_FRAME_RATE 100
 #define KEYBOARD_BUFFER_SIZE 1024
+#define DIRECTINPUT_VERSION 0x0800
 #define KEYBOARD_STATE_SIZE 256
 
 
@@ -81,6 +80,20 @@ public:
 	float GetCamPosY() { return cam_y; };
 	int GetGameTime() { return gameTime; };
 
+	static void SweptAABB(
+		float ml,			// move left 
+		float mt,			// move top
+		float mr,			// move right 
+		float mb,			// move bottom
+		float dx,			// 
+		float dy,			// 
+		float sl,			// static left
+		float st,
+		float sr,
+		float sb,
+		float& t,
+		float& nx,
+		float& ny);
 
 	LPDIRECT3DDEVICE9 GetDirect3DDevice() { return this->d3ddv; }
 	IDXGISwapChain* GetSwapChain() { return this->pSwapChain; }

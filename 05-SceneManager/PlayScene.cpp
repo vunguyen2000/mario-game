@@ -6,6 +6,7 @@
 #include "Utils.h"
 #include "Textures.h"
 #include "Sprites.h"
+#include <d3d9.h>
 #include "Portal.h"
 #include "Coin.h"
 #include "SampleKeyEventHandler.h"
@@ -26,7 +27,6 @@ CPlayScene::CPlayScene(int id, LPCWSTR filePath):
 #define SCENE_SECTION_ANIMATION_SETS	5
 #define SCENE_SECTION_OBJECTS	6
 #define SCENE_SECTION_MAP				7
-#define SCENE_SECTION_GRID				8
 
 #define OBJECT_TYPE_MARIO	0
 #define OBJECT_TYPE_BRICK	1
@@ -165,19 +165,6 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 
 		DebugOut(L"[INFO] Player object has been created!\n");
 		break;
-	case OBJECT_TYPE_GOOMBA: obj = new CGoomba(x,y); break;
-	case OBJECT_TYPE_BRICK: obj = new CBrick(x,y); break;
-	case OBJECT_TYPE_COIN: obj = new CCoin(x, y); break;
-
-
-
-	case OBJECT_TYPE_PORTAL:
-	{
-		float r = (float)atof(tokens[3].c_str());
-		float b = (float)atof(tokens[4].c_str());
-		int scene_id = atoi(tokens[5].c_str());
-		obj = new CPortal(x, y, r, b, scene_id);
-	}
 	break;
 
 
@@ -192,7 +179,6 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 
 	objects.push_back(obj);
 }
-
 
 void CPlayScene::_ParseSection_MAP(string line)
 {
@@ -211,18 +197,6 @@ void CPlayScene::_ParseSection_MAP(string line)
 	map = new Map(idTileSet, totalRowsTileSet, totalColumnsTileSet, totalRowsMap, totalColumnsMap, totalTiles);
 	map->LoadMap(file_path.c_str());
 	map->ExtractTileFromTileSet();
-}
-
-void CPlayScene::_ParseSection_GRID(string line)
-{
-	vector<string> tokens = split(line);
-
-	if (tokens.size() < 1) return;
-
-	wstring file_path = ToWSTR(tokens[0]);
-
-	if (grid == NULL)
-		grid = new CGrid(file_path.c_str());
 }
 
 void CPlayScene::Load()
@@ -256,9 +230,6 @@ void CPlayScene::Load()
 		if (line == "[OBJECTS]") {
 			section = SCENE_SECTION_OBJECTS; continue;
 		}
-		if (line == "[GRID]") {
-			section = SCENE_SECTION_GRID; continue;
-		}
 		if (line[0] == '[') { section = SCENE_SECTION_UNKNOWN; continue; }
 
 		//
@@ -272,7 +243,6 @@ void CPlayScene::Load()
 		case SCENE_SECTION_ANIMATIONS: _ParseSection_ANIMATIONS(line); break;
 		case SCENE_SECTION_ANIMATION_SETS: _ParseSection_ANIMATION_SETS(line); break;
 		case SCENE_SECTION_OBJECTS: _ParseSection_OBJECTS(line); break;
-		case SCENE_SECTION_GRID: _ParseSection_GRID(line); break;
 		}
 	}
 
@@ -311,8 +281,6 @@ void CPlayScene::Update(DWORD dt)
 	if (cx < 0) cx = 0;
 
 	CGame::GetInstance()->SetCamPos(cx, 0.0f /*cy*/);
-
-	PurgeDeletedObjects();
 }
 
 void CPlayScene::Render()
@@ -348,27 +316,6 @@ void CPlayScene::Unload()
 	objects.clear();
 	player = NULL;
 
-	DebugOut(L"[INFO] Scene %d unloaded! \n", id);
+	DebugOut(L"[INFO] Scene %s unloaded! \n", sceneFilePath);
 }
 
-bool CPlayScene::IsGameObjectDeleted(const LPGAMEOBJECT& o) { return o == NULL; }
-
-void CPlayScene::PurgeDeletedObjects()
-{
-	vector<LPGAMEOBJECT>::iterator it;
-	for (it = objects.begin(); it != objects.end(); it++)
-	{
-		LPGAMEOBJECT o = *it;
-		if (o->IsDeleted())
-		{
-			delete o;
-			*it = NULL;
-		}
-	}
-
-	// NOTE: remove_if will swap all deleted items to the end of the vector
-	// then simply trim the vector, this is much more efficient than deleting individual items
-	objects.erase(
-		std::remove_if(objects.begin(), objects.end(), CPlayScene::IsGameObjectDeleted),
-		objects.end());
-}
