@@ -30,7 +30,6 @@ HOW TO INSTALL Microsoft.DXSDK.D3DX
 #include "Game.h"
 #include "GameObject.h"
 #include "Textures.h"
-#include "Animation.h"
 #include "Animations.h"
 
 #include "Mario.h"
@@ -79,8 +78,6 @@ void Update(DWORD dt)
 */
 void Render()
 {
-	CGame* g = CGame::GetInstance();
-
 	ID3D10Device* pD3DDevice = g->GetDirect3DDevice();
 	IDXGISwapChain* pSwapChain = g->GetSwapChain();
 	ID3D10RenderTargetView* pRenderTargetView = g->GetRenderTargetView();
