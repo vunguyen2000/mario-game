@@ -119,9 +119,9 @@ class CMario : public CGameObject
 
 public:
 	CMario(float x = 0.0f, float y = 0.0f);
-	void Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects);
-	void Render();
-	void SetState(int state);
+	virtual void Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects);
+	virtual void Render();
+	virtual void SetState(int state);
 
 	int IsCollidable()
 	{ 
@@ -135,5 +135,5 @@ public:
 	void SetLevel(int l);
 	void StartUntouchable() { untouchable = 1; untouchable_start = GetTickCount64(); }
 
-	void GetBoundingBox(float& left, float& top, float& right, float& bottom);
+	virtual void GetBoundingBox(float& left, float& top, float& right, float& bottom);
 };

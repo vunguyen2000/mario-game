@@ -1,12 +1,20 @@
 #pragma once
 #include "Game.h"
+#include <iostream>
+#include <fstream>
 #include "Textures.h"
-#include "GameObject.h"
+#include "Scence.h"
 #include "Brick.h"
 #include "Mario.h"
-#include "Scence.h"
 #include "Goomba.h"
 #include "Map.h"
+#include "Utils.h"
+#include "Textures.h"
+#include "Sprites.h"
+#include "Portal.h"
+#include "NoCollision.h"
+#include "Coin.h"
+#include "Cell.h"
 
 
 class CPlayScene: public CScene
@@ -34,10 +42,19 @@ public:
 	virtual void Render();
 	virtual void Unload();
 
-	LPGAMEOBJECT GetPlayer() { return player; }
+	CMario* GetPlayer() { return player; }
 	void Clear();
 
 };
 
-typedef CPlayScene* LPPLAYSCENE;
+class CPlayScenceKeyHandler : public CScenceKeyHandler
+{
+
+public:
+	virtual void KeyState(BYTE* states);
+	virtual void OnKeyDown(int KeyCode);
+	virtual void OnKeyUp(int KeyCode);
+	CPlayScenceKeyHandler(CScene* s) :CScenceKeyHandler(s) {};
+};
+
 

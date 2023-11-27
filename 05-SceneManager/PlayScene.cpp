@@ -313,3 +313,105 @@ void CPlayScene::Unload()
 	DebugOut(L"[INFO] Scene %s unloaded! \n", sceneFilePath);
 }
 
+
+void CPlayScenceKeyHandler::OnKeyDown(int KeyCode)
+{
+	//DebugOut(L"[INFO] KeyDown: %d\n", KeyCode);
+	CGame* game = CGame::GetInstance();
+	int ids = CGame::GetInstance()->GetCurrentScene()->GetId();
+
+
+	CMario* mario = ((CPlayScene*)scence)->GetPlayer();
+	//if (mario != NULL)
+	//{
+	//	if (mario->GetState() != MARIO_STATE_DRAIN_1 && mario->GetState() != MARIO_STATE_DRAIN_2 && mario->GetState() != MARIO_STATE_DRAIN_3 && mario->checkEnd == false && mario->GetState() != MARIO_STATE_DIE)
+	//	{
+	//		switch (KeyCode)
+	//		{
+	//		case DIK_S:
+	//			if (mario->checkjumping == 0)
+	//			{
+	//				if (game->IsKeyDown(DIK_LSHIFT))
+	//				{
+	//					mario->SetState(MARIO_STATE_JUMP_HIGH);
+	//				}
+	//				else
+	//				{
+	//					mario->SetState(MARIO_STATE_JUMP);
+	//				}
+	//			}
+	//			break;
+	//		case DIK_R:
+	//			mario->Reset();
+	//			break;
+	//		case DIK_DOWN:
+	//			mario->sit = true;
+	//			break;
+	//		}
+	//	}
+	//}
+
+}
+
+void CPlayScenceKeyHandler::OnKeyUp(int KeyCode)
+{
+	CGame* game = CGame::GetInstance();
+
+
+	CMario* mario = ((CPlayScene*)scence)->GetPlayer();
+	//if (mario != NULL)
+	//{
+	//	if (mario->GetState() != MARIO_STATE_DRAIN_1 && mario->GetState() != MARIO_STATE_DRAIN_2 && mario->GetState() != MARIO_STATE_DRAIN_3 && mario->GetState() != MARIO_STATE_DIE && mario->checkEnd == false)
+	//	{
+	//		switch (KeyCode)
+	//		{
+	//		case DIK_DOWN:
+	//			mario->sit = false;
+	//			if (mario->GetLevel() != MARIO_LEVEL_SMALL)
+	//				mario->y -= MARIO_SIT_BBOX_HEIGHT;
+	//			break;
+	//		default:
+	//			break;
+	//		}
+	//	}
+	//}
+}
+
+void CPlayScenceKeyHandler::KeyState(BYTE* states)
+{
+	CGame* game = CGame::GetInstance();
+	CMario* mario = ((CPlayScene*)scence)->GetPlayer();
+
+	// disable control key when Mario die 
+	/*if (mario != NULL)
+	{
+		if (mario->GetState() == MARIO_STATE_DIE) return;
+
+		if (mario->GetState() != MARIO_STATE_DRAIN_1 && mario->GetState() != MARIO_STATE_DRAIN_2 && mario->GetState() != MARIO_STATE_DRAIN_3)
+		{
+			if (game->IsKeyDown(DIK_RIGHT))
+			{
+				if (game->IsKeyDown(DIK_A))
+				{
+					mario->SetState(MARIO_STATE_WALKING_RIGHT_FAST);
+				}
+				else
+					mario->SetState(MARIO_STATE_WALKING_RIGHT);
+			}
+			else if (game->IsKeyDown(DIK_LEFT))
+			{
+				if (game->IsKeyDown(DIK_A))
+				{
+					mario->SetState(MARIO_STATE_WALKING_LEFT_FAST);
+				}
+				else
+					mario->SetState(MARIO_STATE_WALKING_LEFT);
+			}
+			else
+				mario->SetState(MARIO_STATE_IDLE);
+		}
+	}*/
+
+
+}
+

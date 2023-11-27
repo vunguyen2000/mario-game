@@ -1,27 +1,22 @@
 #pragma once
-#include <Windows.h>
-#include <d3d10.h>
-#include <d3dx10.h>
+
 #include <unordered_map>
-#include <string>
-#include <d3dx9.h>
-#include "KeyEventHandler.h"
+
+#include <Windows.h>
 #include <d3d9.h>
+#include <d3dx9.h>
+#include <string>
+
 
 #define DIRECTINPUT_VERSION 0x0800
 #include <dinput.h>
+
 #include "Scence.h"
+
 using namespace std;
 
-#define MAX_FRAME_RATE 100
 #define KEYBOARD_BUFFER_SIZE 1024
-#define KEYBOARD_STATE_SIZE 256
 
-
-
-/*
-	Our simple game framework
-*/
 class CGame
 {
 	static CGame* __instance;
@@ -56,7 +51,6 @@ class CGame
 	void _ParseSection_SCENES(string line);
 
 public:
-	// Init DirectX, Sprite Handler
 	float GetCamPosX() { return cam_x; };
 	float GetCamPosY() { return cam_y; };
 	int GetGameTime() { return gameTime; };
@@ -96,7 +90,10 @@ public:
 
 	void SetCamPos(float x, float y) { cam_x = x; cam_y = y; }
 
+
 	static CGame* GetInstance();
+
 	~CGame();
 };
+
 
