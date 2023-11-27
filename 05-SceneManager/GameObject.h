@@ -145,8 +145,6 @@ public:
 		renderLayer = renderLayerInt;
 	}
 
-
-
 	~CGameObject();
 };
 

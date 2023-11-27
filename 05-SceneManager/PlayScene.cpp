@@ -1,23 +1,19 @@
 #include <iostream>
 #include <fstream>
 #include "AssetIDs.h"
-
-#include "PlayScene.h"
 #include "Utils.h"
 #include "Textures.h"
 #include "Sprites.h"
-#include <d3d9.h>
 #include "Portal.h"
 #include "Coin.h"
-#include "SampleKeyEventHandler.h"
+#include "PlayScene.h"
 
 using namespace std;
 
 CPlayScene::CPlayScene(int id, LPCWSTR filePath):
 	CScene(id, filePath)
 {
-	player = NULL;
-	key_handler = new CSampleKeyHandler(this);
+	key_handler = new CPlayScenceKeyHandler(this);
 }
 
 #define SCENE_SECTION_UNKNOWN -1
@@ -275,8 +271,6 @@ void CPlayScene::Update(DWORD dt)
 	player->GetPosition(cx, cy);
 
 	CGame *game = CGame::GetInstance();
-	cx -= game->GetBackBufferWidth() / 2;
-	cy -= game->GetBackBufferHeight() / 2;
 
 	if (cx < 0) cx = 0;
 

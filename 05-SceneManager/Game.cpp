@@ -60,13 +60,6 @@ void CGame::Init(HWND hWnd)
 	OutputDebugString(L"[INFO] InitGame done;\n");
 }
 
-void CGame::SetPointSamplerState()
-{
-	pD3DDevice->VSSetSamplers(0, 1, &pPointSamplerState);
-	pD3DDevice->GSSetSamplers(0, 1, &pPointSamplerState);
-	pD3DDevice->PSSetSamplers(0, 1, &pPointSamplerState);
-}
-
 /*
 	Draw the whole texture or part of texture onto screen
 	NOTE: This function is very inefficient because it has to convert
@@ -92,7 +85,14 @@ int CGame::IsKeyDown(int KeyCode)
 
 void CGame::InitKeyboard()
 {
-	HRESULT hr = DirectInput8Create(this->hInstance, DIRECTINPUT_VERSION, IID_IDirectInput8, (VOID**)&di, NULL);
+	HRESULT
+		hr = DirectInput8Create
+		(
+			(HINSTANCE)GetWindowLong(hWnd, GWL_HINSTANCE),
+			DIRECTINPUT_VERSION,
+			IID_IDirectInput8, (VOID**)&di, NULL
+		);
+
 	if (hr != DI_OK)
 	{
 		DebugOut(L"[ERROR] DirectInput8Create failed!\n");
@@ -202,8 +202,6 @@ void CGame::ProcessKeyboard()
 #define GAME_FILE_SECTION_UNKNOWN -1
 #define GAME_FILE_SECTION_SETTINGS 1
 #define GAME_FILE_SECTION_SCENES 2
-#define GAME_FILE_SECTION_TEXTURES 3
-
 
 void CGame::_ParseSection_SETTINGS(string line)
 {
@@ -211,7 +209,7 @@ void CGame::_ParseSection_SETTINGS(string line)
 
 	if (tokens.size() < 2) return;
 	if (tokens[0] == "start")
-		next_scene = atoi(tokens[1].c_str());
+		current_scene = atoi(tokens[1].c_str());
 	else
 		DebugOut(L"[ERROR] Unknown game setting: %s\n", ToWSTR(tokens[0]).c_str());
 }
@@ -283,18 +281,12 @@ void CGame::SwitchScene(int scene_id)
 	s->Load();
 }
 
-void CGame::InitiateSwitchScene(int scene_id)
-{
-	next_scene = scene_id;
-}
-
 CGame::~CGame()
 {
-	pBlendStateAlpha->Release();
-	spriteObject->Release();
-	pRenderTargetView->Release();
-	pSwapChain->Release();
-	pD3DDevice->Release();
+	if (spriteHandler != NULL) spriteHandler->Release();
+	if (backBuffer != NULL) backBuffer->Release();
+	if (d3ddv != NULL) d3ddv->Release();
+	if (d3d != NULL) d3d->Release();
 }
 
 void CGame::SweptAABB(
