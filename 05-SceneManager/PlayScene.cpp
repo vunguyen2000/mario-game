@@ -7,7 +7,7 @@
 #include "Portal.h"
 #include "Coin.h"
 #include "PlayScene.h"
-
+#include "Box.h"
 using namespace std;
 
 CPlayScene::CPlayScene(int id, LPCWSTR filePath):
@@ -139,41 +139,69 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 {
 	vector<string> tokens = split(line);
 
-	// skip invalid lines - an object set must have at least id, x, y
-	if (tokens.size() < 2) return;
+	//DebugOut(L"--> %s\n",ToWSTR(line).c_str());
+
+	if (tokens.size() < 3) return; // skip invalid lines - an object set must have at least id, x, y
 
 	int object_type = atoi(tokens[0].c_str());
-	float x = (float)atof(tokens[1].c_str());
-	float y = (float)atof(tokens[2].c_str());
+	float x = atof(tokens[1].c_str());
+	float y = atof(tokens[2].c_str());
 
-	CGameObject *obj = NULL;
+	int ani_set_id = atoi(tokens[3].c_str());
+	int id = CGame::GetInstance()->GetCurrentScene()->GetId();
+
+	CAnimationSets* animation_sets = CAnimationSets::GetInstance();
+
+	CGameObject* obj = NULL;
+
+	CGameObject* objW = NULL;
 
 	switch (object_type)
 	{
 	case OBJECT_TYPE_MARIO:
-		if (player!=NULL) 
+		if (player != NULL)
 		{
 			DebugOut(L"[ERROR] MARIO object was created before!\n");
 			return;
 		}
-		obj = new CMario(x,y); 
-		player = (CMario*)obj;  
+		obj = new CMario(x, y);
+		player = (CMario*)obj;
 
-		DebugOut(L"[INFO] Player object has been created!\n");
+		DebugOut(L"[INFO] Player object created!\n");
 		break;
+	case OBJECT_TYPE_GOOMBA: obj = new CGoomba(); break;
+	case OBJECT_TYPE_BRICK: obj = new CBrick(); break;
+	case OBJECT_TYPE_NOCOLLISION: obj = new CNoCollision(); break;
+	case OBJECT_TYPE_BOX: obj = new CBox(BOX_STATUS_NORMAL); break;
+	case OBJECT_TYPE_BOX_END: obj = new CBox(BOX_STATUS_END); break;
+	case OBJECT_TYPE_BOX_START: obj = new CBox(BOX_STATUS_START); break;
+		break;
+	case OBJECT_TYPE_PORTAL:
+	{
+		float r = atof(tokens[4].c_str());
+		float b = atof(tokens[5].c_str());
+		int scene_id = atoi(tokens[6].c_str());
+		obj = new CPortal(x, y, r, b, scene_id);
+	}
 	break;
-
-
 	default:
-		DebugOut(L"[ERROR] Invalid object type: %d\n", object_type);
+		DebugOut(L"[ERR] Invalid object type: %d\n", object_type);
 		return;
 	}
 
 	// General object setup
-	obj->SetPosition(x, y);
 
-
-	objects.push_back(obj);
+	LPANIMATION_SET ani_set = animation_sets->Get(ani_set_id);
+	if (obj != NULL)
+	{
+		obj->SetPosition(x, y);
+		obj->SetAnimationSet(ani_set);
+		obj->SetOrigin(x, y, obj->GetState());
+		if (id == 4)
+			obj->SetRenderLayer(atoi(tokens[4].c_str()));
+		obj->SetisOriginObj(true);
+		objects.push_back(obj);
+	}
 }
 
 void CPlayScene::_ParseSection_MAP(string line)
