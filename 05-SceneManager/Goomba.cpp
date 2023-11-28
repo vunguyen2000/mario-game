@@ -3,7 +3,6 @@
 CGoomba::CGoomba()
 {
 	SetState(GOOMBA_STATE_WALKING);
-
 }
 
 void CGoomba::GetBoundingBox(float &left, float &top, float &right, float &bottom)
@@ -42,8 +41,10 @@ void CGoomba::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects){
 
 	CGameObject::Update(dt);
 
+	//V?n t?c
 	vy += GOOMBA_GRAVITY * dt;
 
+	//
 	vector<LPCOLLISIONEVENT> coEvents;
 	vector<LPCOLLISIONEVENT> coEventsResult;
 
@@ -52,24 +53,35 @@ void CGoomba::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects){
 	if (state != GOOMBA_STATE_DIE_DOWN && state != GOOMBA_STATE_DIE)
 		CalcPotentialCollisions(coObjects, coEvents);
 
+	// Không va ch?m
 	if (coEvents.size() == 0)
 	{
 		x += dx;
 		y += dy;
 	}
+	//X? lí va ch?m
 	else
 	{
+
 		float min_tx, min_ty, nx = 0, ny;
 		float rdx = 0;
 		float rdy = 0;
 
+		//Animation
 		FilterCollision(coEvents, coEventsResult, min_tx, min_ty, nx, ny, rdx, rdy);
-
 
 		x += min_tx * dx + nx * 0.4f;
 		y += min_ty * dy + ny * 0.4f;
 		if (ny != 0) vy = 0;
-	
+		//
+		for (UINT i = 0; i < coEventsResult.size(); i++)
+		{
+			LPCOLLISIONEVENT e = coEventsResult[i];
+			if (nx != 0)
+			{
+				vx = -vx;
+			}
+		}
 	}
 	for (UINT i = 0; i < coEvents.size(); i++) delete coEvents[i];
 	if (x < 0)
