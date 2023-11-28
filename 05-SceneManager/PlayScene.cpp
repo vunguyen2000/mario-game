@@ -50,6 +50,7 @@ CPlayScene::CPlayScene(int id, LPCWSTR filePath):
 
 #define MAX_SCENE_LINE 1024
 
+
 void CPlayScene::_ParseSection_TEXTURES(string line)
 {
 	vector<string> tokens = split(line);
@@ -278,31 +279,49 @@ void CPlayScene::Load()
 void CPlayScene::Update(DWORD dt)
 {
 	// We know that Mario is the first object in the list hence we won't add him into the colliable object list
-	// TO-DO: This is a "dirty" way, need a more organized way 
+	// TO-DO: This is a "dirty" way, need a more organized way
+	CAnimationSets* animation_sets = CAnimationSets::GetInstance();
+
+	CGame* game = CGame::GetInstance();
 
 	vector<LPGAMEOBJECT> coObjects;
-	for (size_t i = 1; i < objects.size(); i++)
+	for (size_t i = 0; i < objects.size(); i++)
 	{
 		coObjects.push_back(objects[i]);
 	}
 
 	for (size_t i = 0; i < objects.size(); i++)
 	{
-		objects[i]->Update(dt, &coObjects);
+
+		LPGAMEOBJECT obj = objects[i];
+		if (obj->isDisAppear)
+		{
+			objects.erase(objects.begin() + i);
+			delete obj;
+		}
+		else
+		{
+			if (player != NULL)
+			{
+					if (obj->x <= player->x + game->GetScreenWidth())
+					{
+						if (obj->y >= player->y - game->GetScreenHeight() && obj->y <= player->y + game->GetScreenHeight())
+							objects[i]->Update(dt, &coObjects);
+					}
+			}
+			else
+				objects[i]->Update(dt, &coObjects);
+		}
+
 	}
 
+	//CGame::GetInstance()->SetCamPos((int)0, (int)220);
 	// skip the rest if scene was already unloaded (Mario::Update might trigger PlayScene::Unload)
-	if (player == NULL) return; 
+	if (player == NULL) return;
 
-	// Update camera to follow mario
-	float cx, cy;
-	player->GetPosition(cx, cy);
+	if (player->x < 0) player->x = 0; //Ch?ng lùi qa trái
 
-	CGame *game = CGame::GetInstance();
 
-	if (cx < 0) cx = 0;
-
-	CGame::GetInstance()->SetCamPos(cx, 0.0f /*cy*/);
 }
 
 void CPlayScene::Render()
@@ -387,22 +406,16 @@ void CPlayScenceKeyHandler::OnKeyUp(int KeyCode)
 
 
 	CMario* mario = ((CPlayScene*)scence)->GetPlayer();
-	//if (mario != NULL)
-	//{
-	//	if (mario->GetState() != MARIO_STATE_DRAIN_1 && mario->GetState() != MARIO_STATE_DRAIN_2 && mario->GetState() != MARIO_STATE_DRAIN_3 && mario->GetState() != MARIO_STATE_DIE && mario->checkEnd == false)
-	//	{
-	//		switch (KeyCode)
-	//		{
-	//		case DIK_DOWN:
-	//			mario->sit = false;
-	//			if (mario->GetLevel() != MARIO_LEVEL_SMALL)
-	//				mario->y -= MARIO_SIT_BBOX_HEIGHT;
-	//			break;
-	//		default:
-	//			break;
-	//		}
-	//	}
-	//}
+	if (mario != NULL)
+	{
+			switch (KeyCode)
+			{
+			case DIK_DOWN:
+				break;
+			default:
+				break;
+			}
+	}
 }
 
 void CPlayScenceKeyHandler::KeyState(BYTE* states)
@@ -411,34 +424,21 @@ void CPlayScenceKeyHandler::KeyState(BYTE* states)
 	CMario* mario = ((CPlayScene*)scence)->GetPlayer();
 
 	// disable control key when Mario die 
-	/*if (mario != NULL)
+	if (mario != NULL)
 	{
 		if (mario->GetState() == MARIO_STATE_DIE) return;
 
-		if (mario->GetState() != MARIO_STATE_DRAIN_1 && mario->GetState() != MARIO_STATE_DRAIN_2 && mario->GetState() != MARIO_STATE_DRAIN_3)
-		{
 			if (game->IsKeyDown(DIK_RIGHT))
 			{
-				if (game->IsKeyDown(DIK_A))
-				{
-					mario->SetState(MARIO_STATE_WALKING_RIGHT_FAST);
-				}
-				else
 					mario->SetState(MARIO_STATE_WALKING_RIGHT);
 			}
 			else if (game->IsKeyDown(DIK_LEFT))
 			{
-				if (game->IsKeyDown(DIK_A))
-				{
-					mario->SetState(MARIO_STATE_WALKING_LEFT_FAST);
-				}
-				else
 					mario->SetState(MARIO_STATE_WALKING_LEFT);
 			}
 			else
 				mario->SetState(MARIO_STATE_IDLE);
-		}
-	}*/
+	}
 
 
 }

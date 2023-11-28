@@ -13,7 +13,7 @@ class Map
 private:
 	int** TileMap;
 	vector<LPSPRITE> Tiles;
-	LPDIRECT3DTEXTURE9 TileSet; //map1-1_bank.png
+	LPDIRECT3DTEXTURE9 TileSet; 
 	int TotalColumnsOfMap, TotalRowsOfMap;
 	int TotalColumnsOfTileSet, TotalRowsOfTileSet;
 	int TotalTiles; //total tiles of tileset

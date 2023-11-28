@@ -16,6 +16,7 @@
 #define GOOMBA_ANI_DIE 1
 #define GOOMBA_START_X 5
 
+
 class CGoomba : public CGameObject
 {
 
@@ -24,7 +25,8 @@ class CGoomba : public CGameObject
 	virtual void Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects);
 	virtual void Render();
 
-public: 	
+public:
 	CGoomba();
 	virtual void SetState(int state);
+
 };
