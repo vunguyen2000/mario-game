@@ -25,6 +25,7 @@
 #define MARIO_WALKING_SPEED_PLUS		0.002f 
 #define MARIO_WALKING_SPEED_PLUS1		0.1f 
 
+#define MARIO_DIE_DEFLECT_SPEED	 0.5f
 #define MARIO_STATE_JUMP			300
 #define MARIO_STATE_JUMP_HIGH			310
 
@@ -42,11 +43,13 @@ class CMario : public CGameObject
 public:
 	int checkjumping = 0;
 	bool checkidle = true;
+	bool checkFree = false;
 	bool sit = false;
 	CMario(float x = 0.0f, float y = 0.0f);
 	virtual void Update(DWORD dt, vector<LPGAMEOBJECT>* colliable_objects = NULL);
 	virtual void Render();
 	void SetState(int state);
+	void Reset();
 	virtual void FilterCollision(
 		vector<LPCOLLISIONEVENT>& coEvents,
 		vector<LPCOLLISIONEVENT>& coEventsResult,

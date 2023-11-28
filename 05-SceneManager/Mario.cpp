@@ -7,7 +7,7 @@
 #include "Goomba.h"
 #include "Coin.h"
 #include "Portal.h"
-
+#include "Box.h"
 
 CMario::CMario(float x, float y) : CGameObject()
 {
@@ -71,70 +71,88 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 
 	coEvents.clear();
 
-
 	CalcPotentialCollisions(coObjects, coEvents);
-
-
+	if (GetState() == MARIO_STATE_DIE)
+	{
+		Reset();
+	}
+	
 	// No collision occured, proceed normally
 	if (coEvents.size() == 0)
 	{
 		x += dx;
 		y += dy;
+		checkFree = true;
 	}
 	else
 	{
-
+		checkFree = false;
 		float min_tx, min_ty, nx = 0, ny;
 		float rdx = 0;
 		float rdy = 0;
 
+		// TODO: This is a very ugly designed function!!!!
 		FilterCollision(coEvents, coEventsResult, min_tx, min_ty, nx, ny, rdx, rdy);
 
 
+		//// block every object first!
 		x += min_tx * dx + nx * 0.4f;
 		y += min_ty * dy + ny * 0.4f;
-		if (ny != 0) vy = 0;
-		//
+
+		// Collision logic with other objects
 		for (UINT i = 0; i < coEventsResult.size(); i++)
 		{
 			LPCOLLISIONEVENT e = coEventsResult[i];
-			if (nx != 0)
-			{
-				vx = -vx;
-			}
-		}
-	}
-	for (UINT i = 0; i < coEventsResult.size(); i++)
-	{
-		LPCOLLISIONEVENT e = coEventsResult[i];
-		if (e->ny < 0)
-		{
-			checkjumping = 0;
-		}
-		if (dynamic_cast<CGoomba*>(e->obj)) // if e->obj is Goomba 
-		{
-			CGoomba* goomba = dynamic_cast<CGoomba*>(e->obj);
 
-			// jump on top >> kill Goomba and deflect a bit 
 			if (e->ny < 0)
 			{
-				if (goomba->GetState() != GOOMBA_STATE_DIE)
-				{
-					goomba->SetState(GOOMBA_STATE_DIE);
-					vy = -MARIO_JUMP_DEFLECT_SPEED;
-				}
+				checkjumping = 0;
 			}
-			else if (e->nx != 0)
+			if (dynamic_cast<CGoomba*>(e->obj)) // if e->obj is Goomba 
 			{
-				if (untouchable == 0)
+				CGoomba* goomba = dynamic_cast<CGoomba*>(e->obj);
+					if (e->ny < 0)
+					{
+						if (goomba->GetState() != GOOMBA_STATE_DIE)
+						{
+							goomba->SetState(GOOMBA_STATE_DIE);
+							vy = -MARIO_JUMP_DEFLECT_SPEED;
+						}
+					}
+					else if (e->nx != 0)
+					{
+						if (untouchable == 0)
+						{
+							if (goomba->GetState() != GOOMBA_STATE_DIE)
+							{
+							
+										SetState(MARIO_STATE_DIE);
+									}
+							}
+					}
+			}
+			if (dynamic_cast<CBox*>(e->obj))
+			{
+				if (e->ny > 0)
 				{
-					if (goomba->GetState() != GOOMBA_STATE_DIE)
-						SetState(MARIO_STATE_DIE);
+					y += dy;
+				}
+				else if (e->nx != 0)
+				{
+					x += dx;
+				}
+				else
+				{
+					if (ny != 0) vy = 0;
 				}
 			}
-
+			else
+			{
+				if (ny != 0) vy = 0;
+			}
 		}
 	}
+
 	// clean up collision events
 	for (UINT i = 0; i < coEvents.size(); i++) delete coEvents[i];
 
@@ -147,8 +165,6 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 	if (x <= (game->GetScreenWidth() / 2)) cx = 0;
 	if (y >= -46)
 		cy = -10;
-
-
 	else cy -= game->GetScreenHeight() / 2;
 
 	CGame::GetInstance()->SetCamPos((int)cx, (int)cy);
@@ -216,6 +232,9 @@ void CMario::SetState(int state)
 		checkjumping = 1;
 		vy = -MARIO_JUMP_SPEED_Y_HIGH;
 		break;
+	case MARIO_STATE_DIE:
+		vy = -MARIO_DIE_DEFLECT_SPEED;
+		break;
 	}
 
 }
@@ -233,3 +252,10 @@ void CMario::SetLevel(int l)
 
 }
 
+void CMario::Reset()
+{
+	SetState(MARIO_STATE_IDLE);
+	SetLevel(MARIO_LEVEL_SMALL);
+	SetPosition(start_x, start_y);
+	SetSpeed(0, 0);
+}
