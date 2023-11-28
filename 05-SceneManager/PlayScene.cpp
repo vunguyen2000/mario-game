@@ -369,34 +369,28 @@ void CPlayScenceKeyHandler::OnKeyDown(int KeyCode)
 
 
 	CMario* mario = ((CPlayScene*)scence)->GetPlayer();
-	//if (mario != NULL)
-	//{
-	//	if (mario->GetState() != MARIO_STATE_DRAIN_1 && mario->GetState() != MARIO_STATE_DRAIN_2 && mario->GetState() != MARIO_STATE_DRAIN_3 && mario->checkEnd == false && mario->GetState() != MARIO_STATE_DIE)
-	//	{
-	//		switch (KeyCode)
-	//		{
-	//		case DIK_S:
-	//			if (mario->checkjumping == 0)
-	//			{
-	//				if (game->IsKeyDown(DIK_LSHIFT))
-	//				{
-	//					mario->SetState(MARIO_STATE_JUMP_HIGH);
-	//				}
-	//				else
-	//				{
-	//					mario->SetState(MARIO_STATE_JUMP);
-	//				}
-	//			}
-	//			break;
-	//		case DIK_R:
-	//			mario->Reset();
-	//			break;
-	//		case DIK_DOWN:
-	//			mario->sit = true;
-	//			break;
-	//		}
-	//	}
-	//}
+	if (mario != NULL)
+	{
+			switch (KeyCode)
+			{
+			case DIK_S:
+				if (mario->checkjumping == 0)
+				{
+					if (game->IsKeyDown(DIK_LSHIFT))
+					{
+						mario->SetState(MARIO_STATE_JUMP_HIGH);
+					}
+					else
+					{
+						mario->SetState(MARIO_STATE_JUMP);
+					}
+				}
+				break;
+			case DIK_DOWN:
+				mario->sit = true;
+				break;
+			}
+	}
 
 }
 

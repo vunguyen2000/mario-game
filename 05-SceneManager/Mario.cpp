@@ -104,13 +104,35 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 			}
 		}
 	}
-	for (UINT i = 0; i < coEvents.size(); i++) delete coEvents[i];
-	if (x < 0)
+	for (UINT i = 0; i < coEventsResult.size(); i++)
 	{
-		x = GOOMBA_START_X;
-		vx = -vx;
+		LPCOLLISIONEVENT e = coEventsResult[i];
+		if (e->ny < 0)
+		{
+			checkjumping = 0;
+		}
 	}
+	// clean up collision events
+	for (UINT i = 0; i < coEvents.size(); i++) delete coEvents[i];
 
+	float cx, cy;
+	GetPosition(cx, cy);
+
+	CGame* game = CGame::GetInstance();
+	cx -= game->GetScreenWidth() / 2;
+
+	if (x <= (game->GetScreenWidth() / 2)) cx = 0;
+	if (y >= -46)
+		cy = -10;
+
+
+	else cy -= game->GetScreenHeight() / 2;
+
+	CGame::GetInstance()->SetCamPos((int)cx, (int)cy);
+	if (x < camX_update)
+	{
+		x = camX_update;
+	}
 }
 
 void CMario::Render()
@@ -130,6 +152,12 @@ void CMario::Render()
 		}
 		else {
 				ani = MARIO_ANI_SMALL_WALKING_LEFT;
+		}
+		if (checkjumping == 1)
+		{
+			if (nx < 0)
+				ani = MARIO_ANI_SMALL_FLY_LEFT;
+			else ani = MARIO_ANI_SMALL_FLY_RIGHT;
 		}
 
 		int alpha = 255;
@@ -156,9 +184,16 @@ void CMario::SetState(int state)
 		checkidle = true;
 		vx = 0;
 		break;
+	case MARIO_STATE_JUMP:
+		// TODO: need to check if Mario is *current* on a platform before allowing to jump again
+		checkjumping = 1;
+		vy = -MARIO_JUMP_SPEED_Y;
+		break;
+	case MARIO_STATE_JUMP_HIGH:
+		checkjumping = 1;
+		vy = -MARIO_JUMP_SPEED_Y_HIGH;
 		break;
 	}
-
 
 }
 

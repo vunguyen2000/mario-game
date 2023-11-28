@@ -13,6 +13,8 @@
 #define MARIO_ANI_SMALL_WALKING_LEFT		7
 #define MARIO_SMALL_BBOX_WIDTH  13
 #define MARIO_SMALL_BBOX_HEIGHT 15
+#define MARIO_ANI_SMALL_FLY_RIGHT		25
+#define MARIO_ANI_SMALL_FLY_LEFT		26
 #define MARIO_GRAVITY			0.002f
 
 #define MARIO_STATE_WALKING_RIGHT	100
@@ -23,15 +25,24 @@
 #define MARIO_WALKING_SPEED_PLUS		0.002f 
 #define MARIO_WALKING_SPEED_PLUS1		0.1f 
 
+#define MARIO_STATE_JUMP			300
+#define MARIO_STATE_JUMP_HIGH			310
+
+#define MARIO_JUMP_SPEED_Y		0.5f
+#define MARIO_JUMP_SPEED_Y_HIGH		0.625f
+
 class CMario : public CGameObject
 {
 	int level;
 	int untouchable;
 	float start_x;			
 	float start_y;
-	bool checkidle = true;	//ki?m tra tr?ng thái ??ng im
+	float camX_update = 0;
 
 public:
+	int checkjumping = 0;
+	bool checkidle = true;
+	bool sit = false;
 	CMario(float x = 0.0f, float y = 0.0f);
 	virtual void Update(DWORD dt, vector<LPGAMEOBJECT>* colliable_objects = NULL);
 	virtual void Render();
