@@ -1,5 +1,5 @@
 #include "Goomba.h"
-
+#include <algorithm>
 CGoomba::CGoomba()
 {
 	SetState(GOOMBA_STATE_WALKING);
@@ -8,68 +8,28 @@ CGoomba::CGoomba()
 
 void CGoomba::GetBoundingBox(float &left, float &top, float &right, float &bottom)
 {
-	if (state == GOOMBA_STATE_DIE)
-	{
-		left = x - GOOMBA_BBOX_WIDTH/2;
-		top = y - GOOMBA_BBOX_HEIGHT_DIE/2;
-		right = left + GOOMBA_BBOX_WIDTH;
-		bottom = top + GOOMBA_BBOX_HEIGHT_DIE;
-	}
-	else
-	{ 
-		left = x - GOOMBA_BBOX_WIDTH/2;
-		top = y - GOOMBA_BBOX_HEIGHT/2;
-		right = left + GOOMBA_BBOX_WIDTH;
-		bottom = top + GOOMBA_BBOX_HEIGHT;
-	}
 }
 
-void CGoomba::OnNoCollision(DWORD dt)
+void CGoomba::CalcPotentialCollisions(vector<LPGAMEOBJECT>* coObjects, vector<LPCOLLISIONEVENT>& coEvents)
 {
-	x += vx * dt;
-	y += vy * dt;
-};
 
+}
 
 void CGoomba::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
-{
-	vy += ay * dt;
-	vx += ax * dt;
 
-	if ( (state==GOOMBA_STATE_DIE) && (GetTickCount64() - die_start > GOOMBA_DIE_TIMEOUT) )
-	{
-		return;
-	}
-	CGameObject::Update(dt, coObjects);
 }
 
 
 void CGoomba::Render()
 {
-	int aniId = ID_ANI_GOOMBA_WALKING;
-	if (state == GOOMBA_STATE_DIE) 
-	{
-		aniId = ID_ANI_GOOMBA_DIE;
+	int ani = GOOMBA_ANI_WALKING;
+	if (state == GOOMBA_STATE_DIE) {
+		ani = GOOMBA_ANI_DIE;
 	}
 
-	CAnimations::GetInstance()->Get(aniId)->Render(x,y);
-	RenderBoundingBox();
+	animation_set->at(ani)->Render(x, y);
 }
 
 void CGoomba::SetState(int state)
 {
-	CGameObject::SetState(state);
-	switch (state)
-	{
-		case GOOMBA_STATE_DIE:
-			die_start = GetTickCount64();
-			y += (GOOMBA_BBOX_HEIGHT - GOOMBA_BBOX_HEIGHT_DIE)/2;
-			vx = 0;
-			vy = 0;
-			ay = 0; 
-			break;
-		case GOOMBA_STATE_WALKING: 
-			vx = -GOOMBA_WALKING_SPEED;
-			break;
-	}
 }
