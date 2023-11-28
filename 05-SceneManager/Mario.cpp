@@ -111,6 +111,29 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 		{
 			checkjumping = 0;
 		}
+		if (dynamic_cast<CGoomba*>(e->obj)) // if e->obj is Goomba 
+		{
+			CGoomba* goomba = dynamic_cast<CGoomba*>(e->obj);
+
+			// jump on top >> kill Goomba and deflect a bit 
+			if (e->ny < 0)
+			{
+				if (goomba->GetState() != GOOMBA_STATE_DIE)
+				{
+					goomba->SetState(GOOMBA_STATE_DIE);
+					vy = -MARIO_JUMP_DEFLECT_SPEED;
+				}
+			}
+			else if (e->nx != 0)
+			{
+				if (untouchable == 0)
+				{
+					if (goomba->GetState() != GOOMBA_STATE_DIE)
+						SetState(MARIO_STATE_DIE);
+				}
+			}
+
+		}
 	}
 	// clean up collision events
 	for (UINT i = 0; i < coEvents.size(); i++) delete coEvents[i];
