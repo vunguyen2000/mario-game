@@ -71,7 +71,9 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 
 	coEvents.clear();
 
-	CalcPotentialCollisions(coObjects, coEvents);
+	if (state != MARIO_STATE_DIE) {
+		CalcPotentialCollisions(coObjects, coEvents);
+	}
 	if (GetState() == MARIO_STATE_DIE)
 	{
 		Reset();
@@ -121,13 +123,9 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 					}
 					else if (e->nx != 0)
 					{
-						if (untouchable == 0)
-						{
 							if (goomba->GetState() != GOOMBA_STATE_DIE)
 							{
-							
-										SetState(MARIO_STATE_DIE);
-									}
+								SetState(MARIO_STATE_DIE);
 							}
 					}
 			}
@@ -179,7 +177,7 @@ void CMario::Render()
 	int ani = -1;
 	if (state == MARIO_STATE_DIE)
 		ani = MARIO_ANI_DIE;
-	{
+	else{
 		if (vx == 0)
 		{
 			if (nx > 0) ani = MARIO_ANI_SMALL_IDLE_RIGHT;
