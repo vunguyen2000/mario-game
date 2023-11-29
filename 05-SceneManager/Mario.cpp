@@ -8,6 +8,7 @@
 #include "Coin.h"
 #include "Portal.h"
 #include "Box.h"
+#include "BrickQuestion.h"
 
 CMario::CMario(float x, float y) : CGameObject()
 {
@@ -142,6 +143,23 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 				else
 				{
 					if (ny != 0) vy = 0;
+				}
+			}
+			if (dynamic_cast<CBrickQuestion*>(e->obj))
+			{
+				if (e->ny > 0)
+				{
+					CBrickQuestion* brickQuestion = dynamic_cast<CBrickQuestion*>(e->obj);
+					int ids = CGame::GetInstance()->GetCurrentScene()->GetId();
+					if (brickQuestion->GetBefore())
+					{
+						brickQuestion->SetUp(true);
+						brickQuestion->SetBefore(false);
+						brickQuestion->SetAfter(true);
+					
+						brickQuestion->SetState(BRICK_QUESTION_STATE_AFTER);
+					}
+
 				}
 			}
 			else

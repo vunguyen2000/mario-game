@@ -1,7 +1,6 @@
 #include "BrickQuestion.h"
 #include <algorithm>
-
-
+#include "Effect.h"
 CBrickQuestion::CBrickQuestion(int status)
 {
 	this->status = status;
@@ -61,7 +60,6 @@ void CBrickQuestion::Render()
 	}
 	animation_set->at(ani)->Render(x, y);
 
-	/*RenderBoundingBox();*/
 }
 
 void CBrickQuestion::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
@@ -78,6 +76,36 @@ void CBrickQuestion::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	CMario* mario = ((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->GetPlayer();
 
 	CalcPotentialCollisions(coObjects, coEvents);
+
+	if (status_after)//n?u g?ch k còn tr?ng thái ch?m h?i
+	{
+		
+			if (check)
+			{
+				if (timeAni > BRICK_QUESTION_COUNT_TIME)
+				{
+					timeAni = 0;
+					check = false;
+				}
+				else
+				{
+					y -= BRICK_QUESTION_COUNT_Y;
+					timeAni++;
+				}
+			}
+			else
+			{
+				if (timeAni <= BRICK_QUESTION_COUNT_TIME)
+				{
+					y += BRICK_QUESTION_COUNT_Y;
+					timeAni++;
+				}
+				else
+				{
+					status_before = false;
+				}
+			}
+	}
 
 	// No collision occured, proceed normally
 	if (coEvents.size() == 0)
@@ -109,4 +137,20 @@ void CBrickQuestion::SetState(int state)
 {
 	CAnimationSets* animation_sets = CAnimationSets::GetInstance();
 	LPSCENE scene = CGame::GetInstance()->GetCurrentScene();
+	if (state == BRICK_QUESTION_STATE_AFTER)
+	{
+		CMario* mario = ((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->GetPlayer();
+		switch (status)
+		{
+		case BRICK_QUESTION_STATUS_EFFECT:
+		{
+			CEffect* effect = new CEffect();
+			effect->SetPosition(x, y - 16);
+			((CPlayScene*)scene)->addObject(effect);
+			break;
+		}
+		default:
+			break;
+		}
+	}
 }

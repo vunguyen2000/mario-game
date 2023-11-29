@@ -11,11 +11,19 @@
 #define BRICK_QUESTION_ANI_BEFORE	0
 #define BRICK_QUESTION_ANI_AFTER	1
 
+#define BRICK_QUESTION_COUNT_Y	3
+#define BRICK_QUESTION_COUNT_TIME	2
+
+#define BRICK_QUESTION_STATE_AFTER	123
+#define BRICK_QUESTION_ANI_COIN	7001
+
 class CBrickQuestion : public CGameObject
 {
 	int status;
+	int timeAni = 0;
 	bool status_before = true;
 	bool status_after = false;
+	bool check = false;
 
 public:
 	virtual void GetBoundingBox(float& left, float& top, float& right, float& bottom);
@@ -31,5 +39,29 @@ public:
 	void SetStatus(int status)
 	{
 		this->status = status;
+	}
+	bool GetBefore()
+	{
+		return status_before;
+	}
+	void SetBefore(bool status)
+	{
+		status_before = status;
+	}
+	bool GetAfter()
+	{
+		return status_after;
+	}
+	void SetAfter(bool status)
+	{
+		status_after = status;
+	}
+	void SetUp(bool status)
+	{
+		check = status;
+	}
+	bool GetUp()
+	{
+		return check;
 	}
 };

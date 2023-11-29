@@ -36,7 +36,7 @@ protected:
 	
 public: 
 	CPlayScene(int id, LPCWSTR filePath);
-
+	void addObject(CGameObject* a) { objects.push_back(a); };
 	virtual void Load();
 	virtual void Update(DWORD dt);
 	virtual void Render();
