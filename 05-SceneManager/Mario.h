@@ -16,7 +16,7 @@
 #define MARIO_ANI_SMALL_FLY_RIGHT		25
 #define MARIO_ANI_SMALL_FLY_LEFT		26
 #define MARIO_GRAVITY			0.002f
-
+#define MARIO_GEARING_MAX	0.051f
 #define MARIO_STATE_WALKING_RIGHT	100
 #define MARIO_STATE_WALKING_LEFT	200
 
@@ -32,6 +32,28 @@
 #define MARIO_JUMP_SPEED_Y		0.5f
 #define MARIO_JUMP_SPEED_Y_HIGH		0.625f
 
+#define	MARIO_LEVEL_BIG		2
+
+#define MARIO_BIG_BBOX_WIDTH  15
+#define MARIO_BIG_BBOX_HEIGHT 27
+
+#define MARIO_ANI_BIG_IDLE_RIGHT		0
+#define MARIO_ANI_BIG_IDLE_LEFT			1
+#define MARIO_ANI_SMALL_IDLE_RIGHT		2
+#define MARIO_ANI_SMALL_IDLE_LEFT			3
+#define MARIO_ANI_FIRE_IDLE_RIGHT		9
+#define MARIO_ANI_FIRE_IDLE_LEFT			10
+
+#define MARIO_ANI_BIG_WALKING_RIGHT			4
+#define MARIO_ANI_BIG_WALKING_LEFT			5
+
+#define MARIO_ANI_BIG_RUN_RIGHT		17
+#define MARIO_ANI_BIG_RUN_LEFT		18
+#define MARIO_STATE_WALKING_RIGHT_FAST	110
+#define MARIO_STATE_WALKING_LEFT_FAST	210
+
+#define MARIO_ANI_BIG_GEARING_RIGHT		22 //L?Y ?À PH?I
+#define MARIO_ANI_BIG_GEARING_LEFT		21 //L?Y ?À TRÁI
 class CMario : public CGameObject
 {
 	int level;
@@ -55,8 +77,8 @@ public:
 		vector<LPCOLLISIONEVENT>& coEventsResult,
 		float& min_tx, float& min_ty,
 		float& nx, float& ny, float& rdx, float& rdy);
-
-	void SetLevel(int l);
+	int GetLevel() { return level; };
+	void SetLevel(int l) { level = l; }
 
 	virtual void GetBoundingBox(float& left, float& top, float& right, float& bottom);
 };

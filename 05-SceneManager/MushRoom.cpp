@@ -51,6 +51,17 @@ void CMushRoom::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 
 		for (UINT i = 0; i < coEventsResult.size(); i++)
 		{
+			LPCOLLISIONEVENT e = coEventsResult[i];
+			if (dynamic_cast<CMario*>(e->obj))
+			{
+
+				if (mario->GetLevel() == MARIO_LEVEL_SMALL)
+				{
+					mario->SetLevel(MARIO_LEVEL_BIG);
+					mario->y -= MARIO_BIG_BBOX_HEIGHT;
+				}
+				isDisAppear = true;
+			}
 		}
 
 	}

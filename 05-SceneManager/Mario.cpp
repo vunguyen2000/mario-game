@@ -214,7 +214,94 @@ void CMario::Render()
 	if (state == MARIO_STATE_DIE)
 		ani = MARIO_ANI_DIE;
 	else{
-		if (vx == 0)
+		if (level == MARIO_LEVEL_BIG) {
+
+			if (vx == 0)
+			{
+				if (nx > 0) ani = MARIO_ANI_BIG_IDLE_RIGHT;
+				else ani = MARIO_ANI_BIG_IDLE_LEFT;
+			}
+			else if (vx > 0)
+			{
+				if (nx > 0)
+				{
+					if (vx < MARIO_GEARING_MAX && checkidle != true)
+					{
+						ani = MARIO_ANI_BIG_GEARING_RIGHT;
+					}
+					else
+					{
+						if (vx > MARIO_GEARING_MAX)
+							checkidle = false;
+						if (state == MARIO_STATE_WALKING_RIGHT_FAST)
+							ani = MARIO_ANI_BIG_RUN_RIGHT;
+						else
+							ani = MARIO_ANI_BIG_WALKING_RIGHT;
+					}
+
+				}
+				else
+				{
+					if (vx < MARIO_GEARING_MAX)
+					{
+						ani = MARIO_ANI_BIG_GEARING_LEFT;
+					}
+					else
+						if (state == MARIO_STATE_WALKING_LEFT_FAST)
+							ani = MARIO_ANI_BIG_RUN_LEFT;
+						else
+							ani = MARIO_ANI_BIG_WALKING_LEFT;
+				}
+			}
+			else
+			{
+				if (nx < 0)
+				{
+					if (vx > -MARIO_GEARING_MAX && checkidle != true)
+					{
+						ani = MARIO_ANI_BIG_GEARING_LEFT;
+					}
+					else
+					{
+						if (vx < -MARIO_GEARING_MAX)
+							checkidle = false;
+						if (state == MARIO_STATE_WALKING_LEFT_FAST)
+							ani = MARIO_ANI_BIG_RUN_LEFT;
+						else
+							ani = MARIO_ANI_BIG_WALKING_LEFT;
+					}
+
+				}
+				else
+				{
+					if (vx > -MARIO_GEARING_MAX)
+					{
+						ani = MARIO_ANI_BIG_GEARING_RIGHT;
+					}
+					else
+						if (state == MARIO_STATE_WALKING_RIGHT_FAST)
+							ani = MARIO_ANI_BIG_RUN_RIGHT;
+						else
+							ani = MARIO_ANI_BIG_WALKING_RIGHT;
+				}
+			}
+
+			if (checkjumping == 1)
+			{
+	/*			if (nx < 0)
+					ani = MARIO_ANI_BIG_FLY_RIGHT;
+				else ani = MARIO_ANI_BIG_FLY_LEFT;*/
+			}
+			if (sit == true)
+			{
+	/*			if (nx > 0)
+					ani = MARIO_ANI_BIG_SIT_RIGHT;
+				else
+					ani = MARIO_ANI_BIG_SIT_LEFT;*/
+			}
+		}
+
+			else if (vx == 0)
 		{
 			if (nx > 0) ani = MARIO_ANI_SMALL_IDLE_RIGHT;
 			else ani = MARIO_ANI_SMALL_IDLE_LEFT;
@@ -279,11 +366,6 @@ void CMario::GetBoundingBox(float &left, float &top, float &right, float &bottom
 	top = y;
 	right = x + MARIO_SMALL_BBOX_WIDTH;
 	bottom = y + MARIO_SMALL_BBOX_HEIGHT;
-}
-
-void CMario::SetLevel(int l)
-{
-
 }
 
 void CMario::Reset()
