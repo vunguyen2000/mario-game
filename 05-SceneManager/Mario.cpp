@@ -9,6 +9,7 @@
 #include "Portal.h"
 #include "Box.h"
 #include "BrickQuestion.h"
+#include "Effect.h"
 
 CMario::CMario(float x, float y) : CGameObject()
 {
@@ -160,6 +161,18 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 						brickQuestion->SetState(BRICK_QUESTION_STATE_AFTER);
 					}
 
+				}
+			}
+			if (dynamic_cast<CEffect*>(e->obj))
+			{
+				CEffect* effect = dynamic_cast<CEffect*>(e->obj);
+				if (e->ny < 0)
+				{
+					if (effect->GetState() != EFFECT_P_STATE_AFTER)
+					{
+						effect->y += 20;
+						effect->SetState(EFFECT_P_STATE_AFTER);
+					}
 				}
 			}
 			else

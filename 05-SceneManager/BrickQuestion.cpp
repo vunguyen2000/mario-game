@@ -67,8 +67,6 @@ void CBrickQuestion::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 
 	CGameObject::Update(dt);
 
-
-
 	vector<LPCOLLISIONEVENT> coEvents;
 	vector<LPCOLLISIONEVENT> coEventsResult;
 
@@ -147,6 +145,17 @@ void CBrickQuestion::SetState(int state)
 			CEffect* effect = new CEffect();
 			effect->SetPosition(x, y - 16);
 			((CPlayScene*)scene)->addObject(effect);
+			break;
+		}
+		case BRICK_QUESTION_STATUS_COIN:
+		{
+			CCoin* coins = new CCoin(COIN);
+			coins->SetState(COIN_STATE_UP);
+			coins->x = x + BRICK_QUESTION_BBOX_WIDTH / 4;
+			coins->y = y - COIN_BBOX_HEIGHT;
+			LPANIMATION_SET ani_set = animation_sets->Get(BRICK_QUESTION_ANI_COIN);
+			coins->SetAnimationSet(ani_set);
+			((CPlayScene*)scene)->addObject(coins);
 			break;
 		}
 		default:
