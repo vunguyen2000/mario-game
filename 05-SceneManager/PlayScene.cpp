@@ -36,7 +36,6 @@ CPlayScene::CPlayScene(int id, LPCWSTR filePath):
 #define OBJECT_TYPE_BRICK_QUESTION	9
 #define OBJECT_TYPE_FLOWER_RED	10
 #define OBJECT_TYPE_FLOWER_FIRE	11
-#define OBJECT_TYPE_BRICK_QUESTION_SPECIAL	12
 #define OBJECT_TYPE_GOOMBAPARA	13
 #define OBJECT_TYPE_KOOPAPARA	14
 #define OBJECT_TYPE_FLOWER_GREEN	15
@@ -44,10 +43,11 @@ CPlayScene::CPlayScene(int id, LPCWSTR filePath):
 #define OBJECT_TYPE_BRICK_BROKEN	25
 #define OBJECT_TYPE_BRICK_QUESTION_EFFECT	26
 #define OBJECT_TYPE_BRICK_QUESTION_SPECIAL_GREEN	27
-
+#define OBJECT_TYPE_BRICK_QUESTION_SPECIAL	12
 #define OBJECT_TYPE_BRICK_QUESTION_LEAF	39
 #define OBJECT_TYPE_BOX_START	40
 #define OBJECT_TYPE_BOX_END	41
+#define OBJECT_TYPE_BRICK_MUSHROOM_GREEN	12
 
 #define MAX_SCENE_LINE 1024
 
@@ -178,15 +178,10 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 	case OBJECT_TYPE_BOX_END: obj = new CBox(BOX_STATUS_END); break;
 	case OBJECT_TYPE_BRICK_QUESTION: obj = new CBrickQuestion(BRICK_QUESTION_STATUS_COIN); break;
 	case OBJECT_TYPE_BOX_START: obj = new CBox(BOX_STATUS_START); break;
+	case OBJECT_TYPE_BRICK_QUESTION_LEAF: obj = new CBrickQuestion(BRICK_QUESTION_STATUS_LEAF); break;
+	case OBJECT_TYPE_BRICK_MUSHROOM_GREEN:obj = new CBrickQuestion(BRICK_MUSHROOM_GREEN); break;
+
 		break;
-	case OBJECT_TYPE_PORTAL:
-	{
-		float r = atof(tokens[4].c_str());
-		float b = atof(tokens[5].c_str());
-		int scene_id = atoi(tokens[6].c_str());
-		obj = new CPortal(x, y, r, b, scene_id);
-	}
-	break;
 	default:
 		DebugOut(L"[ERR] Invalid object type: %d\n", object_type);
 		return;

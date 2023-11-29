@@ -7,7 +7,7 @@
 #define LEAF_ANI_LEFT  1
 
 #define LEAF_GRAVITY 0.00001f
-class CLeaf
+class CLeaf : public CGameObject
 {
 	int status;
 

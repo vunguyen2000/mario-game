@@ -1,6 +1,8 @@
 #include "BrickQuestion.h"
 #include <algorithm>
 #include "Effect.h"
+#include "Leaf.h"
+#include "MushRoom.h"
 CBrickQuestion::CBrickQuestion(int status)
 {
 	this->status = status;
@@ -156,6 +158,29 @@ void CBrickQuestion::SetState(int state)
 			LPANIMATION_SET ani_set = animation_sets->Get(BRICK_QUESTION_ANI_COIN);
 			coins->SetAnimationSet(ani_set);
 			((CPlayScene*)scene)->addObject(coins);
+			break;
+		}
+		case BRICK_QUESTION_STATUS_MUSHROOM:
+		{
+			CMushRoom* mushroom = new CMushRoom();
+			mushroom->x = x;
+			mushroom->y = y - MUSHROOM_BBOX_HEIGHT * BRICK_QUESTION_MUSHROOM;
+			mushroom->vx = -MUSHROOM_SPEED;
+			LPANIMATION_SET ani_set = animation_sets->Get(BRICK_QUESTION_ANI_MUSHROOM);
+			mushroom->SetAnimationSet(ani_set);
+
+			((CPlayScene*)scene)->addObject(mushroom);
+			break;
+		}
+		case BRICK_QUESTION_STATUS_LEAF:
+		{
+			if (status_before == true) {
+				CLeaf* leaf = new CLeaf();
+				leaf->x = x;
+				//leaf->y = y - MUSHROOM_BBOX_HEIGHT * BRICK_QUESTION_LEAF;
+				LPANIMATION_SET ani_set = animation_sets->Get(BRICK_QUESTION_ANI_LEAF);
+				leaf->SetAnimationSet(ani_set);
+			}
 			break;
 		}
 		default:

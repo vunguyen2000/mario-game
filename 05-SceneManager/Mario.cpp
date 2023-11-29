@@ -157,7 +157,12 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 						brickQuestion->SetUp(true);
 						brickQuestion->SetBefore(false);
 						brickQuestion->SetAfter(true);
-					
+						if (brickQuestion->GetStatus() == BRICK_MUSHROOM_GREEN) {
+							if (level == MARIO_LEVEL_SMALL)
+							{
+								brickQuestion->SetStatus(BRICK_QUESTION_STATUS_MUSHROOM);
+							}
+						}
 						brickQuestion->SetState(BRICK_QUESTION_STATE_AFTER);
 					}
 

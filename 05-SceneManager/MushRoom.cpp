@@ -1,54 +1,34 @@
-#include "Leaf.h"
+#include "MushRoom.h"
 #include "Mario.h"
 #include "PlayScene.h"
-#include <algorithm>
 
-void CLeaf::CalcPotentialCollisions(vector<LPGAMEOBJECT>* coObjects, vector<LPCOLLISIONEVENT>& coEvents)
-{
-
-	for (UINT i = 0; i < coObjects->size(); i++)
-	{
-		LPCOLLISIONEVENT e = SweptAABBEx(coObjects->at(i));
-		if (!dynamic_cast<CMario*>(coObjects->at(i)))
-		{
-			continue;
-		}
-
-		if (e->t > 0 && e->t <= 1.0f)
-			coEvents.push_back(e);
-		else
-			delete e;
-	}
-
-	std::sort(coEvents.begin(), coEvents.end(), CCollisionEvent::compare);
-
-}
-
-void CLeaf::Render()
+void CMushRoom::Render()
 {
 	animation_set->at(0)->Render(x, y);
+	//RenderBoundingBox();
 }
 
-void CLeaf::GetBoundingBox(float& l, float& t, float& r, float& b)
+void CMushRoom::GetBoundingBox(float& l, float& t, float& r, float& b)
 {
 	l = x;
 	t = y;
-	r = x + LEAF_BBOX_WIDTH;
-	b = y + LEAF_BBOX_WIDTH;
+	r = x + MUSHROOM_BBOX_WIDTH;
+	b = y + MUSHROOM_BBOX_HEIGHT;
 }
-void CLeaf::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
+void CMushRoom::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 {
 	LPSCENE scene = CGame::GetInstance()->GetCurrentScene();
 	CMario* mario = ((CPlayScene*)scene)->GetPlayer();
 	CGameObject::Update(dt, coObjects);
 
-	vy += LEAF_GRAVITY * dt;
+	vy += MUSHROOM_GRAVITY * dt;
 
 	vector<LPCOLLISIONEVENT> coEvents;
 	vector<LPCOLLISIONEVENT> coEventsResult;
 
 	coEvents.clear();
 
+	// turn off collision when die 
 	CalcPotentialCollisions(coObjects, coEvents);
 
 	if (coEvents.size() == 0)
@@ -71,11 +51,6 @@ void CLeaf::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 
 		for (UINT i = 0; i < coEventsResult.size(); i++)
 		{
-			LPCOLLISIONEVENT e = coEventsResult[i];
-			if (dynamic_cast<CMario*>(e->obj))
-			{
-				isDisAppear = true;
-			}
 		}
 
 	}
