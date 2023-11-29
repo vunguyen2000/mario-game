@@ -285,33 +285,21 @@ void CMario::Render()
 							ani = MARIO_ANI_BIG_WALKING_RIGHT;
 				}
 			}
-
-			if (checkjumping == 1)
-			{
-	/*			if (nx < 0)
-					ani = MARIO_ANI_BIG_FLY_RIGHT;
-				else ani = MARIO_ANI_BIG_FLY_LEFT;*/
-			}
 			if (sit == true)
 			{
-	/*			if (nx > 0)
+				if (nx > 0)
 					ani = MARIO_ANI_BIG_SIT_RIGHT;
 				else
-					ani = MARIO_ANI_BIG_SIT_LEFT;*/
+					ani = MARIO_ANI_BIG_SIT_LEFT;
 			}
 		}
-
-			else if (vx == 0)
+		else if (level == MARIO_LEVEL_SMALL) {
+		 if (vx > 0)
 		{
-			if (nx > 0) ani = MARIO_ANI_SMALL_IDLE_RIGHT;
-			else ani = MARIO_ANI_SMALL_IDLE_LEFT;
-		}
-		else if (vx > 0)
-		{
-				ani = MARIO_ANI_SMALL_WALKING_RIGHT;
+			ani = MARIO_ANI_SMALL_WALKING_RIGHT;
 		}
 		else {
-				ani = MARIO_ANI_SMALL_WALKING_LEFT;
+			ani = MARIO_ANI_SMALL_WALKING_LEFT;
 		}
 		if (checkjumping == 1)
 		{
@@ -319,7 +307,12 @@ void CMario::Render()
 				ani = MARIO_ANI_SMALL_FLY_LEFT;
 			else ani = MARIO_ANI_SMALL_FLY_RIGHT;
 		}
-
+		if (vx == 0)
+		{
+			if (nx > 0) ani = MARIO_ANI_SMALL_IDLE_RIGHT;
+			else ani = MARIO_ANI_SMALL_IDLE_LEFT;
+		}
+		}
 		int alpha = 255;
 		if (untouchable) alpha = 128;
 		animation_set->at(ani)->Render(x, y, alpha);
@@ -364,8 +357,21 @@ void CMario::GetBoundingBox(float &left, float &top, float &right, float &bottom
 {
 	left = x;
 	top = y;
-	right = x + MARIO_SMALL_BBOX_WIDTH;
-	bottom = y + MARIO_SMALL_BBOX_HEIGHT;
+	if (level == MARIO_LEVEL_BIG)
+	{
+		right = x + MARIO_BIG_BBOX_WIDTH;
+		bottom = y + MARIO_BIG_BBOX_HEIGHT;
+	}
+	else if (level == MARIO_LEVEL_SMALL)
+	{
+		right = x + MARIO_SMALL_BBOX_WIDTH;
+		bottom = y + MARIO_SMALL_BBOX_HEIGHT;
+	}
+	if (sit == true)
+	{
+		if (level != MARIO_LEVEL_SMALL)
+			bottom = y + MARIO_SIT_BBOX_HEIGHT;
+	}
 }
 
 void CMario::Reset()

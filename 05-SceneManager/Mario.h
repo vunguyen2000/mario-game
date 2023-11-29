@@ -54,6 +54,10 @@
 
 #define MARIO_ANI_BIG_GEARING_RIGHT		22 //L?Y ?À PH?I
 #define MARIO_ANI_BIG_GEARING_LEFT		21 //L?Y ?À TRÁI
+
+#define MARIO_ANI_BIG_SIT_RIGHT		46
+#define MARIO_ANI_BIG_SIT_LEFT		47
+#define MARIO_SIT_BBOX_HEIGHT 18
 class CMario : public CGameObject
 {
 	int level;

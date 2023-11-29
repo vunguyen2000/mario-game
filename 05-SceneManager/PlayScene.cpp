@@ -402,6 +402,9 @@ void CPlayScenceKeyHandler::OnKeyUp(int KeyCode)
 			switch (KeyCode)
 			{
 			case DIK_DOWN:
+				mario->sit = false;
+				if (mario->GetLevel() != MARIO_LEVEL_SMALL)
+					mario->y -= MARIO_SIT_BBOX_HEIGHT;
 				break;
 			default:
 				break;
