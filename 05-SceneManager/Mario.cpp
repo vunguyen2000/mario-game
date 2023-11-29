@@ -21,6 +21,28 @@ CMario::CMario(float x, float y) : CGameObject()
 	this->y = y;
 }
 
+void CMario::CalcPotentialCollisions(vector<LPGAMEOBJECT>* coObjects, vector<LPCOLLISIONEVENT>& coEvents)
+{
+
+	for (UINT i = 0; i < coObjects->size(); i++)
+	{
+		LPCOLLISIONEVENT e = SweptAABBEx(coObjects->at(i));
+		if (dynamic_cast<CBox*>(coObjects->at(i)))
+		{
+			if(e->ny > 0)
+			continue;
+		}
+		if (e->t > 0 && e->t <= 1.0f)
+			coEvents.push_back(e);
+		else
+			delete e;
+	}
+
+	std::sort(coEvents.begin(), coEvents.end(), CCollisionEvent::compare);
+
+}
+
+
 void CMario::FilterCollision(vector<LPCOLLISIONEVENT>& coEvents, vector<LPCOLLISIONEVENT>& coEventsResult, float& min_tx, float& min_ty, float& nx, float& ny, float& rdx, float& rdy)
 {
 	min_tx = 1.0f;
@@ -82,7 +104,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 	}
 	
 	// No collision occured, proceed normally
-	if (coEvents.size() == 0)
+	if (coEvents.size() == 0 )
 	{
 		x += dx;
 		y += dy;
@@ -92,7 +114,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 	{
 		checkFree = false;
 		float min_tx, min_ty, nx = 0, ny;
-		float rdx = 0;
+			float rdx = 0;
 		float rdy = 0;
 
 		// TODO: This is a very ugly designed function!!!!
@@ -115,7 +137,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 			if (dynamic_cast<CGoomba*>(e->obj)) // if e->obj is Goomba 
 			{
 				CGoomba* goomba = dynamic_cast<CGoomba*>(e->obj);
-					if (e->ny < 0)
+					if (e->ny < 0 )
 					{
 						if (goomba->GetState() != GOOMBA_STATE_DIE)
 						{
@@ -130,21 +152,6 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 								SetState(MARIO_STATE_DIE);
 							}
 					}
-			}
-			if (dynamic_cast<CBox*>(e->obj))
-			{
-				if (e->ny > 0)
-				{
-					y += dy;
-				}
-				else if (e->nx != 0)
-				{
-					x += dx;
-				}
-				else
-				{
-					if (ny != 0) vy = 0;
-				}
 			}
 			if (dynamic_cast<CBrickQuestion*>(e->obj))
 			{
@@ -182,7 +189,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 			}
 			else
 			{
-				if (ny != 0) vy = 0;
+				if (ny != 0 && state!= MARIO_STATE_DIE) vy = 0;
 			}
 		}
 	}
@@ -313,10 +320,10 @@ void CMario::Render()
 			else ani = MARIO_ANI_SMALL_IDLE_LEFT;
 		}
 		}
-		int alpha = 255;
-		if (untouchable) alpha = 128;
-		animation_set->at(ani)->Render(x, y, alpha);
 	}
+	int alpha = 255;
+	if (untouchable) alpha = 128;
+	animation_set->at(ani)->Render(x, y, alpha);
 }
 
 void CMario::SetState(int state)
@@ -347,7 +354,10 @@ void CMario::SetState(int state)
 		vy = -MARIO_JUMP_SPEED_Y_HIGH;
 		break;
 	case MARIO_STATE_DIE:
+		timeReset = GetTickCount();
+	
 		vy = -MARIO_DIE_DEFLECT_SPEED;
+		vx = 0;
 		break;
 	}
 
@@ -372,12 +382,21 @@ void CMario::GetBoundingBox(float &left, float &top, float &right, float &bottom
 		if (level != MARIO_LEVEL_SMALL)
 			bottom = y + MARIO_SIT_BBOX_HEIGHT;
 	}
+	if (state == MARIO_STATE_DIE) {
+		left = 0;
+		bottom = 0;
+		right = 0;
+		top = 0;
+	}
 }
 
 void CMario::Reset()
 {
-	SetState(MARIO_STATE_IDLE);
-	SetLevel(MARIO_LEVEL_SMALL);
-	SetPosition(start_x, start_y);
-	SetSpeed(0, 0);
+	if(GetTickCount()-timeReset>1000){
+		SetState(MARIO_STATE_IDLE);
+		SetLevel(MARIO_LEVEL_SMALL);
+		SetPosition(start_x, start_y);
+		SetSpeed(0, 0);
+	}
+
 }

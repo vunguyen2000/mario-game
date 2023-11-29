@@ -65,6 +65,8 @@ class CMario : public CGameObject
 	float start_x;			
 	float start_y;
 	float camX_update = 0;
+	DWORD untouchable_start;
+	DWORD timeReset;
 
 public:
 	int checkjumping = 0;
@@ -82,6 +84,8 @@ public:
 		float& min_tx, float& min_ty,
 		float& nx, float& ny, float& rdx, float& rdy);
 	int GetLevel() { return level; };
+	void CalcPotentialCollisions(vector<LPGAMEOBJECT>* coObjects, vector<LPCOLLISIONEVENT>& coEvents);
+
 	void SetLevel(int l) { level = l; }
 
 	virtual void GetBoundingBox(float& left, float& top, float& right, float& bottom);
