@@ -8,6 +8,7 @@
 #include "Coin.h"
 #include "PlayScene.h"
 #include "Box.h"
+#include "BrickQuestion.h"
 using namespace std;
 
 CPlayScene::CPlayScene(int id, LPCWSTR filePath):
@@ -175,6 +176,7 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 	case OBJECT_TYPE_NOCOLLISION: obj = new CNoCollision(); break;
 	case OBJECT_TYPE_BOX: obj = new CBox(BOX_STATUS_NORMAL); break;
 	case OBJECT_TYPE_BOX_END: obj = new CBox(BOX_STATUS_END); break;
+	case OBJECT_TYPE_BRICK_QUESTION: obj = new CBrickQuestion(BRICK_QUESTION_STATUS_COIN); break;
 	case OBJECT_TYPE_BOX_START: obj = new CBox(BOX_STATUS_START); break;
 		break;
 	case OBJECT_TYPE_PORTAL:
