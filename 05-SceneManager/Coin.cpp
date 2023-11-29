@@ -1,4 +1,5 @@
 #include "Coin.h"
+#include "BrickQuestion.h"
 #include <algorithm>
 
 
@@ -44,6 +45,55 @@ void CCoin::CalcPotentialCollisions(vector<LPGAMEOBJECT>* coObjects, vector<LPCO
 	std::sort(coEvents.begin(), coEvents.end(), CCollisionEvent::compare);
 }
 
+void CCoin::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
+{
+	CGameObject::Update(dt);
+	vector<LPCOLLISIONEVENT> coEvents;
+	vector<LPCOLLISIONEVENT> coEventsResult;
+
+	coEvents.clear();
+	if (state != COIN_STATE_IDLE)
+	{
+		vy += 0.003f * dt;
+		CalcPotentialCollisions(coObjects, coEvents);
+
+	}
+
+
+	if (coEvents.size() == 0)
+	{
+		x += dx;
+		y += dy;
+		if (!show) return;
+	}
+	else
+	{
+		float min_tx, min_ty, nx = 0, ny;
+		float rdx = 0;
+		float rdy = 0;
+
+		// TODO: This is a very ugly designed function!!!!
+		FilterCollision(coEvents, coEventsResult, min_tx, min_ty, nx, ny, rdx, rdy);
+
+		//// block every object first!
+		x += min_tx * dx + nx * 0.4f;
+		y += min_ty * dy + ny * 0.4f;
+
+		// Collision logic with other objects
+		for (UINT i = 0; i < coEventsResult.size(); i++)
+		{
+			LPCOLLISIONEVENT e = coEventsResult[i];
+			if (dynamic_cast<CBrickQuestion*>(e->obj))
+			{
+				state = COIN_STATE_HIDE;
+			}
+		}
+	}
+
+
+	for (UINT i = 0; i < coEvents.size(); i++) delete coEvents[i];
+}
+
 void CCoin::GetBoundingBox(float& l, float& t, float& r, float& b)
 {
 	if (state == COIN_STATE_HIDE)
@@ -70,5 +120,16 @@ void CCoin::Render()
 
 void CCoin::SetState(int state)
 {
-
+	this->state = state;
+	switch (this->state)
+	{
+	case COIN_STATE_IDLE:
+		vx = vy = 0;
+		break;
+	case COIN_STATE_UP:
+		vx = 0;
+		vy = -0.5f;
+	default:
+		break;
+	}
 }
