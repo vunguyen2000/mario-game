@@ -11,6 +11,7 @@
 #include "BrickQuestion.h"
 #include "Effect.h"
 #include "FlowerAttack.h"
+#include "FireFlower.h"
 
 CMario::CMario(float x, float y) : CGameObject()
 {
@@ -214,6 +215,20 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 							{
 								SetState(MARIO_STATE_DIE);
 							}
+			}
+			if (dynamic_cast<CFireFlower*>(e->obj))
+			{
+				CFireFlower* fire = dynamic_cast<CFireFlower*>(e->obj);
+				fire->SetState(FIRE_FLOWER_STATE_HIDE);
+				if (level == MARIO_LEVEL_BIG)
+				{
+					level = MARIO_LEVEL_SMALL;
+					StartUntouchable();
+				}
+				else
+				{
+					SetState(MARIO_STATE_DIE);
+				}
 			}
 			else
 			{
