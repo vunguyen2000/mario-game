@@ -4,6 +4,7 @@
 #include "Mario.h"
 #include "PlayScene.h"
 #include <algorithm>
+#include "FireFlower.h"
 
 
 void CFlowerAttack::GetBoundingBox(float& l, float& t, float& r, float& b)
@@ -56,6 +57,8 @@ void CFlowerAttack::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 			if (y <= 71)
 			{
 				vy = 0;
+				shooting = true;
+				Attack(coObjects);
 			}
 		}
 		else
@@ -64,6 +67,8 @@ void CFlowerAttack::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 				isTimeAgain = 0;
 			isTime = 0;
 			Up = false;
+			shooting = false;
+			shooted = false;
 		}
 	}
 	else
@@ -156,3 +161,55 @@ void CFlowerAttack::Render()
 	animation_set->at(ani)->Render(x, y);
 }
 
+void CFlowerAttack::Attack(vector<LPGAMEOBJECT>* coObjects)
+{
+	CGame* game = CGame::GetInstance();
+	CMario* mario = ((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->GetPlayer();
+	if (abs(mario->x - x) >= game->GetScreenWidth() / 2 || shooted == true) return;
+	for (UINT i = 0; i < coObjects->size(); i++)
+	{
+		LPGAMEOBJECT obj = coObjects->at(i);
+		if (dynamic_cast<CFireFlower*>(obj))
+		{
+			CFireFlower* fire = dynamic_cast<CFireFlower*>(obj);
+			if (fire->GetAppear()) continue;
+			if (shooting)
+			{
+				shooting = false;
+				shooted = true;
+				fire->y = y + 3;
+				if (mario->x <= x)
+				{
+					fire->x = x - 1;
+					nx = -1;
+				}
+				else
+				{
+					fire->x = x + FLOWER_RED_BBOX_WIDTH + 2;
+					this->nx = 1;
+				}
+				if (mario->y <= y)
+				{
+					this->SetShootY(-1);
+				}
+				else
+				{
+					this->SetShootY(1);
+				}
+				if (abs(mario->x - x) <= FIRE_FLOWER_X_DEFAULT)
+				{
+					fire->vx = FIRE_FLOWER_SPEED * nx;
+					fire->vy = FIRE_FLOWER_SPEED * shootY;
+				}
+				else
+				{
+					fire->vx = FIRE_FLOWER_SPEED * this->nx;
+					fire->vy = FIRE_FLOWER_SPEED / 2 * shootY;
+				}
+				fire->SetState(FIRE_FLOWER_STATE_ATTACK);
+				return;
+			}
+
+		}
+	}
+}

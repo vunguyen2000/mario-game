@@ -33,10 +33,26 @@ public:
 	virtual void GetBoundingBox(float& left, float& top, float& right, float& bottom);
 	virtual void Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects);
 	virtual void Render();
+	void Attack(vector<LPGAMEOBJECT>* coObjects);
 	void Appear()
 	{
 		isTime = GetTickCount();
 	}
-
+	int GetIsUp()
+	{
+		return Up;
+	}
+	void SetUp(int temp)
+	{
+		Up = temp;
+	}
+	int GetShootY()
+	{
+		return shootY;
+	}
+	void SetShootY(int temp)
+	{
+		shootY = temp;
+	}
 };
 

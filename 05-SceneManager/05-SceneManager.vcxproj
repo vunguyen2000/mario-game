@@ -153,6 +153,7 @@
     <ClCompile Include="Coin.cpp" />
     <ClCompile Include="debug.cpp" />
     <ClCompile Include="Effect.cpp" />
+    <ClCompile Include="FireFlower.cpp" />
     <ClCompile Include="FlowerAttack.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="GameObject.cpp" />
@@ -179,6 +180,7 @@
     <ClInclude Include="Coin.h" />
     <ClInclude Include="debug.h" />
     <ClInclude Include="Effect.h" />
+    <ClInclude Include="FireFlower.h" />
     <ClInclude Include="FlowerAttack.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="GameObject.h" />
