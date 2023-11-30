@@ -42,10 +42,12 @@ void CFlowerAttack::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		Up = false;
 	}
 
+	coEvents.clear();
 	if (Up)
 	{
 		if (isTime == 0)
 		{
+			Appear();
 			isTimeAgain = GetTickCount();
 		}
 		if (GetTickCount() - isTime <= 3000)
@@ -54,7 +56,6 @@ void CFlowerAttack::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 			if (y <= 71)
 			{
 				vy = 0;
-				shooting = true;
 			}
 		}
 		else
@@ -65,15 +66,33 @@ void CFlowerAttack::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 			Up = false;
 		}
 	}
-
-	coEvents.clear();
+	else
+	{
+		if (isTime == 0)
+		{
+			Appear();
+		}
+		if (GetTickCount() - isTime <= 3000)
+		{
+			vy = 0.02f;
+			if (y >= 117)
+			{
+				vy = 0;
+			}
+		}
+		else
+		{
+			isTimeAgain = 1;
+			Up = true;
+			isTime = 0;
+		}
+	}
 	if (coEvents.size() == 0)
 	{
 		y += dy;
 	}
 
 	for (UINT i = 0; i < coEvents.size(); i++) delete coEvents[i];
-
 
 }
 
@@ -107,6 +126,32 @@ void CFlowerAttack::Render()
 			}
 		}
 
+	}
+	else
+	{
+		if (mario->y >= y)
+		{
+			if (vy == 0)
+			{
+				ani = FLOWER_RED_ANI_RIGHT_DOWN;
+			}
+			else
+			{
+				ani = FLOWER_RED_ANI_LEFT_UP;
+			}
+
+		}
+		else
+		{
+			if (vy == 0)
+			{
+				ani = FLOWER_RED_ANI_RIGHT_UP;
+			}
+			else
+			{
+				ani = FLOWER_RED_ANI_RIGHT_UP;
+			}
+		}
 	}
 	animation_set->at(ani)->Render(x, y);
 }
