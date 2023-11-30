@@ -64,7 +64,7 @@ void CFlowerAttack::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		else
 		{
 			if (y <= 71)
-				isTimeAgain = 0;
+		isTimeAgain = 0;
 			isTime = 0;
 			Up = false;
 			shooting = false;
@@ -186,27 +186,13 @@ void CFlowerAttack::Attack(vector<LPGAMEOBJECT>* coObjects)
 				else
 				{
 					fire->x = x + FLOWER_RED_BBOX_WIDTH + 2;
-					this->nx = 1;
+					nx = 1;
 				}
-				if (mario->y <= y)
-				{
-					this->SetShootY(-1);
-				}
-				else
-				{
-					this->SetShootY(1);
-				}
-				if (abs(mario->x - x) <= FIRE_FLOWER_X_DEFAULT)
-				{
-					fire->vx = FIRE_FLOWER_SPEED * nx;
-					fire->vy = FIRE_FLOWER_SPEED * shootY;
-				}
-				else
-				{
-					fire->vx = FIRE_FLOWER_SPEED * this->nx;
-					fire->vy = FIRE_FLOWER_SPEED / 2 * shootY;
-				}
+						fire->vx = 0.07f*nx;
+					fire->vy = (mario->y - y) / (mario->x - x) * fire->vx;
+
 				fire->SetState(FIRE_FLOWER_STATE_ATTACK);
+
 				return;
 			}
 

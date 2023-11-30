@@ -30,7 +30,7 @@ void CFireFlower::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	CGameObject::Update(dt);
 	x += dx;
 	y += dy;
-	if (y >= 160 || y <= -50)
+	if (!((CPlayScene*)(CGame::GetInstance()->GetCurrentScene()))->IsInUseArea(x-20, y-20))
 	{
 		SetState(FIRE_FLOWER_STATE_HIDE);
 	}

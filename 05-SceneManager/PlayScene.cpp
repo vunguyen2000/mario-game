@@ -69,6 +69,19 @@ void CPlayScene::_ParseSection_TEXTURES(string line)
 	CTextures::GetInstance()->Add(texID, path.c_str(), D3DCOLOR_XRGB(R, G, B));
 }
 
+bool CPlayScene::IsInUseArea(float Ox, float Oy)
+{
+	float CamX, CamY;
+
+	CamX = CGame::GetInstance()->GetCamPosX();
+
+	CamY = CGame::GetInstance()->GetCamPosY();
+
+	if (((CamX < Ox + 50) && (Ox < CamX + 380)) && ((CamY < Oy) && (Oy < CamY + 250)))
+		return true;
+	return false;
+}
+
 void CPlayScene::_ParseSection_SPRITES(string line)
 {
 	vector<string> tokens = split(line);

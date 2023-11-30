@@ -1,10 +1,33 @@
 #include "MushRoom.h"
 #include "Mario.h"
 #include "PlayScene.h"
+#include <algorithm>
+#include "Brick.h"
+#include "BrickQuestion.h"
 
 void CMushRoom::Render()
 {
 	animation_set->at(0)->Render(x, y);
+}
+
+void CMushRoom::CalcPotentialCollisions(vector<LPGAMEOBJECT>* coObjects, vector<LPCOLLISIONEVENT>& coEvents)
+{
+
+	for (UINT i = 0; i < coObjects->size(); i++)
+	{
+		LPCOLLISIONEVENT e = SweptAABBEx(coObjects->at(i));
+		if (dynamic_cast<CMario*>(coObjects->at(i)) || dynamic_cast<CBrick*>(coObjects->at(i)) ||dynamic_cast<CBrickQuestion*>(coObjects->at(i)))
+		{
+			if (e->t > 0 && e->t <= 1.0f && e->nx==0)
+				coEvents.push_back(e);
+			else
+				delete e;
+		}
+	
+	}
+
+	std::sort(coEvents.begin(), coEvents.end(), CCollisionEvent::compare);
+
 }
 
 void CMushRoom::GetBoundingBox(float& l, float& t, float& r, float& b)
