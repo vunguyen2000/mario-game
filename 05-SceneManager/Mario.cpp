@@ -10,6 +10,7 @@
 #include "Box.h"
 #include "BrickQuestion.h"
 #include "Effect.h"
+#include "FlowerAttack.h"
 
 CMario::CMario(float x, float y) : CGameObject()
 {
@@ -199,6 +200,20 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 						effect->SetState(EFFECT_P_STATE_AFTER);
 					}
 				}
+			}
+			if (dynamic_cast<CFlowerAttack*>(e->obj))
+			{
+				CFlowerAttack* flower = dynamic_cast<CFlowerAttack*>(e->obj);
+				
+							if (level == MARIO_LEVEL_BIG)
+							{
+								level = MARIO_LEVEL_SMALL;
+								StartUntouchable();
+							}
+							else
+							{
+								SetState(MARIO_STATE_DIE);
+							}
 			}
 			else
 			{
