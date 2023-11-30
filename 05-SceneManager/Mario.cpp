@@ -14,6 +14,7 @@
 CMario::CMario(float x, float y) : CGameObject()
 {
 	level = MARIO_LEVEL_SMALL;
+	untouchable = 0;
 	SetState(MARIO_STATE_IDLE);
 	start_x = x;
 	start_y = y;
@@ -29,7 +30,7 @@ void CMario::CalcPotentialCollisions(vector<LPGAMEOBJECT>* coObjects, vector<LPC
 		LPCOLLISIONEVENT e = SweptAABBEx(coObjects->at(i));
 		if (dynamic_cast<CBox*>(coObjects->at(i)))
 		{
-			if(e->ny > 0)
+			if(e->ny > 0 || e->nx !=0)
 			continue;
 		}
 		if (e->t > 0 && e->t <= 1.0f)
@@ -102,6 +103,12 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 	{
 		Reset();
 	}
+
+	if (GetTickCount() - untouchable_start > MARIO_UNTOUCHABLE_TIME)
+	{
+		untouchable_start = 0;
+		untouchable = 0;
+	}
 	
 	// No collision occured, proceed normally
 	if (coEvents.size() == 0 )
@@ -149,6 +156,12 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 					{
 							if (goomba->GetState() != GOOMBA_STATE_DIE)
 							{
+								if (level == MARIO_LEVEL_BIG)
+								{
+									level = MARIO_LEVEL_SMALL;
+									StartUntouchable();
+								}
+								else
 								SetState(MARIO_STATE_DIE);
 							}
 					}

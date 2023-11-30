@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include "GameObject.h"
 #include "Animations.h"
 #include "debug.h"
@@ -52,12 +52,14 @@
 #define MARIO_STATE_WALKING_RIGHT_FAST	110
 #define MARIO_STATE_WALKING_LEFT_FAST	210
 
-#define MARIO_ANI_BIG_GEARING_RIGHT		22 //L?Y ?� PH?I
-#define MARIO_ANI_BIG_GEARING_LEFT		21 //L?Y ?� TR�I
+#define MARIO_ANI_BIG_GEARING_RIGHT		22 //LẤY ĐÀ PHẢI
+#define MARIO_ANI_BIG_GEARING_LEFT		21 //LẤY ĐÀ TRÁI
 
 #define MARIO_ANI_BIG_SIT_RIGHT		46
 #define MARIO_ANI_BIG_SIT_LEFT		47
 #define MARIO_SIT_BBOX_HEIGHT 18
+
+#define MARIO_UNTOUCHABLE_TIME 3000
 class CMario : public CGameObject
 {
 	int level;
@@ -89,4 +91,5 @@ public:
 	void SetLevel(int l) { level = l; }
 
 	virtual void GetBoundingBox(float& left, float& top, float& right, float& bottom);
+	void StartUntouchable() { untouchable = 1; untouchable_start = GetTickCount(); }
 };
