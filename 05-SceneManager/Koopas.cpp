@@ -136,6 +136,11 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 					vx = -vx;
 				}
 			}
+			if (!dynamic_cast<CMario*>(e->obj) && nx == 0)
+			{
+				tempbacky = y;
+				back = true;
+			}
 		}
 	}
 
@@ -150,7 +155,26 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 void CKoopas::Render()
 {
 	int ani = KOOPAS_ANI_WALKING_LEFT;
-	if (vx > 0)
+	if (state == KOOPAS_STATE_DIE) {
+		if (vx != 0)
+		{
+			ani = KOOPAS_ANI_TURN;
+		}
+		else
+		{
+			ani = KOOPAS_ANI_DIE;
+		}
+	if (vx != 0)
+	{
+
+		ani = KOOPAS_ANI_TURN;
+	}
+	else
+	{
+		ani = KOOPAS_ANI_DIE;
+	}
+	}
+	else if (vx > 0)
 	{
 			ani = 5;
 			ani = KOOPAS_ANI_WALKING_RIGHT;
@@ -170,6 +194,19 @@ void CKoopas::SetState(int state)
 	CMario* mario = ((CPlayScene*)scence)->GetPlayer();
 
 	CGameObject::SetState(state);
-	vx = KOOPAS_WALKING_SPEED;
+	switch (state)
+	{
+	case KOOPAS_STATE_DIE:
+		vx = 0;
+		vy = 0;
+		break;
+	case KOOPAS_STATE_WALKING:
+		vx = KOOPAS_WALKING_SPEED;
+		break;
+	case KOOPAS_STATE_HOLD:
+		vx = 0;
+		vy = 0;
+		break;
+	}
 	DebugOut(L"[ERROR] Vo %d\n");
 }

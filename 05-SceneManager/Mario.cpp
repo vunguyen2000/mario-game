@@ -12,6 +12,7 @@
 #include "Effect.h"
 #include "FlowerAttack.h"
 #include "FireFlower.h"
+#include "Koopas.h"
 
 CMario::CMario(float x, float y) : CGameObject()
 {
@@ -229,6 +230,11 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 				{
 					SetState(MARIO_STATE_DIE);
 				}
+			}
+			if (dynamic_cast<CKoopas*>(e->obj))
+			{
+				CKoopas* koopas = dynamic_cast<CKoopas*>(e->obj);
+				koopas->SetState(KOOPAS_STATE_DIE);
 			}
 			else
 			{
