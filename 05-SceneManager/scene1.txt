@@ -1804,14 +1804,14 @@
 #13	900	110	4
 
 #Koopas
-#3	584	85	3
+3	584	85	3
 
 #Fire Flower
 11	-100	-100	11
 
 
 # MARIOOBJECT
-0	10	20	1
+0	560	20	1
 
 
 # --- SCENE PORTAL ----

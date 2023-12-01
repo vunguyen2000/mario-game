@@ -11,6 +11,7 @@
 #include "BrickQuestion.h"
 #include "FlowerAttack.h"
 #include "FireFlower.h"
+#include "Koopas.h"
 using namespace std;
 
 CPlayScene::CPlayScene(int id, LPCWSTR filePath):
@@ -197,7 +198,7 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 	case OBJECT_TYPE_BRICK_MUSHROOM_GREEN:obj = new CBrickQuestion(BRICK_MUSHROOM_GREEN); break;
 	case OBJECT_TYPE_FLOWER_RED:	  obj = new CFlowerAttack(FLOWER_RED); break;
 	case OBJECT_TYPE_FLOWER_FIRE:	  obj = new CFireFlower(); break;
-
+	case OBJECT_TYPE_KOOPAS: obj = new CKoopas(); break;
 		break;
 	default:
 		DebugOut(L"[ERR] Invalid object type: %d\n", object_type);
