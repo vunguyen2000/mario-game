@@ -234,7 +234,64 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 			if (dynamic_cast<CKoopas*>(e->obj))
 			{
 				CKoopas* koopas = dynamic_cast<CKoopas*>(e->obj);
-				koopas->SetState(KOOPAS_STATE_DIE);
+				 if (e->ny < 0)
+				{
+					if (koopas->GetState() != KOOPAS_STATE_DIE)
+					{
+						if (koopas->GetState() != KOOPAS_STATE_THROW)
+						koopas->SetState(KOOPAS_STATE_DIE);
+						vy = -MARIO_JUMP_DEFLECT_SPEED;
+					}
+					else
+					{
+						koopas->vx = 0;
+					}
+				}
+				else if (e->nx != 0)
+				{
+					if (untouchable == 0 && koopas->GetState() != KOOPAS_STATE_HOLD)
+					{
+						if (koopas->GetState() != KOOPAS_STATE_DIE)
+						{
+								if (level == MARIO_LEVEL_BIG)
+								{
+									level = MARIO_LEVEL_SMALL;
+								}
+								else
+								{
+									SetState(MARIO_STATE_DIE);
+								}
+						}
+						else
+						{
+							if (koopas->vx != 0)
+							{
+									if (level == MARIO_LEVEL_BIG)
+									{
+										level = MARIO_LEVEL_SMALL;
+										StartUntouchable();
+									}
+									else
+									{
+										SetState(MARIO_STATE_DIE);
+									}
+							}
+							else
+							{
+								if (nx > 0)
+								{
+									koopas->vx = -KOOPAS_RUN_SPEED;
+								}
+
+								else
+								{
+									koopas->vx = +KOOPAS_RUN_SPEED;
+								}
+
+							}
+						}
+					}
+				}
 			}
 			else
 			{

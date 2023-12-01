@@ -174,7 +174,13 @@ void CKoopas::Render()
 		ani = KOOPAS_ANI_DIE;
 	}
 	}
-	else if (vx > 0)
+	else if (state == KOOPAS_STATE_THROW)
+	{
+			ani = KOOPAS_ANI_TURN;
+	}
+
+	/*else if
+		(vx > 0)
 	{
 			ani = 5;
 			ani = KOOPAS_ANI_WALKING_RIGHT;
@@ -182,7 +188,7 @@ void CKoopas::Render()
 	else if (vx < 0)
 	{
 			ani = KOOPAS_ANI_WALKING_LEFT;
-	}
+	}*/
 
 	animation_set->at(ani)->Render(x, y);
 
@@ -207,6 +213,13 @@ void CKoopas::SetState(int state)
 		vx = 0;
 		vy = 0;
 		break;
+	case KOOPAS_STATE_THROW:
+		if (mario->nx > 0)
+		{
+			vx = 0.3f;
+			nx = 1;
+		}
+		else { vx = -0.3f; nx = -1; }
+		break;
 	}
-	DebugOut(L"[ERROR] Vo %d\n");
 }
