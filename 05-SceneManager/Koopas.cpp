@@ -10,6 +10,7 @@
 #include "Coin.h"
 CKoopas::CKoopas()
 {
+	SetState(KOOPAS_STATE_WALKING);
 }
 
 void CKoopas::CalcPotentialCollisions(vector<LPGAMEOBJECT>* coObjects, vector<LPCOLLISIONEVENT>& coEvents)
@@ -17,6 +18,11 @@ void CKoopas::CalcPotentialCollisions(vector<LPGAMEOBJECT>* coObjects, vector<LP
 	for (UINT i = 0; i < coObjects->size(); i++)
 	{
 		LPCOLLISIONEVENT e = SweptAABBEx(coObjects->at(i));
+		if (dynamic_cast<CBox*>(coObjects->at(i)))
+		{
+			if (e->nx != 0)
+				continue;
+		}
 
 		if (e->t > 0 && e->t <= 1.0f)
 			coEvents.push_back(e);
@@ -48,13 +54,85 @@ void CKoopas::GetBoundingBox(float& left, float& top, float& right, float& botto
 
 void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 {
-	
+
+	LPSCENE scence = CGame::GetInstance()->GetCurrentScene();
+	CMario* mario = ((CPlayScene*)scence)->GetPlayer();
+
+	CGameObject::Update(dt);
+	vy += dt * KOOPAS_GRAVITY;
+
+
+	vector<LPCOLLISIONEVENT> coEvents;
+	vector<LPCOLLISIONEVENT> coEventsResult;
+
+	coEvents.clear();
+
+	CalcPotentialCollisions(coObjects, coEvents);
+
+	float tempy = y + dy;
+	if (coEvents.size() == 0)
+	{
+		x += dx;
+		y += dy;
+	}
+	else {
+		float min_tx, min_ty, nx = 0, ny;
+		float rdx = 0;
+		float rdy = 0;
+
+		FilterCollision(coEvents, coEventsResult, min_tx, min_ty, nx, ny, rdx, rdy);
+
+		x += min_tx * dx + nx * 0.4f;
+		if (nx < 0)
+			y += min_ty * dy + ny * 0.4f;
+
+		if (ny != 0) {
+			vy = 0;
+		}
+		for (UINT i = 0; i < coEventsResult.size(); i++)
+		{
+			LPCOLLISIONEVENT e = coEventsResult[i];
+
+			if (dynamic_cast<CBox*>(e->obj))
+			{
+				CBox* box = dynamic_cast<CBox*>(e->obj);
+				if (e->nx != 0)
+				{
+					x += dx;
+				}
+			}
+			if (dynamic_cast<CBrick*>(e->obj))
+			{
+				if (nx != 0)
+				{
+					vx = -vx;
+				}
+			}
+		}
+	}
+
+	for (UINT i = 0; i < coEvents.size(); i++) delete coEvents[i];
+	if (x < 0)
+	{
+		x = 5;
+		vx = -vx;
+	}
 }
 
 void CKoopas::Render()
 {
+	int ani = KOOPAS_ANI_WALKING_LEFT;
+	if (vx > 0)
+	{
+			ani = 5;
+			ani = KOOPAS_ANI_WALKING_RIGHT;
+	}
+	else if (vx < 0)
+	{
+			ani = KOOPAS_ANI_WALKING_LEFT;
+	}
 
-	animation_set->at(0)->Render(x, y);
+	animation_set->at(ani)->Render(x, y);
 
 }
 
@@ -64,4 +142,6 @@ void CKoopas::SetState(int state)
 	CMario* mario = ((CPlayScene*)scence)->GetPlayer();
 
 	CGameObject::SetState(state);
+	vx = KOOPAS_WALKING_SPEED;
+	DebugOut(L"[ERROR] Vo %d\n");
 }

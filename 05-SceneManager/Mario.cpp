@@ -426,10 +426,7 @@ void CMario::GetBoundingBox(float &left, float &top, float &right, float &bottom
 			bottom = y + MARIO_SIT_BBOX_HEIGHT;
 	}
 	if (state == MARIO_STATE_DIE) {
-		left = 0;
-		bottom = 0;
-		right = 0;
-		top = 0;
+		left = top = right = bottom = 0;
 	}
 }
 

@@ -196,7 +196,7 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 	case OBJECT_TYPE_BOX_START: obj = new CBox(BOX_STATUS_START); break;
 	case OBJECT_TYPE_BRICK_QUESTION_LEAF: obj = new CBrickQuestion(BRICK_QUESTION_STATUS_LEAF); break;
 	case OBJECT_TYPE_BRICK_MUSHROOM_GREEN:obj = new CBrickQuestion(BRICK_MUSHROOM_GREEN); break;
-	case OBJECT_TYPE_FLOWER_RED:	  obj = new CFlowerAttack(FLOWER_RED); break;
+	//case OBJECT_TYPE_FLOWER_RED:	  obj = new CFlowerAttack(FLOWER_RED); break;
 	case OBJECT_TYPE_FLOWER_FIRE:	  obj = new CFireFlower(); break;
 	case OBJECT_TYPE_KOOPAS: obj = new CKoopas(); break;
 		break;

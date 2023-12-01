@@ -20,7 +20,8 @@
 #define KOOPAS_ANI_DIE 3
 #define KOOPAS_ANI_TURN 2
 
-	
+
+
 class CKoopas : public CGameObject
 {
 
