@@ -3,6 +3,7 @@
 #include "Brick.h"
 #include "Box.h"
 #include "Brick.h"
+#include "Koopas.h"
 CGoomba::CGoomba()
 {
 	SetState(GOOMBA_STATE_WALKING);
@@ -15,6 +16,10 @@ void CGoomba::CalcPotentialCollisions(vector<LPGAMEOBJECT>* coObjects, vector<LP
 	{
 		LPCOLLISIONEVENT e = SweptAABBEx(coObjects->at(i));
 		if (dynamic_cast<CGoomba*>(coObjects->at(i)))
+		{
+			continue;
+		}
+		if (dynamic_cast<CKoopas*>(coObjects->at(i)))
 		{
 			continue;
 		}

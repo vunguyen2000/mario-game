@@ -23,6 +23,11 @@ void CKoopas::CalcPotentialCollisions(vector<LPGAMEOBJECT>* coObjects, vector<LP
 			if (e->nx != 0)
 				continue;
 		}
+		if (dynamic_cast<CGoomba*>(coObjects->at(i)))
+		{
+			if (GetState() != KOOPAS_STATE_DIE)
+				continue;
+		}
 
 		if (e->t > 0 && e->t <= 1.0f)
 			coEvents.push_back(e);
@@ -99,6 +104,29 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 				if (e->nx != 0)
 				{
 					x += dx;
+				}
+				else {
+					if (state != KOOPAS_STATE_DIE)
+					{
+						if (box->GetStatus() == BOX_STATUS_START) {
+							if (x < box->x) {
+								x = box->x;
+								vx = -vx;
+							}
+							else {
+								x += dx;
+							}
+						}
+						else if (box->GetStatus() == BOX_STATUS_END) {
+							if (x > box->x) {
+								x = box->x;
+								vx = -vx;
+							}
+							else {
+								x += dx;
+							}
+						}
+					}
 				}
 			}
 			if (dynamic_cast<CBrick*>(e->obj))
