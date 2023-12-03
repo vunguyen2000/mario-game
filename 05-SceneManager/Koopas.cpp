@@ -74,6 +74,11 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 
 	coEvents.clear();
 
+	if (state == KOOPAS_STATE_DIE && GetTickCount() - isRevive > 3000) {
+		y -= 11;
+		SetState(KOOPAS_STATE_WALKING);
+	}
+
 	if (state != KOOPAS_STATE_HOLD && state != KOOPAS_STATE_HIDE)
 		CalcPotentialCollisions(coObjects, coEvents);
 
@@ -119,7 +124,7 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 								vx = -vx;
 							}
 							else {
-								x += dx;
+						/*		x += dx;*/
 							}
 						}
 						else if (box->GetStatus() == BOX_STATUS_END) {
@@ -128,7 +133,7 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 								vx = -vx;
 							}
 							else {
-								x += dx;
+						/*		x += dx;*/
 							}
 						}
 					}
@@ -260,6 +265,7 @@ void CKoopas::SetState(int state)
 	case KOOPAS_STATE_DIE:
 		vx = 0;
 		vy = 0;
+		isRevive = GetTickCount();
 		break;
 	case KOOPAS_STATE_WALKING:
 		vx = KOOPAS_WALKING_SPEED;

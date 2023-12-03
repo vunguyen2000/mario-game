@@ -10,8 +10,12 @@
 #define KOOPAS_BBOX_HEIGHT_DIE 15
 
 #define KOOPAS_STATE_WALKING 100
+
+//Tr?ng thái die
 #define KOOPAS_STATE_DIE 200
 #define KOOPAS_STATE_HOLD 201
+
+//Tr?ng thái die nh?ng có vx
 #define KOOPAS_STATE_THROW 202
 #define KOOPAS_STATE_HIDE 203
 
@@ -27,6 +31,7 @@ class CKoopas : public CGameObject
 	float tempbacky;
 	bool back = false;
 	bool flagBack = false;
+	DWORD isRevive;
 	void CalcPotentialCollisions(vector<LPGAMEOBJECT>* coObjects, vector<LPCOLLISIONEVENT>& coEvents);
 	virtual void GetBoundingBox(float& left, float& top, float& right, float& bottom);
 	virtual void Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects);

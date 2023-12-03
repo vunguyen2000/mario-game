@@ -282,6 +282,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 							}
 							else
 							{
+								koopas->SetState(KOOPAS_STATE_THROW);
 								if (nx > 0)
 								{
 									koopas->vx = -KOOPAS_RUN_SPEED;
