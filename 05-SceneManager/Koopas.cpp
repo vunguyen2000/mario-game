@@ -25,7 +25,7 @@ void CKoopas::CalcPotentialCollisions(vector<LPGAMEOBJECT>* coObjects, vector<LP
 		}
 		if (dynamic_cast<CGoomba*>(coObjects->at(i)))
 		{
-			if (GetState() != KOOPAS_STATE_DIE)
+		if (GetState() != KOOPAS_STATE_THROW)
 				continue;
 		}
 
@@ -64,7 +64,9 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	CMario* mario = ((CPlayScene*)scence)->GetPlayer();
 
 	CGameObject::Update(dt);
-	vy += dt * KOOPAS_GRAVITY;
+
+	if (state != KOOPAS_STATE_HOLD)
+		vy += dt * KOOPAS_GRAVITY;
 
 
 	vector<LPCOLLISIONEVENT> coEvents;
@@ -87,10 +89,12 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		float rdy = 0;
 
 		FilterCollision(coEvents, coEventsResult, min_tx, min_ty, nx, ny, rdx, rdy);
-
+		if (state != KOOPAS_STATE_DIE && state != KOOPAS_STATE_THROW && state != KOOPAS_STATE_HIDE)
+		{
 		x += min_tx * dx + nx * 0.4f;
 		if (nx < 0)
 			y += min_ty * dy + ny * 0.4f;
+		}
 
 		if (ny != 0) {
 			vy = 0;
@@ -107,7 +111,7 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 					x += dx;
 				}
 				else {
-					if (state != KOOPAS_STATE_DIE)
+					if (state != KOOPAS_STATE_DIE && state !=KOOPAS_STATE_THROW )
 					{
 						if (box->GetStatus() == BOX_STATUS_START) {
 							if (x < box->x) {
@@ -235,6 +239,10 @@ void CKoopas::Render()
 	else if (vx < 0)
 	{
 			ani = KOOPAS_ANI_WALKING_LEFT;
+	}
+	else if (state == KOOPAS_STATE_HOLD)
+	{
+			ani = KOOPAS_ANI_DIE;
 	}
 
 	animation_set->at(ani)->Render(x, y);

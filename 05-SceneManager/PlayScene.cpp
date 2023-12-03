@@ -427,6 +427,10 @@ void CPlayScenceKeyHandler::OnKeyUp(int KeyCode)
 				if (mario->GetLevel() != MARIO_LEVEL_SMALL)
 					mario->y -= MARIO_SIT_BBOX_HEIGHT;
 				break;
+			case DIK_A:
+				mario->holdKoopas = false;
+				mario->holdKoopasCol = false;
+				break;
 			default:
 				break;
 			}

@@ -243,7 +243,6 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 				{
 					if (koopas->GetState() != KOOPAS_STATE_DIE)
 					{
-						if (koopas->GetState() != KOOPAS_STATE_THROW)
 						koopas->SetState(KOOPAS_STATE_DIE);
 						vy = -MARIO_JUMP_DEFLECT_SPEED;
 					}
@@ -466,7 +465,6 @@ void CMario::SetState(int state)
 		break;
 	case MARIO_STATE_DIE:
 		timeReset = GetTickCount();
-	
 		vy = -MARIO_DIE_DEFLECT_SPEED;
 		vx = 0;
 		break;
@@ -498,7 +496,7 @@ void CMario::GetBoundingBox(float &left, float &top, float &right, float &bottom
 	}
 }
 
-void CMario::Reset()
+void CMario::Reset()	
 {
 	if(GetTickCount()-timeReset>1000){
 		SetState(MARIO_STATE_IDLE);
