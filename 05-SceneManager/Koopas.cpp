@@ -72,7 +72,8 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 
 	coEvents.clear();
 
-	CalcPotentialCollisions(coObjects, coEvents);
+	if (state != KOOPAS_STATE_HOLD && state != KOOPAS_STATE_HIDE)
+		CalcPotentialCollisions(coObjects, coEvents);
 
 	float tempy = y + dy;
 	if (coEvents.size() == 0)
@@ -141,6 +142,15 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 				tempbacky = y;
 				back = true;
 			}
+			if (dynamic_cast<CGoomba*>(e->obj)) // 
+			{
+				CGoomba* goomba = dynamic_cast<CGoomba*>(e->obj);
+
+				if (goomba->GetState() != GOOMBA_STATE_DIE)
+				{
+					goomba->SetState(GOOMBA_STATE_DIE);
+				}
+			}
 		}
 	}
 
@@ -149,6 +159,44 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	{
 		x = 5;
 		vx = -vx;
+	}
+	if (state == KOOPAS_STATE_HOLD)
+	{
+		if (mario->holdKoopas == true)
+		{
+			if (mario->GetLevel() != MARIO_LEVEL_SMALL)
+			{
+					if (mario->nx > 0)
+					{
+						x = mario->x + MARIO_BIG_BBOX_WIDTH;
+						y = mario->y + MARIO_BIG_BBOX_HEIGHT / 5;
+					}
+					else
+					{
+						x = mario->x - KOOPAS_BBOX_WIDTH;
+						y = mario->y + MARIO_BIG_BBOX_HEIGHT / 5;
+					}
+			}
+			else
+			{
+				if (mario->nx > 0)
+				{
+					x = mario->x + MARIO_BIG_BBOX_WIDTH + 2;
+					y = mario->y - MARIO_BIG_BBOX_HEIGHT / 5;
+				}
+				else
+				{
+					x = mario->x - KOOPAS_BBOX_WIDTH - 3;
+					y = mario->y - MARIO_BIG_BBOX_HEIGHT / 5;
+				}
+			}
+
+		}
+		else
+		{
+			SetState(KOOPAS_STATE_THROW);
+		}
+
 	}
 }
 
@@ -178,8 +226,7 @@ void CKoopas::Render()
 	{
 			ani = KOOPAS_ANI_TURN;
 	}
-
-	/*else if
+	else if
 		(vx > 0)
 	{
 			ani = 5;
@@ -188,7 +235,7 @@ void CKoopas::Render()
 	else if (vx < 0)
 	{
 			ani = KOOPAS_ANI_WALKING_LEFT;
-	}*/
+	}
 
 	animation_set->at(ani)->Render(x, y);
 

@@ -404,6 +404,9 @@ void CPlayScenceKeyHandler::OnKeyDown(int KeyCode)
 			case DIK_DOWN:
 				mario->sit = true;
 				break;
+			case DIK_A:
+				mario->holdKoopas = true;
+				break;
 			}
 	}
 

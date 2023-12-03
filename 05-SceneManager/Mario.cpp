@@ -234,7 +234,12 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 			if (dynamic_cast<CKoopas*>(e->obj))
 			{
 				CKoopas* koopas = dynamic_cast<CKoopas*>(e->obj);
-				 if (e->ny < 0)
+				if (holdKoopas == true && koopas->GetState() == KOOPAS_STATE_DIE && holdKoopasCol == false)
+				{
+					holdKoopasCol = true;
+					koopas->SetState(KOOPAS_STATE_HOLD);
+				}
+				else if (e->ny < 0)
 				{
 					if (koopas->GetState() != KOOPAS_STATE_DIE)
 					{
