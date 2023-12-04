@@ -74,6 +74,15 @@ void CLeaf::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 			LPCOLLISIONEVENT e = coEventsResult[i];
 			if (dynamic_cast<CMario*>(e->obj))
 			{
+				if (mario->GetLevel() == MARIO_LEVEL_BIG || mario->GetLevel() == MARIO_LEVEL_SMALL)
+				{
+					mario->SetLevel(MARIO_LEVEL_FOX);
+					mario->y -= 10;
+				}
+				if (mario->GetLevel() == MARIO_LEVEL_FOX)
+				{
+					mario->y -= 10;
+				}
 				isDisAppear = true;
 			}
 		}
