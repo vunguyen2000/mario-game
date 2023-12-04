@@ -431,6 +431,91 @@ void CMario::Render()
 			else ani = MARIO_ANI_SMALL_IDLE_LEFT;
 		}
 		}
+		else if (level == MARIO_LEVEL_FOX)
+		{
+				if (vx == 0)
+				{
+					if (nx > 0) ani = MARIO_ANI_FOX_IDLE_RIGHT;
+					else ani = MARIO_ANI_FOX_IDLE_LEFT;
+				}
+				else if (vx > 0)
+				{
+					if (nx > 0)
+					{
+						if (vx < MARIO_GEARING_MAX && checkidle != true)
+						{
+							ani = MARIO_ANI_FOX_GEARING_RIGHT;
+						}
+						else
+						{
+							if (vx > MARIO_GEARING_MAX)
+								checkidle = false;
+							if (state == MARIO_STATE_WALKING_RIGHT_FAST)
+								ani = MARIO_ANI_FOX_RUN_RIGHT;
+							else
+								ani = MARIO_ANI_FOX_WALKING_RIGHT;
+						}
+					}
+					else
+					{
+						if (vx < MARIO_GEARING_MAX)
+						{
+							ani = MARIO_ANI_FOX_GEARING_LEFT;
+						}
+						else
+							if (state == MARIO_STATE_WALKING_LEFT_FAST)
+								ani = MARIO_ANI_FOX_RUN_LEFT;
+							else
+								ani = MARIO_ANI_FOX_WALKING_LEFT;
+					}
+				}
+				else
+				{
+					if (nx < 0)
+					{
+						if (vx > -0.051f && checkidle != true)
+						{
+							ani = MARIO_ANI_FOX_GEARING_LEFT;
+						}
+						else
+						{
+							if (vx < -0.051f)
+								checkidle = false;
+							if (state == MARIO_STATE_WALKING_LEFT_FAST)
+								ani = MARIO_ANI_FOX_RUN_LEFT;
+							else
+								ani = MARIO_ANI_FOX_WALKING_LEFT;
+						}
+
+					}
+					else
+					{
+						if (vx > -0.051f)
+						{
+							ani = MARIO_ANI_FOX_GEARING_RIGHT;
+						}
+						else
+							if (state == MARIO_STATE_WALKING_RIGHT_FAST)
+								ani = MARIO_ANI_FOX_RUN_RIGHT;
+							else
+								ani = MARIO_ANI_FOX_WALKING_RIGHT;
+					}
+				}
+				if (checkjumping == 1)
+				{
+					if (nx < 0)
+						ani = MARIO_ANI_FOX_JUMP_LEFT;
+					else ani = MARIO_ANI_FOX_JUMP_RIGHT;
+				}
+
+				else if (sit == true)
+				{
+					if (nx > 0)
+						ani = MARIO_ANI_FOX_SIT_RIGHT;
+					else
+						ani = MARIO_ANI_FOX_SIT_LEFT;
+				}
+			}
 	}
 	int alpha = 255;
 	if (untouchable) alpha = 128;
@@ -486,6 +571,11 @@ void CMario::GetBoundingBox(float &left, float &top, float &right, float &bottom
 	{
 		right = x + MARIO_SMALL_BBOX_WIDTH;
 		bottom = y + MARIO_SMALL_BBOX_HEIGHT;
+	}
+	else if (level == MARIO_LEVEL_FOX)
+	{
+		right = x + MARIO_FOX_BBOX_WIDTH;
+		bottom = y + MARIO_FOX_BBOX_HEIGHT;
 	}
 	if (sit == true)
 	{
