@@ -74,7 +74,7 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 
 	coEvents.clear();
 
-	if (state == KOOPAS_STATE_DIE && GetTickCount() - isRevive > 3000) {
+	if (state == KOOPAS_STATE_DIE && GetTickCount() - isRevive > 5000) {
 		y -= 11;
 		SetState(KOOPAS_STATE_WALKING);
 	}
@@ -158,6 +158,15 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 				if (goomba->GetState() != GOOMBA_STATE_DIE)
 				{
 					goomba->SetState(GOOMBA_STATE_DIE);
+				}
+			}
+			if (dynamic_cast<CBrickQuestion*>(e->obj))
+			{
+				CBrickQuestion* brickQuestion = dynamic_cast<CBrickQuestion*>(e->obj);
+				if (brickQuestion->GetBefore() == true) {
+					brickQuestion->SetAfter(true);
+					brickQuestion->SetState(BRICK_QUESTION_STATE_AFTER);
+					brickQuestion->SetBefore(false);
 				}
 			}
 		}

@@ -77,9 +77,9 @@ void CBrickQuestion::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 
 	CalcPotentialCollisions(coObjects, coEvents);
 
-	if (status_after)//n?u g?ch k còn tr?ng thái ch?m h?i
+	if (status_after)
 	{
-		
+		if (status != BRICK_QUESTION_STATUS_LEAF) {
 			if (check)
 			{
 				if (timeAni > BRICK_QUESTION_COUNT_TIME)
@@ -105,6 +105,7 @@ void CBrickQuestion::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 					status_before = false;
 				}
 			}
+		}
 	}
 
 	// No collision occured, proceed normally
@@ -177,9 +178,10 @@ void CBrickQuestion::SetState(int state)
 			if (status_before == true) {
 				CLeaf* leaf = new CLeaf();
 				leaf->x = x;
-				//leaf->y = y - MUSHROOM_BBOX_HEIGHT * BRICK_QUESTION_LEAF;
+				leaf->y = y - MUSHROOM_BBOX_HEIGHT * BRICK_QUESTION_LEAF;
 				LPANIMATION_SET ani_set = animation_sets->Get(BRICK_QUESTION_ANI_LEAF);
 				leaf->SetAnimationSet(ani_set);
+				((CPlayScene*)scene)->addObject(leaf);
 			}
 			break;
 		}

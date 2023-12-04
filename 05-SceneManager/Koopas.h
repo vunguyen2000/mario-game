@@ -11,11 +11,11 @@
 
 #define KOOPAS_STATE_WALKING 100
 
-//Tr?ng thái die
+//Trang thai die
 #define KOOPAS_STATE_DIE 200
 #define KOOPAS_STATE_HOLD 201
 
-//Tr?ng thái die nh?ng có vx
+//Trang thai die nhung co vx
 #define KOOPAS_STATE_THROW 202
 #define KOOPAS_STATE_HIDE 203
 
