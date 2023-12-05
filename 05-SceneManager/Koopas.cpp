@@ -28,7 +28,11 @@ void CKoopas::CalcPotentialCollisions(vector<LPGAMEOBJECT>* coObjects, vector<LP
 		if (GetState() != KOOPAS_STATE_THROW)
 				continue;
 		}
-
+		if (dynamic_cast<CMario*>(coObjects->at(i)))
+		{
+			CMario* brickQuestion = dynamic_cast<CMario*>(e->obj);
+				continue;
+		}
 		if (e->t > 0 && e->t <= 1.0f)
 			coEvents.push_back(e);
 		else
@@ -184,15 +188,32 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		{
 			if (mario->GetLevel() != MARIO_LEVEL_SMALL)
 			{
-					if (mario->nx > 0)
+				
+					if (mario->GetLevel() == MARIO_LEVEL_FOX)
 					{
-						x = mario->x + MARIO_BIG_BBOX_WIDTH;
-						y = mario->y + MARIO_BIG_BBOX_HEIGHT / 5;
+						if (mario->nx > 0)
+						{
+							x = mario->x + MARIO_FOX_BBOX_WIDTH;
+							y = mario->y + MARIO_BIG_BBOX_HEIGHT / 5;
+						}
+						else
+						{
+							x = mario->x - KOOPAS_BBOX_WIDTH;
+							y = mario->y + MARIO_BIG_BBOX_HEIGHT / 5;
+						}
 					}
 					else
 					{
-						x = mario->x - KOOPAS_BBOX_WIDTH;
-						y = mario->y + MARIO_BIG_BBOX_HEIGHT / 5;
+						if (mario->nx > 0)
+						{
+							x = mario->x + MARIO_BIG_BBOX_WIDTH;
+							y = mario->y + MARIO_BIG_BBOX_HEIGHT / 5;
+						}
+						else
+						{
+							x = mario->x - KOOPAS_BBOX_WIDTH;
+							y = mario->y + MARIO_BIG_BBOX_HEIGHT / 5;
+						}
 					}
 			}
 			else
