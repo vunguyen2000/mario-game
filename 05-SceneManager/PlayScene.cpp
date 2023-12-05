@@ -431,7 +431,7 @@ void CPlayScenceKeyHandler::OnKeyUp(int KeyCode)
 				mario->holdKoopas = false;
 				mario->holdKoopasCol = false;
 				mario->startRun = 0;
-						mario->stopRun = GetTickCount();
+				mario->stopRun = GetTickCount();
 				break;
 			default:
 				break;
@@ -470,7 +470,7 @@ void CPlayScenceKeyHandler::KeyState(BYTE* states)
 			{
 				if (game->IsKeyDown(DIK_A))
 				{
-					mario->SetState(MARIO_STATE_WALKING_RIGHT_FAST);
+					mario->SetState(MARIO_STATE_WALKING_LEFT_FAST);
 					if (mario->vx != 0)
 					{
 						if (mario->startRun == 0)
