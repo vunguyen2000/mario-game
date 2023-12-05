@@ -99,7 +99,6 @@
 class CMario : public CGameObject
 {
 	int level;
-	int untouchable;
 	float start_x;			
 	float start_y;
 	float camX_update = 0;
@@ -108,6 +107,7 @@ class CMario : public CGameObject
 
 public:
 	int checkjumping = 0;
+	int untouchable;
 	bool checkidle = true;
 	bool checkFree = false;
 	bool sit = false;
@@ -129,7 +129,6 @@ public:
 	void CalcPotentialCollisions(vector<LPGAMEOBJECT>* coObjects, vector<LPCOLLISIONEVENT>& coEvents);
 
 	void SetLevel(int l) { level = l; }
-
 	virtual void GetBoundingBox(float& left, float& top, float& right, float& bottom);
 	void StartUntouchable() { untouchable = 1; untouchable_start = GetTickCount(); }
 };

@@ -4,6 +4,7 @@
 #include "Box.h"
 #include "Brick.h"
 #include "Koopas.h"
+#include "Mario.h"
 CGoomba::CGoomba()
 {
 	SetState(GOOMBA_STATE_WALKING);
@@ -11,7 +12,6 @@ CGoomba::CGoomba()
 }
 void CGoomba::CalcPotentialCollisions(vector<LPGAMEOBJECT>* coObjects, vector<LPCOLLISIONEVENT>& coEvents)
 {
-	//Set không va ch?m v?i ??i t??ng
 	for (UINT i = 0; i < coObjects->size(); i++)
 	{
 		LPCOLLISIONEVENT e = SweptAABBEx(coObjects->at(i));
@@ -21,6 +21,12 @@ void CGoomba::CalcPotentialCollisions(vector<LPGAMEOBJECT>* coObjects, vector<LP
 		}
 		if (dynamic_cast<CKoopas*>(coObjects->at(i)))
 		{
+			continue;
+		}
+		if (dynamic_cast<CMario*>(coObjects->at(i)))
+		{
+			CMario* mario = dynamic_cast<CMario*>(e->obj);
+			if (mario->untouchable == 1)
 			continue;
 		}
 		if (e->t > 0 && e->t <= 1.0f)

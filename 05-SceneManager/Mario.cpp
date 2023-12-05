@@ -1,4 +1,4 @@
-#include <algorithm>
+﻿#include <algorithm>
 #include "debug.h"
 
 #include "Mario.h"
@@ -13,10 +13,11 @@
 #include "FlowerAttack.h"
 #include "FireFlower.h"
 #include "Koopas.h"
+#include "FlowerAttack.h"
 
 CMario::CMario(float x, float y) : CGameObject()
 {
-	level = MARIO_LEVEL_SMALL;
+	level = MARIO_LEVEL_FOX;
 	untouchable = 0;
 	SetState(MARIO_STATE_IDLE);
 	start_x = x;
@@ -37,7 +38,14 @@ void CMario::CalcPotentialCollisions(vector<LPGAMEOBJECT>* coObjects, vector<LPC
 			continue;
 		}
 		if (e->t > 0 && e->t <= 1.0f)
+		{
+			if(untouchable == 0)
 			coEvents.push_back(e);
+			else if(e->ny != 0)
+			{
+				coEvents.push_back(e);
+			}
+		}
 		else
 			delete e;
 	}
@@ -155,6 +163,8 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 					}
 					else if (e->nx != 0)
 					{
+						if (untouchable == 0)
+						{
 							if (goomba->GetState() != GOOMBA_STATE_DIE)
 							{
 								if (level == MARIO_LEVEL_BIG)
@@ -168,8 +178,9 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 									StartUntouchable();
 								}
 								else
-								SetState(MARIO_STATE_DIE);
+									SetState(MARIO_STATE_DIE);
 							}
+						}
 					}
 			}
 			if (dynamic_cast<CBrickQuestion*>(e->obj))
@@ -254,7 +265,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 				}
 				else if (e->ny < 0)
 				{
-					if (untouchable == 0 && koopas->GetState() != KOOPAS_STATE_DIE)
+					if ( koopas->GetState() != KOOPAS_STATE_DIE)
 					{
 						koopas->SetState(KOOPAS_STATE_DIE);
 						vy = -MARIO_JUMP_DEFLECT_SPEED;
@@ -273,6 +284,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 								if (level == MARIO_LEVEL_BIG)
 								{
 									level = MARIO_LEVEL_SMALL;
+									StartUntouchable();
 								}
 								else if (level == MARIO_LEVEL_FOX)
 								{
@@ -661,7 +673,7 @@ void CMario::SetState(int state)
 	case MARIO_STATE_WALKING_RIGHT_FAST:
 		if (vx < MARIO_WALKING_RUN_MAX)
 		{
-			if (vx < -LANDING_LIMIT)//gi?i h?n t?c ?? ?? mario l?y ?� m??t h?n
+			if (vx < -LANDING_LIMIT)//giới hạn tốc độ để mario lấy đà mượt hơn
 				vx = -LANDING_LIMIT_SPEED;
 			else
 			{
