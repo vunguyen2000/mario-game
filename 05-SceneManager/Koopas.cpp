@@ -74,7 +74,7 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 
 	coEvents.clear();
 
-	if (state == KOOPAS_STATE_DIE && GetTickCount() - isRevive > 5000) {
+	if (state == KOOPAS_STATE_DIE && GetTickCount() - isRevive > 3500) {
 		y -= 11;
 		SetState(KOOPAS_STATE_WALKING);
 	}

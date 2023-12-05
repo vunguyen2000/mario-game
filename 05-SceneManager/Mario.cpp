@@ -75,7 +75,6 @@ void CMario::FilterCollision(vector<LPCOLLISIONEVENT>& coEvents, vector<LPCOLLIS
 		}
 		if (dynamic_cast<CCoin*>(c->obj))
 		{
-			//nx = 0;
 			ny = 0;
 		}
 
@@ -139,7 +138,6 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 		for (UINT i = 0; i < coEventsResult.size(); i++)
 		{
 			LPCOLLISIONEVENT e = coEventsResult[i];
-
 			if (e->ny < 0)
 			{
 				checkjumping = 0;
@@ -162,6 +160,11 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 								if (level == MARIO_LEVEL_BIG)
 								{
 									level = MARIO_LEVEL_SMALL;
+									StartUntouchable();
+								}
+								else if (level == MARIO_LEVEL_FOX)
+								{
+									level = MARIO_LEVEL_BIG;
 									StartUntouchable();
 								}
 								else
@@ -212,6 +215,11 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 								level = MARIO_LEVEL_SMALL;
 								StartUntouchable();
 							}
+							else if (level == MARIO_LEVEL_FOX)
+							{
+								level = MARIO_LEVEL_BIG;
+								StartUntouchable();
+							}
 							else
 							{
 								SetState(MARIO_STATE_DIE);
@@ -224,6 +232,11 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 				if (level == MARIO_LEVEL_BIG)
 				{
 					level = MARIO_LEVEL_SMALL;
+					StartUntouchable();
+				}
+				else if (level == MARIO_LEVEL_FOX)
+				{
+					level = MARIO_LEVEL_BIG;
 					StartUntouchable();
 				}
 				else
@@ -241,7 +254,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 				}
 				else if (e->ny < 0)
 				{
-					if (koopas->GetState() != KOOPAS_STATE_DIE)
+					if (untouchable == 0 && koopas->GetState() != KOOPAS_STATE_DIE)
 					{
 						koopas->SetState(KOOPAS_STATE_DIE);
 						vy = -MARIO_JUMP_DEFLECT_SPEED;
@@ -261,6 +274,11 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 								{
 									level = MARIO_LEVEL_SMALL;
 								}
+								else if (level == MARIO_LEVEL_FOX)
+								{
+									level = MARIO_LEVEL_BIG;
+									StartUntouchable();
+								}
 								else
 								{
 									SetState(MARIO_STATE_DIE);
@@ -273,6 +291,11 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 									if (level == MARIO_LEVEL_BIG)
 									{
 										level = MARIO_LEVEL_SMALL;
+										StartUntouchable();
+									}
+									else if (level == MARIO_LEVEL_FOX)
+									{
+										level = MARIO_LEVEL_BIG;
 										StartUntouchable();
 									}
 									else
@@ -302,7 +325,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 			{
 				if (ny != 0 && state!= MARIO_STATE_DIE) vy = 0;
 			}
-		}
+			}
 	}
 
 	// clean up collision events
@@ -582,7 +605,7 @@ void CMario::GetBoundingBox(float &left, float &top, float &right, float &bottom
 		if (level != MARIO_LEVEL_SMALL)
 			bottom = y + MARIO_SIT_BBOX_HEIGHT;
 	}
-	if (state == MARIO_STATE_DIE) {
+	if (state == MARIO_STATE_DIE ) {
 		left = top = right = bottom = 0;
 	}
 }
