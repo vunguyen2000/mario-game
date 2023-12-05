@@ -430,6 +430,8 @@ void CPlayScenceKeyHandler::OnKeyUp(int KeyCode)
 			case DIK_A:
 				mario->holdKoopas = false;
 				mario->holdKoopasCol = false;
+				mario->startRun = 0;
+						mario->stopRun = GetTickCount();
 				break;
 			default:
 				break;
@@ -459,7 +461,6 @@ void CPlayScenceKeyHandler::KeyState(BYTE* states)
 							mario->startRun = GetTickCount();
 							mario->stopRun = 0;
 						}
-
 					}
 				}
 				else
