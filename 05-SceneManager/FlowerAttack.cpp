@@ -173,7 +173,7 @@ void CFlowerAttack::Attack(vector<LPGAMEOBJECT>* coObjects)
 		{
 			CFireFlower* fire = dynamic_cast<CFireFlower*>(obj);
 			if (fire->GetAppear()) continue;
-			if (shooting /*&& status != FLOWER_GREEN*/)
+			if (shooting)
 			{
 				shooting = false;
 				shooted = true;
@@ -209,7 +209,6 @@ void CFlowerAttack::Attack(vector<LPGAMEOBJECT>* coObjects)
 				fire->SetState(FIRE_FLOWER_STATE_ATTACK);
 				return;
 			}
-
 		}
 	}
 }

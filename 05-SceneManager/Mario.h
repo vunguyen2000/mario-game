@@ -83,6 +83,15 @@
 #define MARIO_ANI_FOX_LANDING_RIGHT		58
 #define MARIO_ANI_FOX_LANDING_LEFT		59 
 
+#define MARIO_ANI_SMALL_RUN_RIGHT		23
+#define MARIO_ANI_SMALL_RUN_LEFT		24
+#define MARIO_ANI_SMALL_GEARING_RIGHT		27
+#define MARIO_ANI_SMALL_GEARING_LEFT		28
+#define MARIO_ANI_SMALL_HOLDKOOPAS_RIGHT		68
+#define MARIO_ANI_SMALL_HOLDKOOPAS_LEFT		69 
+#define MARIO_ANI_SMALL_HOLDKOOPAS_WALK_RIGHT		70
+#define MARIO_ANI_SMALL_HOLDKOOPAS_WALK_LEFT		71 
+
 #define MARIO_UNTOUCHABLE_TIME 3000
 class CMario : public CGameObject
 {
@@ -101,6 +110,8 @@ public:
 	bool sit = false;
 	bool holdKoopas = false;
 	bool holdKoopasCol = false;	
+	int startRun = 0;	
+	int stopRun = 0;	
 	CMario(float x = 0.0f, float y = 0.0f);
 	virtual void Update(DWORD dt, vector<LPGAMEOBJECT>* colliable_objects = NULL);
 	virtual void Render();
