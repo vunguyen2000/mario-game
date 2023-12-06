@@ -6,7 +6,8 @@
 CGoombaPara::CGoombaPara()
 {
 	SetState(GOOMBA_STATE_WALKING);
-	level = GOOMBAPARA_ANI_WALKING;
+	level = GOOMBA_LEVEL_JUMP;
+	checkJump = GetTickCount();
 }
 void CGoombaPara::CalcPotentialCollisions(vector<LPGAMEOBJECT>* coObjects, vector<LPCOLLISIONEVENT>& coEvents)
 {
@@ -31,7 +32,6 @@ void CGoombaPara::CalcPotentialCollisions(vector<LPGAMEOBJECT>* coObjects, vecto
 
 void CGoombaPara::GetBoundingBox(float& left, float& top, float& right, float& bottom)
 {
-
 	if (level == GOOMBA_LEVEL_WALKING)
 	{
 		left = x;
@@ -43,11 +43,24 @@ void CGoombaPara::GetBoundingBox(float& left, float& top, float& right, float& b
 	{
 		right = left = bottom = top = 0;
 	}
+	if (level == GOOMBA_LEVEL_JUMP)
+	{
+		left = x;
+		top = y;
+		right = x + GOOMBA_JUMP_BBOX_WIDTH;
+		bottom = y + GOOMBA_JUMP_BBOX_HEIGHT;
+	}
 
 }
 
 void CGoombaPara::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 {
+
+	if (GetTickCount() - checkJump >= GOOMBA_JUMP && level == GOOMBA_LEVEL_JUMP)
+	{
+		vy = -GOOMBA_JUMP_SPEED;
+		checkJump = GetTickCount();
+	}
 
 	CGameObject::Update(dt);
 
@@ -103,6 +116,10 @@ void CGoombaPara::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 void CGoombaPara::Render()
 {
 	int ani = -1;
+	if (level == GOOMBA_LEVEL_JUMP)
+	{
+		ani = GOOMBA_ANI_JUMP;
+	}else
 	ani = GOOMBAPARA_ANI_WALKING;
 	if (state == GOOMBA_STATE_DIE) {
 		ani = GOOMBAPARA_ANI_DIE;

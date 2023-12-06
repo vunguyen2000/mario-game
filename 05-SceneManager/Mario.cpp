@@ -341,6 +341,12 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 					{
 						if (goomba->GetState() != GOOMBA_STATE_DIE)
 						{
+							if (goomba->GetLevel() == GOOMBA_LEVEL_JUMP)
+							{
+								goomba->y -= 5;
+								goomba->SetLevel(GOOMBA_LEVEL_WALKING);
+							}
+							else
 							{
 								if (goomba->GetLevel() == GOOMBA_LEVEL_WALKING)
 								{
