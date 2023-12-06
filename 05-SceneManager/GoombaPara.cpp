@@ -45,13 +45,6 @@ void CGoombaPara::GetBoundingBox(float& left, float& top, float& right, float& b
 void CGoombaPara::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 {
 
-	if (GetTickCount() - checkJump >= GOOMBA_JUMP && level == GOOMBA_LEVEL_JUMP)
-	{
-		vy = -GOOMBA_JUMP_SPEED;
-		checkJump = GetTickCount();
-	}
-
-	//
 	CGameObject::Update(dt);
 
 	vy += GOOMBA_GRAVITY * dt;
@@ -116,6 +109,7 @@ void CGoombaPara::SetState(int state)
 	CGameObject::SetState(state);
 	switch (state)
 	{
+	case GOOMBA_STATE_WALKING:
 		vx = -GOOMBA_WALKING_SPEED;
 		break;
 	}
