@@ -393,6 +393,12 @@ void CPlayScenceKeyHandler::OnKeyDown(int KeyCode)
 			case DIK_S:
 				if (mario->checkjumping == 0)
 				{
+					if (mario->GetSpeed() == 7 && mario->GetLevel() == MARIO_LEVEL_FOX)
+					{
+						mario->flyCan = true;
+						mario->SetState(MARIO_STATE_FLY);
+						mario->timeFly = GetTickCount();
+					}
 					if (game->IsKeyDown(DIK_LSHIFT))
 					{
 						mario->SetState(MARIO_STATE_JUMP_HIGH);

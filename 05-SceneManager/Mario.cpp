@@ -41,7 +41,7 @@ void CMario::CalcPotentialCollisions(vector<LPGAMEOBJECT>* coObjects, vector<LPC
 		{
 			if(untouchable == 0)
 			coEvents.push_back(e);
-			else if(e->ny != 0)
+			else if(e->ny != 0  || dynamic_cast<CBrickQuestion*>(coObjects->at(i)))
 			{
 				coEvents.push_back(e);
 			}

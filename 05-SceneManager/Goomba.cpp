@@ -5,6 +5,8 @@
 #include "Brick.h"
 #include "Koopas.h"
 #include "Mario.h"
+#include "GoombaPara.h"
+#include "FireFlower.h"
 CGoomba::CGoomba()
 {
 	SetState(GOOMBA_STATE_WALKING);
@@ -16,6 +18,14 @@ void CGoomba::CalcPotentialCollisions(vector<LPGAMEOBJECT>* coObjects, vector<LP
 	{
 		LPCOLLISIONEVENT e = SweptAABBEx(coObjects->at(i));
 		if (dynamic_cast<CGoomba*>(coObjects->at(i)))
+		{
+			continue;
+		}
+		if (dynamic_cast<CGoombaPara*>(coObjects->at(i)))
+		{
+			continue;
+		}
+		if (dynamic_cast<CFireFlower*>(coObjects->at(i)))
 		{
 			continue;
 		}

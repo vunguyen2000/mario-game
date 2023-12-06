@@ -28,6 +28,10 @@ void CKoopas::CalcPotentialCollisions(vector<LPGAMEOBJECT>* coObjects, vector<LP
 		if (GetState() != KOOPAS_STATE_THROW)
 				continue;
 		}
+		if (dynamic_cast<CFireFlower*>(coObjects->at(i)))
+		{
+			continue;
+		}
 		if (dynamic_cast<CMario*>(coObjects->at(i)))
 		{
 			CMario* brickQuestion = dynamic_cast<CMario*>(e->obj);

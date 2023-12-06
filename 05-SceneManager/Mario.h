@@ -92,6 +92,8 @@
 #define MARIO_ANI_SMALL_HOLDKOOPAS_WALK_RIGHT		70
 #define MARIO_ANI_SMALL_HOLDKOOPAS_WALK_LEFT		71 
 
+#define MARIO_JUMP_DEFLECT_SPEED 0.3f
+
 #define MARIO_WALKING_RUN_MAX		0.25f 
 #define LANDING_LIMIT 0.05
 #define LANDING_LIMIT_SPEED 0.04
@@ -115,6 +117,8 @@ public:
 	bool holdKoopasCol = false;	
 	int startRun = 0;	
 	int stopRun = 0;	
+	bool flyCan = false;	//trạng thái bay
+	int timeFly = 0;	//kiểm tra thời gian bay
 	CMario(float x = 0.0f, float y = 0.0f);
 	virtual void Update(DWORD dt, vector<LPGAMEOBJECT>* colliable_objects = NULL);
 	virtual void Render();
@@ -131,4 +135,8 @@ public:
 	void SetLevel(int l) { level = l; }
 	virtual void GetBoundingBox(float& left, float& top, float& right, float& bottom);
 	void StartUntouchable() { untouchable = 1; untouchable_start = GetTickCount(); }
+	int GetSpeed()
+	{
+		return levelFly;
+	};
 };
