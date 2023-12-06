@@ -5,7 +5,8 @@
 #include "Mario.h"
 CGoombaPara::CGoombaPara()
 {
-
+	SetState(GOOMBA_STATE_WALKING);
+	level = GOOMBAPARA_ANI_WALKING;
 }
 void CGoombaPara::CalcPotentialCollisions(vector<LPGAMEOBJECT>* coObjects, vector<LPCOLLISIONEVENT>& coEvents)
 {
@@ -30,6 +31,14 @@ void CGoombaPara::CalcPotentialCollisions(vector<LPGAMEOBJECT>* coObjects, vecto
 
 void CGoombaPara::GetBoundingBox(float& left, float& top, float& right, float& bottom)
 {
+
+	if (level == GOOMBA_LEVEL_WALKING)
+	{
+		left = x;
+		top = y;
+		right = x + GOOMBA_BBOX_WIDTH;
+		bottom = y + GOOMBA_BBOX_HEIGHT;
+	}
 
 }
 
@@ -96,10 +105,18 @@ void CGoombaPara::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 
 void CGoombaPara::Render()
 {
-	animation_set->at(0)->Render(x, y);
+	int ani = -1;
+	ani = GOOMBAPARA_ANI_WALKING;
+	animation_set->at(ani)->Render(x, y);
 
 }
 
 void CGoombaPara::SetState(int state)
 {
+	CGameObject::SetState(state);
+	switch (state)
+	{
+		vx = -GOOMBA_WALKING_SPEED;
+		break;
+	}
 }

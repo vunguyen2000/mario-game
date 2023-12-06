@@ -90,6 +90,9 @@
     <ClCompile Include="Koopas.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="GoombaPara.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Animations.h">
@@ -168,6 +171,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Koopas.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GoombaPara.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
