@@ -37,6 +37,7 @@ class CBrickQuestion : public CGameObject
 	bool check = false;
 
 public:
+	bool isJump = true;
 	virtual void GetBoundingBox(float& left, float& top, float& right, float& bottom);
 	void CalcPotentialCollisions(vector<LPGAMEOBJECT>* coObjects, vector<LPCOLLISIONEVENT>& coEvents);
 	virtual void Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects);

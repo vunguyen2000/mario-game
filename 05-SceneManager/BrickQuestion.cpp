@@ -20,7 +20,6 @@ void CBrickQuestion::CalcPotentialCollisions(vector<LPGAMEOBJECT>* coObjects, ve
 		{
 			continue;
 		}
-
 		if (e->t > 0 && e->t <= 1.0f)
 			coEvents.push_back(e);
 		else
@@ -77,7 +76,7 @@ void CBrickQuestion::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 
 	CalcPotentialCollisions(coObjects, coEvents);
 
-	if (status_after)
+	if (status_after && isJump)
 	{
 		if (status != BRICK_QUESTION_STATUS_LEAF) {
 			if (check)

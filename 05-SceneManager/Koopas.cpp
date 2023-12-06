@@ -8,6 +8,7 @@
 #include "FireFlower.h"
 #include "BrickQuestion.h"
 #include "Coin.h"
+#include "GoombaPara.h"
 CKoopas::CKoopas()
 {
 	SetState(KOOPAS_STATE_WALKING);
@@ -168,10 +169,24 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 					goomba->SetState(GOOMBA_STATE_DIE);
 				}
 			}
+			if (dynamic_cast<CGoombaPara*>(e->obj)) // 
+			{
+				CGoombaPara* goombaPara = dynamic_cast<CGoombaPara*>(e->obj);
+
+				if (goombaPara->GetLevel() == GOOMBA_LEVEL_JUMP)
+				{
+					goombaPara->SetLevel(GOOMBA_LEVEL_WALKING);
+				}
+				else {
+					goombaPara->SetState(GOOMBA_STATE_DIE);
+				}
+			}
 			if (dynamic_cast<CBrickQuestion*>(e->obj))
 			{
+				if (nx != 0) vx = -vx;
 				CBrickQuestion* brickQuestion = dynamic_cast<CBrickQuestion*>(e->obj);
 				if (brickQuestion->GetBefore() == true) {
+					brickQuestion->isJump = false;
 					brickQuestion->SetAfter(true);
 					brickQuestion->SetState(BRICK_QUESTION_STATE_AFTER);
 					brickQuestion->SetBefore(false);

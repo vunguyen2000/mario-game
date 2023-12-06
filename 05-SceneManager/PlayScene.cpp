@@ -78,7 +78,7 @@ bool CPlayScene::IsInUseArea(float Ox, float Oy)
 	CamX = CGame::GetInstance()->GetCamPosX();
 
 	CamY = CGame::GetInstance()->GetCamPosY();
-
+	if (CamY < 0) CamY = 0;
 	if (((CamX < Ox + 50) && (Ox < CamX + 380)) && ((CamY < Oy) && (Oy < CamY + 250)))
 		return true;
 	return false;
