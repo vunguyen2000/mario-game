@@ -9,7 +9,7 @@
 #define MUSHROOM_GRAVITY 0.0002f
 #define MUSHROOM_SPEED 0.04f
 
-#define BRICK_QUESTION_LEAF	3.0
+#define BRICK_QUESTION_LEAF	3.5
 class CMushRoom : public CGameObject
 {
 	int status;

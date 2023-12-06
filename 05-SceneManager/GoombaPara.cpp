@@ -3,6 +3,7 @@
 #include "Goomba.h"
 #include <algorithm>
 #include "Mario.h"
+#include "PlayScene.h"
 CGoombaPara::CGoombaPara()
 {
 	SetState(GOOMBA_STATE_WALKING);
@@ -111,6 +112,12 @@ void CGoombaPara::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		x = GOOMBA_START_X;
 		vx = -vx;
 	}
+	CMario* mario = ((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->GetPlayer();
+	float limitRight = mario->x + 80;
+	float limitLeft = mario->x - 80;
+	if(x> limitRight) vx = -GOOMBA_WALKING_SPEED
+	if(x< limitLeft) vx = GOOMBA_WALKING_SPEED
+	
 }
 
 void CGoombaPara::Render()

@@ -391,7 +391,7 @@ void CPlayScenceKeyHandler::OnKeyDown(int KeyCode)
 			switch (KeyCode)
 			{
 			case DIK_S:
-				if (mario->checkjumping == 0)
+				if (mario->checkjumping == 0 && mario->GetState() != MARIO_STATE_DIE)
 				{
 					if (mario->GetSpeed() == 7 && mario->GetLevel() == MARIO_LEVEL_FOX)
 					{

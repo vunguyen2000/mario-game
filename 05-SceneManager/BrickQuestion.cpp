@@ -177,7 +177,10 @@ void CBrickQuestion::SetState(int state)
 		{
 			if (status_before == true) {
 				CLeaf* leaf = new CLeaf();
-				leaf->x = x;
+				leaf->x = x-10;
+				leaf->vx = 0.02f;
+				leaf->vy = 0.015f;
+				leaf->timeVx = GetTickCount();
 				leaf->y = y - MUSHROOM_BBOX_HEIGHT * BRICK_QUESTION_LEAF;
 				LPANIMATION_SET ani_set = animation_sets->Get(BRICK_QUESTION_ANI_LEAF);
 				leaf->SetAnimationSet(ani_set);

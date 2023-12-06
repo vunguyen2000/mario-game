@@ -93,6 +93,7 @@
 #define MARIO_ANI_SMALL_HOLDKOOPAS_WALK_LEFT		71 
 
 #define MARIO_JUMP_DEFLECT_SPEED 0.3f
+#define MARIO_STATE_FLY				501
 
 #define MARIO_WALKING_RUN_MAX		0.25f 
 #define LANDING_LIMIT 0.05
@@ -106,6 +107,7 @@ class CMario : public CGameObject
 	float camX_update = 0;
 	DWORD untouchable_start;
 	DWORD timeReset;
+	int levelFly = 0;
 
 public:
 	int checkjumping = 0;

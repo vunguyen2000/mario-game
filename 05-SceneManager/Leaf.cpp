@@ -42,7 +42,7 @@ void CLeaf::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	CMario* mario = ((CPlayScene*)scene)->GetPlayer();
 	CGameObject::Update(dt, coObjects);
 
-	vy += LEAF_GRAVITY * dt;
+	//vy += LEAF_GRAVITY * dt;
 
 	vector<LPCOLLISIONEVENT> coEvents;
 	vector<LPCOLLISIONEVENT> coEventsResult;
@@ -91,6 +91,10 @@ void CLeaf::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 			}
 		}
 
+	}
+	if (GetTickCount() - timeVx > 1000) {
+		timeVx = GetTickCount();
+		vx = -vx;
 	}
 	for (UINT i = 0; i < coEvents.size(); i++) delete coEvents[i];
 }
