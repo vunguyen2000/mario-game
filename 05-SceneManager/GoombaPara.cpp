@@ -39,6 +39,10 @@ void CGoombaPara::GetBoundingBox(float& left, float& top, float& right, float& b
 		right = x + GOOMBA_BBOX_WIDTH;
 		bottom = y + GOOMBA_BBOX_HEIGHT;
 	}
+	if (state == GOOMBA_STATE_DIE)
+	{
+		right = left = bottom = top = 0;
+	}
 
 }
 
@@ -100,6 +104,9 @@ void CGoombaPara::Render()
 {
 	int ani = -1;
 	ani = GOOMBAPARA_ANI_WALKING;
+	if (state == GOOMBA_STATE_DIE) {
+		ani = GOOMBAPARA_ANI_DIE;
+	}
 	animation_set->at(ani)->Render(x, y);
 
 }
@@ -111,6 +118,10 @@ void CGoombaPara::SetState(int state)
 	{
 	case GOOMBA_STATE_WALKING:
 		vx = -GOOMBA_WALKING_SPEED;
+		break;
+	case GOOMBA_STATE_DIE:
+		vx = 0;
+		vy = -0.2f;
 		break;
 	}
 }

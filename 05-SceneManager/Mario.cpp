@@ -14,7 +14,7 @@
 #include "FireFlower.h"
 #include "Koopas.h"
 #include "FlowerAttack.h"
-
+#include "GoombaPara.h"
 CMario::CMario(float x, float y) : CGameObject()
 {
 	level = MARIO_LEVEL_FOX;
@@ -333,6 +333,50 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 					}
 				}
 			}
+			if (dynamic_cast<CGoombaPara*>(e->obj))
+			{
+				CGoombaPara* goomba = dynamic_cast<CGoombaPara*>(e->obj);
+					// jump on top >> kill Goomba and deflect a bit 
+					if (e->ny < 0)
+					{
+						if (goomba->GetState() != GOOMBA_STATE_DIE)
+						{
+							{
+								if (goomba->GetLevel() == GOOMBA_LEVEL_WALKING)
+								{
+									goomba->y -= 5;
+									goomba->SetState(GOOMBA_STATE_DIE);
+								}
+							}
+							vy = -MARIO_JUMP_DEFLECT_SPEED;
+						}
+					}
+					else if (e->nx != 0)
+					{
+						if (untouchable == 0)
+						{
+							if (goomba->GetState() != GOOMBA_STATE_DIE)
+							{
+								if (level == MARIO_LEVEL_FOX)
+								{
+									level = MARIO_LEVEL_BIG;
+									StartUntouchable();
+								}
+								else
+									if (level == MARIO_LEVEL_BIG)
+									{
+										level = MARIO_LEVEL_SMALL;
+										StartUntouchable();
+									}
+									else
+									{
+										SetState(MARIO_STATE_DIE);
+									}
+							}
+						}
+					}
+			}
+
 			else
 			{
 				if (ny != 0 && state!= MARIO_STATE_DIE) vy = 0;
