@@ -187,6 +187,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 			{
 				if (e->ny > 0)
 				{
+					checkjumping = 1;
 					CBrickQuestion* brickQuestion = dynamic_cast<CBrickQuestion*>(e->obj);
 					int ids = CGame::GetInstance()->GetCurrentScene()->GetId();
 					if (brickQuestion->GetBefore())
@@ -706,13 +707,7 @@ void CMario::SetState(int state)
 		checkidle = true;
 		vx = 0;
 		break;
-	case MARIO_STATE_JUMP:
-		// TODO: need to check if Mario is *current* on a platform before allowing to jump again
-		checkjumping = 1;
-		vy = -MARIO_JUMP_SPEED_Y;
-		break;
-	case MARIO_STATE_JUMP_HIGH:
-		checkjumping = 1;
+	case MARIO_STATE_JUMP_HIGH: 
 		vy = -MARIO_JUMP_SPEED_Y_HIGH;
 		break;
 	case MARIO_STATE_DIE:

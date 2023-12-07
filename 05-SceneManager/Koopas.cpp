@@ -26,7 +26,12 @@ void CKoopas::CalcPotentialCollisions(vector<LPGAMEOBJECT>* coObjects, vector<LP
 		}
 		if (dynamic_cast<CGoomba*>(coObjects->at(i)))
 		{
-		if (GetState() != KOOPAS_STATE_THROW)
+			if (GetState() != KOOPAS_STATE_THROW || GetState() != KOOPAS_STATE_HOLD)
+				continue;
+		}
+		if (dynamic_cast<CGoombaPara*>(coObjects->at(i)))
+		{
+			if (GetState() != KOOPAS_STATE_THROW || GetState() != KOOPAS_STATE_HOLD)
 				continue;
 		}
 		if (dynamic_cast<CFireFlower*>(coObjects->at(i)))
@@ -83,12 +88,12 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 
 	coEvents.clear();
 
-	if (state == KOOPAS_STATE_DIE && GetTickCount() - isRevive > 3500) {
+	if ((state == KOOPAS_STATE_DIE || state ==KOOPAS_STATE_HOLD) && GetTickCount() - isRevive > 6500) {
 		y -= 11;
 		SetState(KOOPAS_STATE_WALKING);
 	}
 
-	if (state != KOOPAS_STATE_HOLD && state != KOOPAS_STATE_HIDE)
+	if ( state != KOOPAS_STATE_HIDE)
 		CalcPotentialCollisions(coObjects, coEvents);
 
 	float tempy = y + dy;
@@ -186,7 +191,7 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 				if (nx != 0) vx = -vx;
 				CBrickQuestion* brickQuestion = dynamic_cast<CBrickQuestion*>(e->obj);
 				if (brickQuestion->GetBefore() == true) {
-					brickQuestion->isJump = false;
+					brickQuestion->SetUp(true);
 					brickQuestion->SetAfter(true);
 					brickQuestion->SetState(BRICK_QUESTION_STATE_AFTER);
 					brickQuestion->SetBefore(false);

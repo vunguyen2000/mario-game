@@ -78,7 +78,6 @@ void CBrickQuestion::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 
 	if (status_after && isJump)
 	{
-		if (status != BRICK_QUESTION_STATUS_LEAF) {
 			if (check)
 			{
 				if (timeAni > BRICK_QUESTION_COUNT_TIME)
@@ -104,7 +103,6 @@ void CBrickQuestion::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 					status_before = false;
 				}
 			}
-		}
 	}
 
 	// No collision occured, proceed normally

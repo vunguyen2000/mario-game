@@ -31,7 +31,9 @@ void CGoomba::CalcPotentialCollisions(vector<LPGAMEOBJECT>* coObjects, vector<LP
 		}
 		if (dynamic_cast<CKoopas*>(coObjects->at(i)))
 		{
-			continue;
+			CKoopas* koopas = dynamic_cast<CKoopas*>(e->obj);
+			if (koopas->GetState() == KOOPAS_STATE_WALKING)
+				continue;
 		}
 		if (dynamic_cast<CMario*>(coObjects->at(i)))
 		{
@@ -79,7 +81,6 @@ void CGoomba::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 
 	coEvents.clear();
 
-	//Tính toán va ch?m
 	if (state != GOOMBA_STATE_DIE_DOWN && state != GOOMBA_STATE_DIE)
 		CalcPotentialCollisions(coObjects, coEvents);
 
@@ -107,7 +108,17 @@ void CGoomba::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		for (UINT i = 0; i < coEventsResult.size(); i++)
 		{
 			LPCOLLISIONEVENT e = coEventsResult[i];
-			if (nx != 0)
+			if (dynamic_cast<CKoopas*>(e->obj)) 
+			{
+				CKoopas* koopas = dynamic_cast<CKoopas*>(e->obj);
+				if (koopas->GetState() == KOOPAS_STATE_HOLD) {
+					SetState(GOOMBA_STATE_DIE);
+					koopas->SetState(KOOPAS_STATE_HIDE);
+				}
+				else if (koopas->GetState() == KOOPAS_STATE_THROW) {
+					SetState(GOOMBA_STATE_DIE);
+				}
+			}else if (nx != 0)
 			{
 				vx = -vx;
 			}

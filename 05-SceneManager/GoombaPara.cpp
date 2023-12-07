@@ -4,6 +4,7 @@
 #include <algorithm>
 #include "Mario.h"
 #include "PlayScene.h"
+#include "Koopas.h"
 CGoombaPara::CGoombaPara()
 {
 	SetState(GOOMBA_STATE_WALKING);
@@ -19,6 +20,12 @@ void CGoombaPara::CalcPotentialCollisions(vector<LPGAMEOBJECT>* coObjects, vecto
 		if (dynamic_cast<CGoomba*>(coObjects->at(i)))
 		{
 			continue;
+		}
+		if (dynamic_cast<CKoopas*>(coObjects->at(i)))
+		{
+			CKoopas* koopas = dynamic_cast<CKoopas*>(e->obj);
+			if (koopas->GetState() == KOOPAS_STATE_WALKING)
+				continue;
 		}
 
 		if (e->t > 0 && e->t <= 1.0f)
@@ -100,7 +107,18 @@ void CGoombaPara::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		for (UINT i = 0; i < coEventsResult.size(); i++)
 		{
 			LPCOLLISIONEVENT e = coEventsResult[i];
-			if (nx != 0)
+			if (dynamic_cast<CKoopas*>(e->obj))
+			{
+				CKoopas* koopas = dynamic_cast<CKoopas*>(e->obj);
+				if (koopas->GetState() == KOOPAS_STATE_HOLD) {
+					SetState(GOOMBA_STATE_DIE);
+					koopas->SetState(KOOPAS_STATE_HIDE);
+				}
+				else if (koopas->GetState() == KOOPAS_STATE_THROW) {
+					SetState(GOOMBA_STATE_DIE);
+				}
+			}
+				else if (nx != 0)
 			{
 				vx = -vx;
 			}
@@ -115,8 +133,8 @@ void CGoombaPara::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	CMario* mario = ((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->GetPlayer();
 	float limitRight = mario->x + 80;
 	float limitLeft = mario->x - 80;
-	if(x> limitRight) vx = -GOOMBA_WALKING_SPEED
-	if(x< limitLeft) vx = GOOMBA_WALKING_SPEED
+	if(x> limitRight && level == GOOMBA_LEVEL_JUMP) vx = -GOOMBA_WALKING_SPEED
+	if(x< limitLeft && level == GOOMBA_LEVEL_JUMP) vx = GOOMBA_WALKING_SPEED
 	
 }
 
