@@ -29,8 +29,8 @@
 #define MARIO_STATE_JUMP			300
 #define MARIO_STATE_JUMP_HIGH			310
 
-#define MARIO_JUMP_SPEED_Y		0.5f
-#define MARIO_JUMP_SPEED_Y_HIGH		0.625f
+#define MARIO_JUMP_SPEED_Y		0.4f
+#define MARIO_JUMP_SPEED_Y_HIGH		0.3f
 
 #define	MARIO_LEVEL_BIG		2
 
@@ -113,6 +113,7 @@ public:
 	int checkjumping = 0;
 	int untouchable;
 	bool checkidle = true;
+	DWORD timeLimitJump;
 	bool checkFree = false;
 	bool sit = false;
 	bool holdKoopas = false;
