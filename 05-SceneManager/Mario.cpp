@@ -391,6 +391,15 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 			}
 	}
 
+	if (GetTickCount() - attackCheck > MARIO_TIME_ATTACK)
+	{
+		if (attackCheck != 0)
+		{
+			attack = false;
+			attackCheck = 0;
+		}
+	}
+
 	// clean up collision events
 	for (UINT i = 0; i < coEvents.size(); i++) delete coEvents[i];
 
@@ -674,7 +683,27 @@ void CMario::Render()
 						ani = MARIO_ANI_FOX_JUMP_LEFT;
 					else ani = MARIO_ANI_FOX_JUMP_RIGHT;
 				}
-
+				if (holdKoopas == true && holdKoopasCol == true)
+				{
+					if (vx == 0)
+					{
+						if (nx > 0)
+							ani = MARIO_ANI_FOX_HOLDKOOPAS_RIGHT;
+						else
+							ani = MARIO_ANI_FOX_HOLDKOOPAS_LEFT;
+					}
+					else
+					{
+						if (vx > 0)
+							ani = MARIO_ANI_FOX_HOLDKOOPAS_WALK_RIGHT;
+						else
+							ani = MARIO_ANI_FOX_HOLDKOOPAS_WALK_LEFT;
+					}
+				}
+				else if (attack == true)
+				{
+					ani = MARIO_ANI_FOX_ATTACK;
+				}
 				else if (sit == true)
 				{
 					if (nx > 0)

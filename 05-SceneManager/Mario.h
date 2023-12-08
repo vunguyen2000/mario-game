@@ -79,9 +79,13 @@
 #define MARIO_ANI_FIRE_SIT_LEFT		48 
 #define MARIO_ANI_FOX_SIT_RIGHT		50 
 #define MARIO_ANI_FOX_SIT_LEFT		51 
-
+#define MARIO_ANI_FOX_HOLDKOOPAS_RIGHT		64
+#define MARIO_ANI_FOX_HOLDKOOPAS_LEFT		65 
+#define MARIO_ANI_FOX_HOLDKOOPAS_WALK_RIGHT		66
+#define MARIO_ANI_FOX_HOLDKOOPAS_WALK_LEFT		67 
 #define MARIO_ANI_FOX_LANDING_RIGHT		58
 #define MARIO_ANI_FOX_LANDING_LEFT		59 
+#define MARIO_ANI_FOX_ATTACK		45 
 
 #define MARIO_ANI_SMALL_RUN_RIGHT		23
 #define MARIO_ANI_SMALL_RUN_LEFT		24
@@ -96,6 +100,7 @@
 #define MARIO_STATE_FLY				501
 
 #define MARIO_WALKING_RUN_MAX		0.25f 
+#define MARIO_TIME_ATTACK	400
 #define LANDING_LIMIT 0.05
 #define LANDING_LIMIT_SPEED 0.04
 #define MARIO_UNTOUCHABLE_TIME 3000
@@ -122,6 +127,8 @@ public:
 	int stopRun = 0;	
 	bool flyCan = false;	//trạng thái bay
 	int timeFly = 0;	//kiểm tra thời gian bay
+	DWORD attackCheck = 0;
+	bool attack = false;	//trạng thái tấn công
 	CMario(float x = 0.0f, float y = 0.0f);
 	virtual void Update(DWORD dt, vector<LPGAMEOBJECT>* colliable_objects = NULL);
 	virtual void Render();

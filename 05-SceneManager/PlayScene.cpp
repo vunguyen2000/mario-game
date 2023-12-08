@@ -406,6 +406,12 @@ void CPlayScenceKeyHandler::OnKeyDown(int KeyCode)
 				mario->sit = true;
 				break;
 			case DIK_A:
+				if (mario->GetLevel() == MARIO_LEVEL_FOX)
+				{
+					mario->attackCheck = GetTickCount();
+					mario->attack = true;
+
+				}
 				mario->holdKoopas = true;
 				break;
 			}
@@ -433,6 +439,7 @@ void CPlayScenceKeyHandler::OnKeyUp(int KeyCode)
 				mario->holdKoopasCol = false;
 				mario->startRun = 0;
 				mario->stopRun = GetTickCount();
+				mario->attack = false;
 				break;
 			default:
 				break;
