@@ -150,6 +150,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 			if (e->ny < 0)
 			{
 				checkjumping = 0;
+				landingCheck = false;
 			}
 			if (dynamic_cast<CGoomba*>(e->obj)) // if e->obj is Goomba 
 			{
@@ -430,6 +431,15 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 	if (landingCheck == true)
 	{
 		SetState(MARIO_STATE_LANDING);
+	}
+
+	if (timeFly != 0 && GetTickCount() - timeFly > TIME_FLY)
+	{
+		flyCan = false;
+		landingCheck = true;
+		SetState(MARIO_STATE_LANDING);
+		timeFly = 0;
+		levelFly = 0;
 	}
 
 	if (startRun != 0)
