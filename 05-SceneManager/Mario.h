@@ -83,6 +83,8 @@
 #define MARIO_ANI_FOX_HOLDKOOPAS_LEFT		65 
 #define MARIO_ANI_FOX_HOLDKOOPAS_WALK_RIGHT		66
 #define MARIO_ANI_FOX_HOLDKOOPAS_WALK_LEFT		67 
+#define MARIO_ANI_FOX_FLY_RIGHT		56
+#define MARIO_ANI_FOX_FLY_LEFT		57 
 #define MARIO_ANI_FOX_LANDING_RIGHT		58
 #define MARIO_ANI_FOX_LANDING_LEFT		59 
 #define MARIO_ANI_FOX_ATTACK		45 
@@ -98,12 +100,17 @@
 
 #define MARIO_JUMP_DEFLECT_SPEED 0.3f
 #define MARIO_STATE_FLY				501
-
+#define MARIO_WALKING_FLY	0.1f 
+#define MARIO_STATE_LANDING				502
 #define MARIO_WALKING_RUN_MAX		0.25f 
 #define MARIO_TIME_ATTACK	400
+
+#define MARIO_FLY_LEVEL_SPEED 200
+#define MARIO_FLY_LEVEL 5
 #define LANDING_LIMIT 0.05
 #define LANDING_LIMIT_SPEED 0.04
 #define MARIO_UNTOUCHABLE_TIME 3000
+
 class CMario : public CGameObject
 {
 	int level;
@@ -127,6 +134,7 @@ public:
 	int stopRun = 0;	
 	bool flyCan = false;	//trạng thái bay
 	int timeFly = 0;	//kiểm tra thời gian bay
+	bool landingCheck = false;	//kiểm tra hạ cánh
 	DWORD attackCheck = 0;
 	bool attack = false;	//trạng thái tấn công
 	CMario(float x = 0.0f, float y = 0.0f);

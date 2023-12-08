@@ -99,7 +99,8 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 {
 	CGameObject::Update(dt);
 
-	vy += MARIO_GRAVITY * dt;
+	if (flyCan == false && landingCheck == false)
+		vy += MARIO_GRAVITY * dt;
 
 	vector<LPCOLLISIONEVENT> coEvents;
 	vector<LPCOLLISIONEVENT> coEventsResult;
@@ -426,6 +427,35 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 		}
 	}
 
+	if (landingCheck == true)
+	{
+		SetState(MARIO_STATE_LANDING);
+	}
+
+	if (startRun != 0)
+	{
+		if (holdKoopasCol != true)
+			if (GetTickCount() - startRun > MARIO_FLY_LEVEL_SPEED)
+			{
+				if (levelFly < MARIO_FLY_LEVEL)
+				{
+					levelFly++;
+				}
+				startRun = 0;
+			}
+	}
+	if (stopRun != 0 || landingCheck == true)
+	{
+		if (GetTickCount() - stopRun > MARIO_FLY_LEVEL_SPEED)
+		{
+			if (levelFly >= 0)
+			{
+				levelFly--;
+			}
+			stopRun = GetTickCount();
+		}
+	}
+
 	// clean up collision events
 	for (UINT i = 0; i < coEvents.size(); i++) delete coEvents[i];
 
@@ -730,6 +760,20 @@ void CMario::Render()
 				{
 					ani = MARIO_ANI_FOX_ATTACK;
 				}
+				else if (flyCan == true)
+				{
+					if (nx > 0)
+						ani = MARIO_ANI_FOX_FLY_RIGHT;
+					else
+						ani = MARIO_ANI_FOX_FLY_LEFT;
+				}
+				else if (landingCheck == true)
+				{
+					if (nx > 0)
+						ani = MARIO_ANI_FOX_LANDING_RIGHT;
+					else
+						ani = MARIO_ANI_FOX_LANDING_LEFT;
+				}
 				else if (sit == true)
 				{
 					if (nx > 0)
@@ -769,6 +813,14 @@ void CMario::SetState(int state)
 		timeReset = GetTickCount();
 		vy = -MARIO_DIE_DEFLECT_SPEED;
 		vx = 0;
+		break;
+	case MARIO_STATE_FLY:
+		vy = -MARIO_WALKING_FLY;
+		checkjumping = 1;
+		break;
+	case MARIO_STATE_LANDING:
+		vy = MARIO_WALKING_FLY;
+		checkjumping = 1;
 		break;
 	case MARIO_STATE_WALKING_RIGHT_FAST:
 		if (vx < MARIO_WALKING_RUN_MAX)

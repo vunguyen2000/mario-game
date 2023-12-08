@@ -391,15 +391,25 @@ void CPlayScenceKeyHandler::OnKeyDown(int KeyCode)
 			switch (KeyCode)
 			{
 			case DIK_S:
-				if (mario->checkjumping == 0 && mario->GetState() != MARIO_STATE_DIE)
+				if (mario->checkjumping == 1 && mario->GetState() != MARIO_STATE_DIE)
 				{
-					if (mario->GetSpeed() == 7 && mario->GetLevel() == MARIO_LEVEL_FOX)
+					if (mario->GetSpeed() == 5 && mario->GetLevel() == MARIO_LEVEL_FOX)
 					{
 						mario->flyCan = true;
 						mario->SetState(MARIO_STATE_FLY);
 						mario->timeFly = GetTickCount();
 					}
-				
+					else
+					{
+						mario->SetState(MARIO_STATE_JUMP);
+					}
+				}
+				else
+				{
+					if (mario->GetLevel() == MARIO_LEVEL_FOX)
+					{
+						mario->landingCheck = true;
+					}
 				}
 				break;
 			case DIK_DOWN:
@@ -440,6 +450,16 @@ void CPlayScenceKeyHandler::OnKeyUp(int KeyCode)
 				mario->startRun = 0;
 				mario->stopRun = GetTickCount();
 				mario->attack = false;
+				break;
+			case DIK_S:
+				if (mario->flyCan == true)
+				{
+					mario->SetState(MARIO_STATE_LANDING);
+					mario->landingCheck = true;
+				}
+				mario->flyCan = false;
+				mario->timeFly = 0;
+				mario->landingCheck = false;
 				break;
 			default:
 				break;
@@ -495,13 +515,15 @@ void CPlayScenceKeyHandler::KeyState(BYTE* states)
 			else
 				mario->SetState(MARIO_STATE_IDLE);
 		if (game->IsKeyDown(DIK_S)) {
-			if (GetTickCount() - mario->timeLimitJump < 200 && mario->checkjumping ==0) {
-				mario->SetState(MARIO_STATE_JUMP_HIGH);
-			}
-			else
-			{
-				mario->checkjumping = 1;
-				mario->timeLimitJump = GetTickCount();
+			if (mario->flyCan == false) {
+				if (GetTickCount() - mario->timeLimitJump < 200 && mario->checkjumping == 0) {
+					mario->SetState(MARIO_STATE_JUMP_HIGH);
+				}
+				else
+				{
+					mario->checkjumping = 1;
+					mario->timeLimitJump = GetTickCount();
+				}
 			}
 		}
 	}
