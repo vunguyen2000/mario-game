@@ -153,6 +153,13 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 			if (dynamic_cast<CGoomba*>(e->obj)) // if e->obj is Goomba 
 			{
 				CGoomba* goomba = dynamic_cast<CGoomba*>(e->obj);
+				if (level == MARIO_LEVEL_FOX && attack == true)
+				{
+					if (goomba->GetState() != GOOMBA_STATE_DIE)
+					{
+						goomba->SetState(GOOMBA_STATE_DIE_DOWN);
+					}
+				}else
 					if (e->ny < 0 )
 					{
 						if (goomba->GetState() != GOOMBA_STATE_DIE)
@@ -189,7 +196,6 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 				{
 					checkjumping = 1;
 					CBrickQuestion* brickQuestion = dynamic_cast<CBrickQuestion*>(e->obj);
-					int ids = CGame::GetInstance()->GetCurrentScene()->GetId();
 					if (brickQuestion->GetBefore())
 					{
 						brickQuestion->SetUp(true);
@@ -203,7 +209,6 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 						}
 						brickQuestion->SetState(BRICK_QUESTION_STATE_AFTER);
 					}
-
 				}
 			}
 			if (dynamic_cast<CEffect*>(e->obj))
@@ -221,21 +226,28 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 			if (dynamic_cast<CFlowerAttack*>(e->obj))
 			{
 				CFlowerAttack* flower = dynamic_cast<CFlowerAttack*>(e->obj);
-				
-							if (level == MARIO_LEVEL_BIG)
-							{
-								level = MARIO_LEVEL_SMALL;
-								StartUntouchable();
-							}
-							else if (level == MARIO_LEVEL_FOX)
-							{
-								level = MARIO_LEVEL_BIG;
-								StartUntouchable();
-							}
-							else
-							{
-								SetState(MARIO_STATE_DIE);
-							}
+				if (level == MARIO_LEVEL_FOX && attack == true)
+				{
+					flower->isDisAppear = true;
+				}
+				else {
+					if (untouchable == 0) {
+						if (level == MARIO_LEVEL_BIG)
+						{
+							level = MARIO_LEVEL_SMALL;
+							StartUntouchable();
+						}
+						else if (level == MARIO_LEVEL_FOX)
+						{
+							level = MARIO_LEVEL_BIG;
+							StartUntouchable();
+						}
+						else
+						{
+							SetState(MARIO_STATE_DIE);
+						}
+					}
+				}
 			}
 			if (dynamic_cast<CFireFlower*>(e->obj))
 			{
@@ -263,6 +275,13 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 				{
 					holdKoopasCol = true;
 					koopas->SetState(KOOPAS_STATE_HOLD);
+				}
+				else if (level == MARIO_LEVEL_FOX && attack == true)
+				{
+					if (koopas->GetState() != KOOPAS_STATE_HIDE)
+					{
+						koopas->SetState(KOOPAS_STATE_HIDE);
+					}
 				}
 				else if (e->ny < 0)
 				{
@@ -338,6 +357,13 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 			{
 				CGoombaPara* goomba = dynamic_cast<CGoombaPara*>(e->obj);
 					// jump on top >> kill Goomba and deflect a bit 
+				if (level == MARIO_LEVEL_FOX && attack == true)
+				{
+					if (goomba->GetState() != GOOMBA_STATE_DIE)
+					{
+						goomba->SetState(GOOMBA_STATE_DIE_DOWN);
+					}
+				}else
 					if (e->ny < 0)
 					{
 						if (goomba->GetState() != GOOMBA_STATE_DIE)
