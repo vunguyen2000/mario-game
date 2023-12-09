@@ -105,7 +105,7 @@
 #define MARIO_WALKING_RUN_MAX		0.25f 
 #define MARIO_TIME_ATTACK	400
 
-#define TIME_FLY	3000
+#define TIME_FLY	1500
 
 #define MARIO_FLY_LEVEL_SPEED 200
 #define MARIO_FLY_LEVEL 5
@@ -121,7 +121,6 @@ class CMario : public CGameObject
 	float camX_update = 0;
 	DWORD untouchable_start;
 	DWORD timeReset;
-	int levelFly = 0;
 
 public:
 	int checkjumping = 0;
@@ -137,6 +136,7 @@ public:
 	bool flyCan = false;	//trạng thái bay
 	int timeFly = 0;	//kiểm tra thời gian bay
 	bool landingCheck = false;	//kiểm tra hạ cánh
+	int levelFly = 0;
 	DWORD attackCheck = 0;
 	bool attack = false;	//trạng thái tấn công
 	CMario(float x = 0.0f, float y = 0.0f);

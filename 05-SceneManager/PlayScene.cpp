@@ -459,6 +459,7 @@ void CPlayScenceKeyHandler::OnKeyUp(int KeyCode)
 				}
 				mario->flyCan = false;
 				mario->timeFly = 0;
+				mario->levelFly = 0;
 				mario->landingCheck = false;
 				break;
 			default:

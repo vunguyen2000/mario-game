@@ -5,6 +5,7 @@
 #include "Mario.h"
 #include "PlayScene.h"
 #include "Koopas.h"
+#include "Box.h"
 CGoombaPara::CGoombaPara()
 {
 	SetState(GOOMBA_STATE_WALKING);
@@ -25,6 +26,11 @@ void CGoombaPara::CalcPotentialCollisions(vector<LPGAMEOBJECT>* coObjects, vecto
 		{
 			CKoopas* koopas = dynamic_cast<CKoopas*>(e->obj);
 			if (koopas->GetState() == KOOPAS_STATE_WALKING)
+				continue;
+		}
+		if (dynamic_cast<CBox*>(coObjects->at(i)))
+		{
+			if (e->ny > 0 || e->nx != 0)
 				continue;
 		}
 

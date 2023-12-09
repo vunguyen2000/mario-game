@@ -17,7 +17,7 @@
 #include "GoombaPara.h"
 CMario::CMario(float x, float y) : CGameObject()
 {
-	level = MARIO_LEVEL_FOX;
+	level = MARIO_LEVEL_SMALL;
 	untouchable = 0;
 	SetState(MARIO_STATE_IDLE);
 	start_x = x;
@@ -833,6 +833,7 @@ void CMario::SetState(int state)
 		checkjumping = 1;
 		break;
 	case MARIO_STATE_WALKING_RIGHT_FAST:
+
 		if (vx < MARIO_WALKING_RUN_MAX)
 		{
 			if (vx < -LANDING_LIMIT)//giới hạn tốc độ để mario lấy đà mượt hơn
