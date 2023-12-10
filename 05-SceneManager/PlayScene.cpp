@@ -13,6 +13,7 @@
 #include "FireFlower.h"
 #include "Koopas.h"
 #include "GoombaPara.h"
+#include "KoopasPara.h"
 using namespace std;
 
 CPlayScene::CPlayScene(int id, LPCWSTR filePath):
@@ -52,7 +53,7 @@ CPlayScene::CPlayScene(int id, LPCWSTR filePath):
 #define OBJECT_TYPE_BOX_START	40
 #define OBJECT_TYPE_BOX_END	41
 #define OBJECT_TYPE_BRICK_MUSHROOM_GREEN	12
-
+#define OBJECT_TYPE_KOOPAPARA	14
 #define MAX_SCENE_LINE 1024
 
 
@@ -201,6 +202,7 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 	case OBJECT_TYPE_FLOWER_FIRE:	  obj = new CFireFlower(); break;
 	case OBJECT_TYPE_KOOPAS: obj = new CKoopas(); break;
 	case OBJECT_TYPE_GOOMBAPARA:	  obj = new CGoombaPara(); break;
+	case OBJECT_TYPE_KOOPAPARA:	  obj = new CKoopasPara(); break;
 		break;
 	default:
 		DebugOut(L"[ERR] Invalid object type: %d\n", object_type);
