@@ -15,6 +15,7 @@
 #include "Koopas.h"
 #include "FlowerAttack.h"
 #include "GoombaPara.h"
+#include "KoopasPara.h"
 CMario::CMario(float x, float y) : CGameObject()
 {
 	level = MARIO_LEVEL_SMALL;
@@ -34,14 +35,14 @@ void CMario::CalcPotentialCollisions(vector<LPGAMEOBJECT>* coObjects, vector<LPC
 		LPCOLLISIONEVENT e = SweptAABBEx(coObjects->at(i));
 		if (dynamic_cast<CBox*>(coObjects->at(i)))
 		{
-			if(e->ny > 0 || e->nx !=0)
-			continue;
+			if (e->ny > 0 || e->nx != 0)
+				continue;
 		}
 		if (e->t > 0 && e->t <= 1.0f)
 		{
-			if(untouchable == 0)
-			coEvents.push_back(e);
-			else if(e->ny != 0  || dynamic_cast<CBrickQuestion*>(coObjects->at(i)))
+			if (untouchable == 0)
+				coEvents.push_back(e);
+			else if (e->ny != 0 || dynamic_cast<CBrickQuestion*>(coObjects->at(i)))
 			{
 				coEvents.push_back(e);
 			}
@@ -90,12 +91,12 @@ void CMario::FilterCollision(vector<LPCOLLISIONEVENT>& coEvents, vector<LPCOLLIS
 
 	if (min_ix >= 0) coEventsResult.push_back(coEvents[min_ix]);
 	if (min_iy >= 0) coEventsResult.push_back(coEvents[min_iy]);
-	
+
 }
 
 
 
-void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
+void CMario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 {
 	CGameObject::Update(dt);
 
@@ -120,9 +121,9 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 		untouchable_start = 0;
 		untouchable = 0;
 	}
-	
+
 	// No collision occured, proceed normally
-	if (coEvents.size() == 0 )
+	if (coEvents.size() == 0)
 	{
 		x += dx;
 		y += dy;
@@ -224,7 +225,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 					}
 				}
 				else
-					if (e->ny < 0 )
+					if (e->ny < 0)
 					{
 						if (goomba->GetState() != GOOMBA_STATE_DIE)
 						{
@@ -349,7 +350,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 				}
 				else if (e->ny < 0)
 				{
-					if ( koopas->GetState() != KOOPAS_STATE_DIE)
+					if (koopas->GetState() != KOOPAS_STATE_DIE)
 					{
 						koopas->SetState(KOOPAS_STATE_DIE);
 						vy = -MARIO_JUMP_DEFLECT_SPEED;
@@ -376,6 +377,25 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 					{
 						if (koopas->GetState() != KOOPAS_STATE_DIE)
 						{
+							if (level == MARIO_LEVEL_BIG)
+							{
+								level = MARIO_LEVEL_SMALL;
+								StartUntouchable();
+							}
+							else if (level == MARIO_LEVEL_FOX)
+							{
+								level = MARIO_LEVEL_BIG;
+								StartUntouchable();
+							}
+							else
+							{
+								SetState(MARIO_STATE_DIE);
+							}
+						}
+						else
+						{
+							if (koopas->vx != 0)
+							{
 								if (level == MARIO_LEVEL_BIG)
 								{
 									level = MARIO_LEVEL_SMALL;
@@ -390,25 +410,6 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 								{
 									SetState(MARIO_STATE_DIE);
 								}
-						}
-						else
-						{
-							if (koopas->vx != 0)
-							{
-									if (level == MARIO_LEVEL_BIG)
-									{
-										level = MARIO_LEVEL_SMALL;
-										StartUntouchable();
-									}
-									else if (level == MARIO_LEVEL_FOX)
-									{
-										level = MARIO_LEVEL_BIG;
-										StartUntouchable();
-									}
-									else
-									{
-										SetState(MARIO_STATE_DIE);
-									}
 							}
 							else
 							{
@@ -428,7 +429,109 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 					}
 				}
 			}
+			if (dynamic_cast<CKoopasPara*>(e->obj))
+			{
+				CKoopasPara* koopas = dynamic_cast<CKoopasPara*>(e->obj);
+				if (level == MARIO_LEVEL_FOX && attack == true)
+				{
+					if (koopas->GetState() != KOOPAS_STATE_HIDE)
+					{
+						koopas->SetState(KOOPAS_STATE_HIDE);
+					}
+				}
+				else
+					if (holdKoopas == true && koopas->GetState() == KOOPAS_STATE_DIE)
+					{
+						koopas->SetState(KOOPAS_STATE_HOLD);
+					}
+					else
+						if (e->ny < 0)
+						{
+							if (koopas->GetState() != KOOPAS_STATE_THROW)
+							{
+								if (koopas->GetState() != KOOPAS_STATE_DIE)
+								{
+									if (koopas->GetState() == KOOPAS_STATE_JUMP || koopas->GetState() == KOOPAS_STATE_VERTICAL)
+									{
+										koopas->SetState(KOOPAS_STATE_WALKING);
+									}
+									else if (koopas->GetState() == KOOPAS_STATE_WALKING)
+									{
+										koopas->SetState(KOOPAS_STATE_DIE);
+									}
+								}
+							}
+							else
+							{
+								koopas->SetState(KOOPAS_STATE_DIE);
+								koopas->vx = 0;
+							}
+							vy = -MARIO_JUMP_DEFLECT_SPEED;
+							vx = vx * 1.2;
+						}
+						else if (e->nx != 0)
+						{
+							if (untouchable == 0)
+							{
+								if (koopas->GetState() != KOOPAS_STATE_DIE)
+								{
+									if ( level == MARIO_LEVEL_FOX)
+									{
+										level = MARIO_LEVEL_BIG;
+										StartUntouchable();
+									}
+									else
+										if (level == MARIO_LEVEL_BIG)
+										{
+											level = MARIO_LEVEL_SMALL;
+											StartUntouchable();
+										}
+										else
+										{
+											SetState(MARIO_STATE_DIE);
+										}
+								}
+								else
+								{
+									if (koopas->vx != 0)
+									{
+										if (level == MARIO_LEVEL_FOX)
+										{
+											level = MARIO_LEVEL_BIG;
+											StartUntouchable();
+										}
+										else
+										{
+											if (level == MARIO_LEVEL_BIG)
+											{
+												level = MARIO_LEVEL_SMALL;
+												StartUntouchable();
+											}
+											else
+											{
+												SetState(MARIO_STATE_DIE);
+											}
+										}
+
+									}
+									else
+									{
+										if (nx > 0)
+										{
+											koopas->vx = -KOOPAS_RUN_SPEED;
+										}
+
+										else
+										{
+											koopas->vx = +KOOPAS_RUN_SPEED;
+										}
+
+									}
+								}
+							}
+						}
 			}
+		}
 	}
 
 	if (GetTickCount() - attackCheck > MARIO_TIME_ATTACK)
@@ -504,7 +607,7 @@ void CMario::Render()
 	int ani = -1;
 	if (state == MARIO_STATE_DIE)
 		ani = MARIO_ANI_DIE;
-	else{
+	else {
 		if (level == MARIO_LEVEL_BIG) {
 
 			if (vx == 0)
@@ -685,123 +788,123 @@ void CMario::Render()
 		}
 		else if (level == MARIO_LEVEL_FOX)
 		{
-				if (vx == 0)
+			if (vx == 0)
+			{
+				if (nx > 0) ani = MARIO_ANI_FOX_IDLE_RIGHT;
+				else ani = MARIO_ANI_FOX_IDLE_LEFT;
+			}
+			else if (vx > 0)
+			{
+				if (nx > 0)
 				{
-					if (nx > 0) ani = MARIO_ANI_FOX_IDLE_RIGHT;
-					else ani = MARIO_ANI_FOX_IDLE_LEFT;
-				}
-				else if (vx > 0)
-				{
-					if (nx > 0)
+					if (vx < MARIO_GEARING_MAX && checkidle != true)
 					{
-						if (vx < MARIO_GEARING_MAX && checkidle != true)
-						{
-							ani = MARIO_ANI_FOX_GEARING_RIGHT;
-						}
-						else
-						{
-							if (vx >= MARIO_GEARING_MAX)
-								checkidle = false;
-							if (state == MARIO_STATE_WALKING_RIGHT_FAST)
-								ani = MARIO_ANI_FOX_RUN_RIGHT;
-							else
-								ani = MARIO_ANI_FOX_WALKING_RIGHT;
-						}
+						ani = MARIO_ANI_FOX_GEARING_RIGHT;
 					}
 					else
 					{
-						if (vx < MARIO_GEARING_MAX)
-						{
-							ani = MARIO_ANI_FOX_GEARING_LEFT;
-						}
+						if (vx >= MARIO_GEARING_MAX)
+							checkidle = false;
+						if (state == MARIO_STATE_WALKING_RIGHT_FAST)
+							ani = MARIO_ANI_FOX_RUN_RIGHT;
 						else
-							if (state == MARIO_STATE_WALKING_LEFT_FAST)
-								ani = MARIO_ANI_FOX_RUN_LEFT;
-							else
-								ani = MARIO_ANI_FOX_WALKING_LEFT;
+							ani = MARIO_ANI_FOX_WALKING_RIGHT;
 					}
 				}
 				else
 				{
-					if (nx < 0)
+					if (vx < MARIO_GEARING_MAX)
 					{
-						if (vx > -0.051f && checkidle != true)
-						{
-							ani = MARIO_ANI_FOX_GEARING_LEFT;
-						}
-						else
-						{
-							if (vx < -0.051f)
-								checkidle = false;
-							if (state == MARIO_STATE_WALKING_LEFT_FAST)
-								ani = MARIO_ANI_FOX_RUN_LEFT;
-							else
-								ani = MARIO_ANI_FOX_WALKING_LEFT;
-						}
-
+						ani = MARIO_ANI_FOX_GEARING_LEFT;
 					}
 					else
-					{
-						if (vx > -0.051f)
-						{
-							ani = MARIO_ANI_FOX_GEARING_RIGHT;
-						}
+						if (state == MARIO_STATE_WALKING_LEFT_FAST)
+							ani = MARIO_ANI_FOX_RUN_LEFT;
 						else
-							if (state == MARIO_STATE_WALKING_RIGHT_FAST)
-								ani = MARIO_ANI_FOX_RUN_RIGHT;
-							else
-								ani = MARIO_ANI_FOX_WALKING_RIGHT;
-					}
-				}
-				if (checkjumping == 1)
-				{
-					if (nx < 0)
-						ani = MARIO_ANI_FOX_JUMP_LEFT;
-					else ani = MARIO_ANI_FOX_JUMP_RIGHT;
-				}
-				if (holdKoopas == true && holdKoopasCol == true)
-				{
-					if (vx == 0)
-					{
-						if (nx > 0)
-							ani = MARIO_ANI_FOX_HOLDKOOPAS_RIGHT;
-						else
-							ani = MARIO_ANI_FOX_HOLDKOOPAS_LEFT;
-					}
-					else
-					{
-						if (vx > 0)
-							ani = MARIO_ANI_FOX_HOLDKOOPAS_WALK_RIGHT;
-						else
-							ani = MARIO_ANI_FOX_HOLDKOOPAS_WALK_LEFT;
-					}
-				}
-				else if (attack == true)
-				{
-					ani = MARIO_ANI_FOX_ATTACK;
-				}
-				else if (flyCan == true)
-				{
-					if (nx > 0)
-						ani = MARIO_ANI_FOX_FLY_RIGHT;
-					else
-						ani = MARIO_ANI_FOX_FLY_LEFT;
-				}
-				else if (landingCheck == true)
-				{
-					if (nx > 0)
-						ani = MARIO_ANI_FOX_LANDING_RIGHT;
-					else
-						ani = MARIO_ANI_FOX_LANDING_LEFT;
-				}
-				else if (sit == true)
-				{
-					if (nx > 0)
-						ani = MARIO_ANI_FOX_SIT_RIGHT;
-					else
-						ani = MARIO_ANI_FOX_SIT_LEFT;
+							ani = MARIO_ANI_FOX_WALKING_LEFT;
 				}
 			}
+			else
+			{
+				if (nx < 0)
+				{
+					if (vx > -0.051f && checkidle != true)
+					{
+						ani = MARIO_ANI_FOX_GEARING_LEFT;
+					}
+					else
+					{
+						if (vx < -0.051f)
+							checkidle = false;
+						if (state == MARIO_STATE_WALKING_LEFT_FAST)
+							ani = MARIO_ANI_FOX_RUN_LEFT;
+						else
+							ani = MARIO_ANI_FOX_WALKING_LEFT;
+					}
+
+				}
+				else
+				{
+					if (vx > -0.051f)
+					{
+						ani = MARIO_ANI_FOX_GEARING_RIGHT;
+					}
+					else
+						if (state == MARIO_STATE_WALKING_RIGHT_FAST)
+							ani = MARIO_ANI_FOX_RUN_RIGHT;
+						else
+							ani = MARIO_ANI_FOX_WALKING_RIGHT;
+				}
+			}
+			if (checkjumping == 1)
+			{
+				if (nx < 0)
+					ani = MARIO_ANI_FOX_JUMP_LEFT;
+				else ani = MARIO_ANI_FOX_JUMP_RIGHT;
+			}
+			if (holdKoopas == true && holdKoopasCol == true)
+			{
+				if (vx == 0)
+				{
+					if (nx > 0)
+						ani = MARIO_ANI_FOX_HOLDKOOPAS_RIGHT;
+					else
+						ani = MARIO_ANI_FOX_HOLDKOOPAS_LEFT;
+				}
+				else
+				{
+					if (vx > 0)
+						ani = MARIO_ANI_FOX_HOLDKOOPAS_WALK_RIGHT;
+					else
+						ani = MARIO_ANI_FOX_HOLDKOOPAS_WALK_LEFT;
+				}
+			}
+			else if (attack == true)
+			{
+				ani = MARIO_ANI_FOX_ATTACK;
+			}
+			else if (flyCan == true)
+			{
+				if (nx > 0)
+					ani = MARIO_ANI_FOX_FLY_RIGHT;
+				else
+					ani = MARIO_ANI_FOX_FLY_LEFT;
+			}
+			else if (landingCheck == true)
+			{
+				if (nx > 0)
+					ani = MARIO_ANI_FOX_LANDING_RIGHT;
+				else
+					ani = MARIO_ANI_FOX_LANDING_LEFT;
+			}
+			else if (sit == true)
+			{
+				if (nx > 0)
+					ani = MARIO_ANI_FOX_SIT_RIGHT;
+				else
+					ani = MARIO_ANI_FOX_SIT_LEFT;
+			}
+		}
 	}
 	int alpha = 255;
 	if (untouchable) alpha = 128;
@@ -815,18 +918,18 @@ void CMario::SetState(int state)
 	switch (state)
 	{
 	case MARIO_STATE_WALKING_RIGHT:
-				vx = MARIO_WALKING_SPEED_PLUS1;
+		vx = MARIO_WALKING_SPEED_PLUS1;
 		nx = 1;
 		break;
 	case MARIO_STATE_WALKING_LEFT:
-				vx = -MARIO_WALKING_SPEED_PLUS1;
+		vx = -MARIO_WALKING_SPEED_PLUS1;
 		nx = -1;
 		break;
 	case MARIO_STATE_IDLE:
 		checkidle = true;
 		vx = 0;
 		break;
-	case MARIO_STATE_JUMP_HIGH: 
+	case MARIO_STATE_JUMP_HIGH:
 		vy = -MARIO_JUMP_SPEED_Y_HIGH;
 		break;
 	case MARIO_STATE_DIE:
@@ -871,7 +974,7 @@ void CMario::SetState(int state)
 
 }
 
-void CMario::GetBoundingBox(float &left, float &top, float &right, float &bottom)
+void CMario::GetBoundingBox(float& left, float& top, float& right, float& bottom)
 {
 	left = x;
 	top = y;
@@ -895,14 +998,14 @@ void CMario::GetBoundingBox(float &left, float &top, float &right, float &bottom
 		if (level != MARIO_LEVEL_SMALL)
 			bottom = y + MARIO_SIT_BBOX_HEIGHT;
 	}
-	if (state == MARIO_STATE_DIE ) {
+	if (state == MARIO_STATE_DIE) {
 		left = top = right = bottom = 0;
 	}
 }
 
-void CMario::Reset()	
+void CMario::Reset()
 {
-	if(GetTickCount()-timeReset>1000){
+	if (GetTickCount() - timeReset > 1000) {
 		SetState(MARIO_STATE_IDLE);
 		SetLevel(MARIO_LEVEL_SMALL);
 		SetPosition(start_x, start_y);
