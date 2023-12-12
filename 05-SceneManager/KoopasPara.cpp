@@ -1,4 +1,5 @@
 #include "KoopasPara.h"
+#include "Koopas.h"
 #include <algorithm>
 #include "PlayScene.h"
 #include "Game.h"
@@ -156,6 +157,25 @@ void CKoopasPara::SetState(int state)
 		{
 			vx = -KOOPAS_WALKING_SPEED;
 		}
+		break;
+	case KOOPAS_STATE_HOLD:
+		vx = 0;
+		vy = 0;
+		break;
+	case KOOPAS_STATE_HIDE:
+		vy = -KOOPAS_RUN_SPEED_Y;
+		break;
+	case KOOPAS_STATE_THROW:
+		if (mario->nx > 0)
+		{
+			vx = KOOPAS_RUN_SPEED;
+			nx = 1;
+		}
+		else { vx = -KOOPAS_RUN_SPEED; nx = -1; }
+		break;
+	case KOOPAS_STATE_DIE:
+		vx = 0;
+		vy = 0;
 		break;
 	}
 }

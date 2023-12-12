@@ -19,6 +19,8 @@
 #define KOOPASPARA_ANI_TURN 4
 
 
+
+
 #define KOOPAS_TIME_JUMP 2000
 class CKoopasPara :public CGameObject
 {
