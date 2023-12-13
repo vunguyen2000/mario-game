@@ -2071,7 +2071,7 @@
 
 
 # MARIOOBJECT
-0	1400	20	1
+0	1490	20	1
 
 
 # --- SCENE PORTAL ----

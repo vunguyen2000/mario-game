@@ -80,7 +80,7 @@ void CKoopasPara::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 
 		FilterCollision(coEvents, coEventsResult, min_tx, min_ty, nx, ny, rdx, rdy);
 
-		if (state != KOOPAS_STATE_HIDE)
+		if (state != KOOPAS_STATE_DIE && state != KOOPAS_STATE_HIDE)
 		{
 			x += min_tx * dx + nx * 0.4f;
 			if (nx < 0)
@@ -121,8 +121,17 @@ void CKoopasPara::Render()
 
 	int ids = CGame::GetInstance()->GetCurrentScene()->GetId();
 	int ani = KOOPASPARA_ANI_WALKING_LEFT;
-
-	if (state == KOOPAS_STATE_JUMP)
+	if (state == KOOPAS_STATE_DIE) {
+		if (vx != 0)
+		{
+				ani = KOOPASPARA_ANI_TURN;
+		}
+		else
+		{
+				ani = KOOPASPARA_ANI_DIE;
+		}
+	} 
+	else if (state == KOOPAS_STATE_JUMP)
 	{
 		if (vx > 0) ani = KOOPASPARA_ANI_JUMP_RIGHT;
 		else if (vx < 0) ani = KOOPASPARA_ANI_JUMP_LEFT;
