@@ -35,6 +35,8 @@ void CKoopasPara::GetBoundingBox(float& left, float& top, float& right, float& b
 
 	if (state == KOOPAS_STATE_WALKING || state == KOOPAS_STATE_JUMP)
 		bottom = y + KOOPAS_BBOX_HEIGHT;
+	else
+		bottom = y + KOOPAS_BBOX_HEIGHT_DIE;
 	if (state == KOOPAS_STATE_HIDE)
 	{
 		left = top = right = bottom = 0;
@@ -55,14 +57,21 @@ void CKoopasPara::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 
 	CGameObject::Update(dt);
 
+	if (state != KOOPAS_STATE_HOLD)
 	vy += dt * KOOPAS_GRAVITY;
 
 	vector<LPCOLLISIONEVENT> coEvents;
 	vector<LPCOLLISIONEVENT> coEventsResult;
 
+	if ((state == KOOPAS_STATE_DIE || state == KOOPAS_STATE_HOLD) && GetTickCount() - isRevive > 6500) {
+		y -= 11;
+		SetState(KOOPAS_STATE_WALKING);
+	}
+
 	coEvents.clear();
 
-	CalcPotentialCollisions(coObjects, coEvents);
+	if (state != KOOPAS_STATE_HOLD && state != KOOPAS_STATE_HIDE)
+		CalcPotentialCollisions(coObjects, coEvents);
 
 	float tempy = y + dy;
 	// No collision occured, proceed normally
@@ -80,7 +89,7 @@ void CKoopasPara::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 
 		FilterCollision(coEvents, coEventsResult, min_tx, min_ty, nx, ny, rdx, rdy);
 
-		if (state != KOOPAS_STATE_DIE && state != KOOPAS_STATE_HIDE)
+		if (state != KOOPAS_STATE_DIE && state != KOOPAS_STATE_HIDE && state != KOOPAS_STATE_THROW)
 		{
 			x += min_tx * dx + nx * 0.4f;
 			if (nx < 0)
@@ -115,6 +124,58 @@ void CKoopasPara::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		x = 5;
 		vx = -vx;
 	}
+	if (state == KOOPAS_STATE_HOLD)
+	{
+		if (mario->holdKoopas == true)
+		{
+			if (mario->GetLevel() != MARIO_LEVEL_SMALL)
+			{
+				if (mario->GetLevel() == MARIO_LEVEL_FOX)
+				{
+					if (mario->nx > 0)
+					{
+						x = mario->x + MARIO_FOX_BBOX_WIDTH;
+						y = mario->y + MARIO_BIG_BBOX_HEIGHT / 5;
+					}
+					else
+					{
+						x = mario->x - KOOPAS_BBOX_WIDTH;
+						y = mario->y + MARIO_BIG_BBOX_HEIGHT / 5;
+					}
+				}
+				else
+				{
+					if (mario->nx > 0)
+					{
+						x = mario->x + MARIO_BIG_BBOX_WIDTH;
+						y = mario->y + MARIO_BIG_BBOX_HEIGHT / 5;
+					}
+					else
+					{
+						x = mario->x - KOOPAS_BBOX_WIDTH;
+						y = mario->y + MARIO_BIG_BBOX_HEIGHT / 5;
+					}
+				}
+			}
+			else
+			{
+				if (mario->nx > 0)
+				{
+					x = mario->x + MARIO_BIG_BBOX_WIDTH + 2;
+					y = mario->y - MARIO_BIG_BBOX_HEIGHT / 5;
+				}
+				else
+				{
+					x = mario->x - KOOPAS_BBOX_WIDTH - 3;
+					y = mario->y - MARIO_BIG_BBOX_HEIGHT / 5;
+				}
+			}
+		}
+		else
+		{
+			SetState(KOOPAS_STATE_THROW);
+		}
+	}
 }
 void CKoopasPara::Render()
 {
@@ -124,13 +185,17 @@ void CKoopasPara::Render()
 	if (state == KOOPAS_STATE_DIE) {
 		if (vx != 0)
 		{
-				ani = KOOPASPARA_ANI_TURN;
+			ani = KOOPASPARA_ANI_TURN;
 		}
 		else
 		{
-				ani = KOOPASPARA_ANI_DIE;
+			ani = KOOPASPARA_ANI_DIE;
 		}
-	} 
+	}
+	else if (state == KOOPAS_STATE_THROW)
+	{
+		ani = KOOPASPARA_ANI_TURN;
+	}
 	else if (state == KOOPAS_STATE_JUMP)
 	{
 		if (vx > 0) ani = KOOPASPARA_ANI_JUMP_RIGHT;
@@ -185,6 +250,8 @@ void CKoopasPara::SetState(int state)
 	case KOOPAS_STATE_DIE:
 		vx = 0;
 		vy = 0;
+		isRevive = GetTickCount();
 		break;
 	}
+
 }

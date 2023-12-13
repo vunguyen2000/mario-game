@@ -451,13 +451,27 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 							{
 								if (koopas->GetState() != KOOPAS_STATE_DIE)
 								{
-									if (koopas->GetState() == KOOPAS_STATE_JUMP || koopas->GetState() == KOOPAS_STATE_VERTICAL)
+									if (koopas->GetState() == KOOPAS_STATE_JUMP)
 									{
 										koopas->SetState(KOOPAS_STATE_WALKING);
 									}
 									else if (koopas->GetState() == KOOPAS_STATE_WALKING)
 									{
 										koopas->SetState(KOOPAS_STATE_DIE);
+									}
+								}
+								else {
+									koopas->SetState(KOOPAS_STATE_THROW);
+									if (nx > 0)
+									{
+										koopas->vx = -KOOPAS_RUN_SPEED;
+										koopas->x -= 16;
+									}
+
+									else
+									{
+										koopas->vx = +KOOPAS_RUN_SPEED;
+										koopas->x += 16;
 									}
 								}
 							}
@@ -475,7 +489,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 							{
 								if (koopas->GetState() != KOOPAS_STATE_DIE)
 								{
-									if ( level == MARIO_LEVEL_FOX)
+									if (level == MARIO_LEVEL_FOX)
 									{
 										level = MARIO_LEVEL_BIG;
 										StartUntouchable();
@@ -516,6 +530,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 									}
 									else
 									{
+										koopas->SetState(KOOPAS_STATE_THROW);
 										if (nx > 0)
 										{
 											koopas->vx = -KOOPAS_RUN_SPEED;
