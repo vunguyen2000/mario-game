@@ -4,6 +4,8 @@
 #include "PlayScene.h"
 #include "Game.h"
 #include "Box.h"
+#include "GoombaPara.h"
+#include "BrickQuestion.h"
 
 CKoopasPara::CKoopasPara()
 {
@@ -17,6 +19,26 @@ void CKoopasPara::CalcPotentialCollisions(vector<LPGAMEOBJECT>* coObjects, vecto
 	for (UINT i = 0; i < coObjects->size(); i++)
 	{
 		LPCOLLISIONEVENT e = SweptAABBEx(coObjects->at(i));
+		if (dynamic_cast<CBox*>(coObjects->at(i)))
+		{
+			if (e->nx != 0)
+				continue;
+		}
+		if (dynamic_cast<CGoomba*>(coObjects->at(i)))
+		{
+			if (GetState() != KOOPAS_STATE_THROW || GetState() != KOOPAS_STATE_HOLD)
+				continue;
+		}
+		if (dynamic_cast<CGoombaPara*>(coObjects->at(i)))
+		{
+			if (GetState() != KOOPAS_STATE_THROW || GetState() != KOOPAS_STATE_HOLD)
+				continue;
+		}
+		if (dynamic_cast<CMario*>(coObjects->at(i)))
+		{
+			CMario* brickQuestion = dynamic_cast<CMario*>(e->obj);
+			continue;
+		}
 		if (e->t > 0 && e->t <= 1.0f)
 			coEvents.push_back(e);
 		else
@@ -58,7 +80,7 @@ void CKoopasPara::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	CGameObject::Update(dt);
 
 	if (state != KOOPAS_STATE_HOLD)
-	vy += dt * KOOPAS_GRAVITY;
+		vy += dt * KOOPAS_GRAVITY;
 
 	vector<LPCOLLISIONEVENT> coEvents;
 	vector<LPCOLLISIONEVENT> coEventsResult;
@@ -114,6 +136,44 @@ void CKoopasPara::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 				if (nx != 0)
 				{
 					vx = -vx;
+				}
+			}
+			if (dynamic_cast<CGoomba*>(e->obj)) // 
+			{
+				CGoomba* goomba = dynamic_cast<CGoomba*>(e->obj);
+
+				if (goomba->GetState() != GOOMBA_STATE_DIE)
+				{
+					goomba->SetState(GOOMBA_STATE_DIE);
+				}
+			}
+			if (dynamic_cast<CBrickQuestion*>(e->obj))
+			{
+				if (nx != 0) vx = -vx;
+				CBrickQuestion* brickQuestion = dynamic_cast<CBrickQuestion*>(e->obj);
+				if (brickQuestion->GetBefore() == true) {
+					brickQuestion->SetUp(true);
+					brickQuestion->SetAfter(true);
+					brickQuestion->SetState(BRICK_QUESTION_STATE_AFTER);
+					brickQuestion->SetBefore(false);
+				}
+			}
+			if (dynamic_cast<CKoopas*>(e->obj)) // 
+			{
+				CKoopas* koopas = dynamic_cast<CKoopas*>(e->obj);
+
+				if (koopas->GetState() != KOOPAS_STATE_THROW)
+				{
+					koopas->SetState(KOOPAS_STATE_HIDE);
+				}
+			}
+			if (dynamic_cast<CKoopasPara*>(e->obj)) // 
+			{
+				CKoopasPara* koopasPara = dynamic_cast<CKoopasPara*>(e->obj);
+
+				if (koopasPara->GetState() != KOOPAS_STATE_THROW)
+				{
+					koopasPara->SetState(KOOPAS_STATE_HIDE);
 				}
 			}
 		}
@@ -179,8 +239,6 @@ void CKoopasPara::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 }
 void CKoopasPara::Render()
 {
-
-	int ids = CGame::GetInstance()->GetCurrentScene()->GetId();
 	int ani = KOOPASPARA_ANI_WALKING_LEFT;
 	if (state == KOOPAS_STATE_DIE) {
 		if (vx != 0)
@@ -200,6 +258,10 @@ void CKoopasPara::Render()
 	{
 		if (vx > 0) ani = KOOPASPARA_ANI_JUMP_RIGHT;
 		else if (vx < 0) ani = KOOPASPARA_ANI_JUMP_LEFT;
+	}
+	else if (state == KOOPAS_STATE_HOLD)
+	{
+		ani = KOOPASPARA_ANI_DIE;
 	}
 	else
 	{

@@ -41,7 +41,7 @@ void CKoopas::CalcPotentialCollisions(vector<LPGAMEOBJECT>* coObjects, vector<LP
 		if (dynamic_cast<CMario*>(coObjects->at(i)))
 		{
 			CMario* brickQuestion = dynamic_cast<CMario*>(e->obj);
-				continue;
+			continue;
 		}
 		if (e->t > 0 && e->t <= 1.0f)
 			coEvents.push_back(e);
@@ -88,12 +88,12 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 
 	coEvents.clear();
 
-	if ((state == KOOPAS_STATE_DIE || state ==KOOPAS_STATE_HOLD) && GetTickCount() - isRevive > 6500) {
+	if ((state == KOOPAS_STATE_DIE || state == KOOPAS_STATE_HOLD) && GetTickCount() - isRevive > 6500) {
 		y -= 11;
 		SetState(KOOPAS_STATE_WALKING);
 	}
 
-	if ( state != KOOPAS_STATE_HIDE)
+	if (state != KOOPAS_STATE_HIDE)
 		CalcPotentialCollisions(coObjects, coEvents);
 
 	float tempy = y + dy;
@@ -110,9 +110,9 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		FilterCollision(coEvents, coEventsResult, min_tx, min_ty, nx, ny, rdx, rdy);
 		if (state != KOOPAS_STATE_DIE && state != KOOPAS_STATE_THROW && state != KOOPAS_STATE_HIDE)
 		{
-		x += min_tx * dx + nx * 0.4f;
-		if (nx < 0)
-			y += min_ty * dy + ny * 0.4f;
+			x += min_tx * dx + nx * 0.4f;
+			if (nx < 0)
+				y += min_ty * dy + ny * 0.4f;
 		}
 
 		if (ny != 0) {
@@ -130,7 +130,7 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 					x += dx;
 				}
 				else {
-					if (state != KOOPAS_STATE_DIE && state !=KOOPAS_STATE_THROW )
+					if (state != KOOPAS_STATE_DIE && state != KOOPAS_STATE_THROW)
 					{
 						if (box->GetStatus() == BOX_STATUS_START) {
 							if (x < box->x) {
@@ -138,7 +138,7 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 								vx = -vx;
 							}
 							else {
-						/*		x += dx;*/
+								/*		x += dx;*/
 							}
 						}
 						else if (box->GetStatus() == BOX_STATUS_END) {
@@ -147,7 +147,7 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 								vx = -vx;
 							}
 							else {
-						/*		x += dx;*/
+								/*		x += dx;*/
 							}
 						}
 					}
@@ -212,33 +212,33 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		{
 			if (mario->GetLevel() != MARIO_LEVEL_SMALL)
 			{
-				
-					if (mario->GetLevel() == MARIO_LEVEL_FOX)
+
+				if (mario->GetLevel() == MARIO_LEVEL_FOX)
+				{
+					if (mario->nx > 0)
 					{
-						if (mario->nx > 0)
-						{
-							x = mario->x + MARIO_FOX_BBOX_WIDTH;
-							y = mario->y + MARIO_BIG_BBOX_HEIGHT / 5;
-						}
-						else
-						{
-							x = mario->x - KOOPAS_BBOX_WIDTH;
-							y = mario->y + MARIO_BIG_BBOX_HEIGHT / 5;
-						}
+						x = mario->x + MARIO_FOX_BBOX_WIDTH;
+						y = mario->y + MARIO_BIG_BBOX_HEIGHT / 5;
 					}
 					else
 					{
-						if (mario->nx > 0)
-						{
-							x = mario->x + MARIO_BIG_BBOX_WIDTH;
-							y = mario->y + MARIO_BIG_BBOX_HEIGHT / 5;
-						}
-						else
-						{
-							x = mario->x - KOOPAS_BBOX_WIDTH;
-							y = mario->y + MARIO_BIG_BBOX_HEIGHT / 5;
-						}
+						x = mario->x - KOOPAS_BBOX_WIDTH;
+						y = mario->y + MARIO_BIG_BBOX_HEIGHT / 5;
 					}
+				}
+				else
+				{
+					if (mario->nx > 0)
+					{
+						x = mario->x + MARIO_BIG_BBOX_WIDTH;
+						y = mario->y + MARIO_BIG_BBOX_HEIGHT / 5;
+					}
+					else
+					{
+						x = mario->x - KOOPAS_BBOX_WIDTH;
+						y = mario->y + MARIO_BIG_BBOX_HEIGHT / 5;
+					}
+				}
 			}
 			else
 			{
@@ -275,33 +275,33 @@ void CKoopas::Render()
 		{
 			ani = KOOPAS_ANI_DIE;
 		}
-	if (vx != 0)
-	{
+		if (vx != 0)
+		{
 
-		ani = KOOPAS_ANI_TURN;
-	}
-	else
-	{
-		ani = KOOPAS_ANI_DIE;
-	}
+			ani = KOOPAS_ANI_TURN;
+		}
+		else
+		{
+			ani = KOOPAS_ANI_DIE;
+		}
 	}
 	else if (state == KOOPAS_STATE_THROW)
 	{
-			ani = KOOPAS_ANI_TURN;
+		ani = KOOPAS_ANI_TURN;
 	}
 	else if
 		(vx > 0)
 	{
-			ani = 5;
-			ani = KOOPAS_ANI_WALKING_RIGHT;
+		ani = 5;
+		ani = KOOPAS_ANI_WALKING_RIGHT;
 	}
 	else if (vx < 0)
 	{
-			ani = KOOPAS_ANI_WALKING_LEFT;
+		ani = KOOPAS_ANI_WALKING_LEFT;
 	}
 	else if (state == KOOPAS_STATE_HOLD)
 	{
-			ani = KOOPAS_ANI_DIE;
+		ani = KOOPAS_ANI_DIE;
 	}
 
 	animation_set->at(ani)->Render(x, y);

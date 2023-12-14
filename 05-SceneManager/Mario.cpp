@@ -18,7 +18,7 @@
 #include "KoopasPara.h"
 CMario::CMario(float x, float y) : CGameObject()
 {
-	level = MARIO_LEVEL_SMALL;
+	level = MARIO_LEVEL_FOX;
 	untouchable = 0;
 	SetState(MARIO_STATE_IDLE);
 	start_x = x;
@@ -358,16 +358,16 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 					else
 					{
 						koopas->SetState(KOOPAS_STATE_THROW);
-						if (nx > 0)
+						if (this->nx > 0)
 						{
-							koopas->vx = -KOOPAS_RUN_SPEED;
-							koopas->x -= 16;
+							koopas->vx = KOOPAS_RUN_SPEED;
+							koopas->x = 16;
 						}
 
 						else
 						{
-							koopas->vx = +KOOPAS_RUN_SPEED;
-							koopas->x += 16;
+							koopas->vx = -KOOPAS_RUN_SPEED;
+							koopas->x -= 16;
 						}
 					}
 				}
@@ -440,8 +440,9 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 					}
 				}
 				else
-					if (holdKoopas == true && koopas->GetState() == KOOPAS_STATE_DIE)
+					if (holdKoopas == true && koopas->GetState() == KOOPAS_STATE_DIE && holdKoopasCol == false)
 					{
+						holdKoopasCol = true;
 						koopas->SetState(KOOPAS_STATE_HOLD);
 					}
 					else
@@ -462,16 +463,16 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 								}
 								else {
 									koopas->SetState(KOOPAS_STATE_THROW);
-									if (nx > 0)
+									if (this->nx > 0)
 									{
-										koopas->vx = -KOOPAS_RUN_SPEED;
-										koopas->x -= 16;
+										koopas->vx = KOOPAS_RUN_SPEED;
+										koopas->x += 16;
 									}
 
 									else
 									{
-										koopas->vx = +KOOPAS_RUN_SPEED;
-										koopas->x += 16;
+										koopas->vx = -KOOPAS_RUN_SPEED;
+										koopas->x -= 16;
 									}
 								}
 							}
@@ -647,7 +648,6 @@ void CMario::Render()
 						else
 							ani = MARIO_ANI_BIG_WALKING_RIGHT;
 					}
-
 				}
 				else
 				{
