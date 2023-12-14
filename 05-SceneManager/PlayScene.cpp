@@ -203,6 +203,7 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 	case OBJECT_TYPE_GOOMBAPARA:	  obj = new CGoombaPara(); break;
 	case OBJECT_TYPE_KOOPASPARA:	  obj = new CKoopasPara(); break;
 		break;
+	case OBJECT_TYPE_COIN: obj = new CCoin(COIN); break;
 	default:
 		DebugOut(L"[ERR] Invalid object type: %d\n", object_type);
 		return;
