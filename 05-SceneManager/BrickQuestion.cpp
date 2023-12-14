@@ -185,6 +185,18 @@ void CBrickQuestion::SetState(int state)
 			}
 			break;
 		}
+		case BRICK_QUESTION_STATUS_MUSHROOM_GREEN:
+		{
+			CMushRoom* mushroom = new CMushRoom();
+			mushroom->green = true;
+			mushroom->x = x;
+			mushroom->y = y - MUSHROOM_BBOX_HEIGHT * BRICK_QUESTION_MUSHROOM;
+			mushroom->vx = -MUSHROOM_SPEED;
+			LPANIMATION_SET ani_set = animation_sets->Get(6023);
+			mushroom->SetAnimationSet(ani_set);
+			((CPlayScene*)scene)->addObject(mushroom);
+			break;
+		}
 		default:
 			break;
 		}

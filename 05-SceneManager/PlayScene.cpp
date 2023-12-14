@@ -204,6 +204,7 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 	case OBJECT_TYPE_KOOPASPARA:	  obj = new CKoopasPara(); break;
 		break;
 	case OBJECT_TYPE_COIN: obj = new CCoin(COIN); break;
+	case OBJECT_TYPE_BRICK_QUESTION_SPECIAL_GREEN:	  obj = new CBrickQuestion(BRICK_QUESTION_STATUS_MUSHROOM_GREEN); break;
 	default:
 		DebugOut(L"[ERR] Invalid object type: %d\n", object_type);
 		return;
