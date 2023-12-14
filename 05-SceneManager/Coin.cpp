@@ -1,6 +1,7 @@
 #include "Coin.h"
 #include "BrickQuestion.h"
 #include <algorithm>
+#include "Koopas.h"
 
 
 #define COIN_BBOX_WIDTH  10
@@ -33,6 +34,11 @@ void CCoin::CalcPotentialCollisions(vector<LPGAMEOBJECT>* coObjects, vector<LPCO
 	{
 		LPCOLLISIONEVENT e = SweptAABBEx(coObjects->at(i));
 		if (dynamic_cast<CCoin*>(coObjects->at(i)))
+		{
+			continue;
+		}
+
+		if (dynamic_cast<CKoopas*>(coObjects->at(i)))
 		{
 			continue;
 		}

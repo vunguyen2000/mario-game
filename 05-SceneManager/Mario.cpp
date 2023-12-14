@@ -547,6 +547,11 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 							}
 						}
 			}
+			if (dynamic_cast<CCoin*>(e->obj))
+			{
+				CCoin* coin = dynamic_cast<CCoin*>(e->obj);
+				coin->SetState(COIN_STATE_HIDE);
+			}
 		}
 	}
 
