@@ -44,53 +44,105 @@ void CFlowerAttack::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	}
 
 	coEvents.clear();
-	if (Up)
+	switch (status)
 	{
-		if (isTime == 0)
+	case FLOWER_RED:
+		if (Up)
 		{
-			Appear();
-			isTimeAgain = GetTickCount();
-		}
-		if (GetTickCount() - isTime <= 3000)
-		{
-			vy = -0.02f;
-			if (y <= 71)
+			if (isTime == 0)
 			{
-				vy = 0;
-				shooting = true;
-				Attack(coObjects);
+				Appear();
+				isTimeAgain = GetTickCount();
+			}
+			if (GetTickCount() - isTime <= 3000)
+			{
+				vy = -0.02f;
+				if (y <= 71)
+				{
+					vy = 0;
+					shooting = true;
+					Attack(coObjects);
+				}
+			}
+			else
+			{
+				if (y <= 71)
+					isTimeAgain = 0;
+				isTime = 0;
+				Up = false;
+				shooting = false;
+				shooted = false;
 			}
 		}
 		else
 		{
-			if (y <= 71)
-		isTimeAgain = 0;
-			isTime = 0;
-			Up = false;
-			shooting = false;
-			shooted = false;
-		}
-	}
-	else
-	{
-		if (isTime == 0)
-		{
-			Appear();
-		}
-		if (GetTickCount() - isTime <= 3000)
-		{
-			vy = 0.02f;
-			if (y >= 117)
+			if (isTime == 0)
 			{
-				vy = 0;
+				Appear();
+			}
+			if (GetTickCount() - isTime <= 3000)
+			{
+				vy = 0.02f;
+				if (y >= 117)
+				{
+					vy = 0;
+				}
+			}
+			else
+			{
+				isTimeAgain = 1;
+				Up = true;
+				isTime = 0;
+			}
+		}
+		break;
+	case FLOWER_GREEN:
+		if (Up)
+		{
+			if (isTime == 0)
+			{
+				Appear();
+				isTimeAgain = GetTickCount();
+			}
+			if (GetTickCount() - isTime <= 2000)
+			{
+				vy = -0.02f;
+				if (y <= 78)
+				{
+					vy = 0;
+					shooting = true;
+					Attack(coObjects);
+				}
+			}
+			else
+			{
+				isTime = 0;
+				Up = false;
+				isTimeAgain = 0;
+				shooting = false;
+				shooted = false;
 			}
 		}
 		else
 		{
-			isTimeAgain = 1;
-			Up = true;
-			isTime = 0;
+			if (isTime == 0)
+				Appear();
+			if (GetTickCount() - isTime <= 2000)
+			{
+				vy = 0.02f;
+				if (this->y >= 102)
+				{
+					vy = 0;
+				}
+			}
+			else
+			{
+				isTimeAgain = 1;
+				Up = true;
+				isTime = 0;
+			}
 		}
+		break;
 	}
 	if (coEvents.size() == 0)
 	{
@@ -105,58 +157,118 @@ void CFlowerAttack::Render()
 {
 	int ani = -1;
 	CMario* mario = ((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->GetPlayer();
-	if (mario->x <= x)
+
+	switch (status)
 	{
-		if (mario->y >= y)
+	case FLOWER_RED:
+		if (mario->x <= x)
 		{
-			if (vy == 0)
+			if (mario->y >= y)
 			{
-				ani = FLOWER_RED_ANI_LEFT_DOWN;
+				if (vy == 0)
+				{
+					ani = FLOWER_RED_ANI_LEFT_DOWN;
+				}
+				else
+				{
+					ani = FLOWER_RED_ANI_LEFT_UP;
+				}
+
 			}
 			else
 			{
-				ani = FLOWER_RED_ANI_LEFT_UP;
+				if (vy == 0)
+				{
+					ani = FLOWER_RED_ANI_LEFT_UP;
+				}
+				else
+				{
+					ani = FLOWER_RED_ANI_LEFT_UP;
+				}
 			}
 
 		}
 		else
 		{
-			if (vy == 0)
+			if (mario->y >= y)
 			{
-				ani = FLOWER_RED_ANI_LEFT_UP;
+				if (vy == 0)
+				{
+					ani = FLOWER_RED_ANI_RIGHT_DOWN;
+				}
+				else
+				{
+					ani = FLOWER_RED_ANI_LEFT_UP;
+				}
+
 			}
 			else
 			{
-				ani = FLOWER_RED_ANI_LEFT_UP;
+				if (vy == 0)
+				{
+					ani = FLOWER_RED_ANI_RIGHT_UP;
+				}
+				else
+				{
+					ani = FLOWER_RED_ANI_RIGHT_UP;
+				}
 			}
 		}
-
-	}
-	else
-	{
-		if (mario->y >= y)
+	case FLOWER_GREEN:
+		if (mario->x <= x)
 		{
-			if (vy == 0)
+			if (mario->y >= y)
 			{
-				ani = FLOWER_RED_ANI_RIGHT_DOWN;
+				if (vy == 0)
+				{
+					ani = FLOWER_GREEN_ANI_LEFT_DOWN;
+				}
+				else
+				{
+					ani = FLOWER_GREEN_ANI_LEFT_UP;
+				}
+
 			}
 			else
 			{
-				ani = FLOWER_RED_ANI_LEFT_UP;
+				if (vy == 0)
+				{
+					ani = FLOWER_GREEN_ANI_LEFT_UP;
+				}
+				else
+				{
+					ani = FLOWER_GREEN_ANI_LEFT_UP;
+				}
 			}
 
 		}
 		else
 		{
-			if (vy == 0)
+			if (mario->y >= y)
 			{
-				ani = FLOWER_RED_ANI_RIGHT_UP;
+				if (vy == 0)
+				{
+					ani = FLOWER_GREEN_ANI_RIGHT_DOWN;
+				}
+				else
+				{
+					ani = FLOWER_GREEN_ANI_LEFT_UP;
+				}
+
 			}
 			else
 			{
-				ani = FLOWER_RED_ANI_RIGHT_UP;
+				if (vy == 0)
+				{
+					ani = FLOWER_GREEN_ANI_RIGHT_UP;
+				}
+				else
+				{
+					ani = FLOWER_GREEN_ANI_RIGHT_UP;
+				}
 			}
 		}
+		break;
 	}
 	animation_set->at(ani)->Render(x, y);
 }
