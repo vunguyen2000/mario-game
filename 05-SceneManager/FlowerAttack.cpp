@@ -143,6 +143,49 @@ void CFlowerAttack::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 			}
 		}
 		break;
+	case FLOWER_NORMAL:
+		if (Up)
+		{
+			if (isTime == 0)
+			{
+				Appear();
+				isTimeAgain = GetTickCount();
+			}
+			if (GetTickCount() - isTime <= 2000)
+			{
+				vy = -0.02f;
+				if (y <= 95)
+				{
+					vy = 0;
+				}
+			}
+			else
+			{
+				isTimeAgain = 0;
+				isTime = 0;
+				Up = false;
+			}
+		}
+		else
+		{
+			if (isTime == 0)
+				Appear();
+			if (GetTickCount() - isTime <= 2000)
+			{
+				vy = 0.02f;
+				if (this->y >= 118)
+				{
+					vy = 0;
+				}
+			}
+			else
+			{
+				isTimeAgain = 1;
+				Up = true;
+				isTime = 0;
+			}
+		}
+		break;
 	}
 	if (coEvents.size() == 0)
 	{
@@ -268,6 +311,9 @@ void CFlowerAttack::Render()
 				}
 			}
 		}
+		break;
+	case FLOWER_NORMAL:
+		ani = FLOWER_GREEN_ANI_UP;
 		break;
 	}
 	animation_set->at(ani)->Render(x, y);
