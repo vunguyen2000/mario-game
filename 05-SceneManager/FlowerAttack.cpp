@@ -196,7 +196,7 @@ void CFlowerAttack::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 
 }
 
-void CFlowerAttack::Render()
+void CFlowerAttack::Render()	
 {
 	int ani = -1;
 	CMario* mario = ((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->GetPlayer();
