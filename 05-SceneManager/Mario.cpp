@@ -3,7 +3,6 @@
 
 #include "Mario.h"
 #include "Game.h"
-
 #include "Goomba.h"
 #include "Coin.h"
 #include "Portal.h"
@@ -16,6 +15,7 @@
 #include "FlowerAttack.h"
 #include "GoombaPara.h"
 #include "KoopasPara.h"
+#include "BrickBroken.h"
 CMario::CMario(float x, float y) : CGameObject()
 {
 	level = MARIO_LEVEL_SMALL;
@@ -85,6 +85,21 @@ void CMario::FilterCollision(vector<LPCOLLISIONEVENT>& coEvents, vector<LPCOLLIS
 		if (dynamic_cast<CCoin*>(c->obj))
 		{
 			ny = 0;
+		}
+		if (dynamic_cast<CBrickBroken*>(c->obj))
+		{
+			check_brickbroken = true;
+			if (check_rec == true)
+			{
+				ny = c->ny;
+				break;
+			}
+			CBrickBroken* question = dynamic_cast<CBrickBroken*>(c->obj);
+			if (question->GetState() == BRICK_BROKEN_STATE_COIN)
+			{
+				if (c->ny != 0)
+					ny = 0;
+			}
 		}
 
 	}
