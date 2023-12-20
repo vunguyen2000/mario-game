@@ -18,7 +18,7 @@
 #include "BrickBroken.h"
 CMario::CMario(float x, float y) : CGameObject()
 {
-	level = MARIO_LEVEL_SMALL;
+	level = MARIO_LEVEL_FOX;
 	untouchable = 0;
 	SetState(MARIO_STATE_IDLE);
 	start_x = x;
@@ -566,6 +566,45 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 			{
 				CCoin* coin = dynamic_cast<CCoin*>(e->obj);
 				coin->SetState(COIN_STATE_HIDE);
+			}
+			if (dynamic_cast<CBrickBroken*>(e->obj))
+			{
+				CBrickBroken* brick = dynamic_cast<CBrickBroken*>(e->obj);
+				if (brick->GetState() == BRICK_BROKEN_STATE_COIN)
+				{
+					brick->SetState(BRICK_BROKEN_STATE_HIDE);
+				}
+				else
+				{
+					if (level == MARIO_LEVEL_FOX)
+					{
+						if (attack == true)
+						{
+							if (e->nx != 0)
+							{
+								/*	if (brick->y >= (y + MARIO_FOX_BBOX_HEIGHT / 3) && brick->y <= (y + MARIO_FOX_BBOX_HEIGHT))
+									{*/
+								if (brick->GetState() == BRICK_BROKEN_STATE_SHOW)
+								{
+									brick->BrokenAnimation();
+									brick->SetState(BRICK_BROKEN_STATE_HIDE);
+								}
+								//}
+							}
+						}
+					}
+					if (level != MARIO_LEVEL_SMALL)
+					{
+						if (e->ny > 0)
+						{
+							if (brick->GetState() == BRICK_BROKEN_STATE_SHOW)
+							{
+								brick->BrokenAnimation();
+								brick->SetState(BRICK_BROKEN_STATE_HIDE);
+							}
+						}
+					}
+				}
 			}
 		}
 	}
