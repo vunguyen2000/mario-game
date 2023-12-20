@@ -8,7 +8,14 @@ CBrickBroken::CBrickBroken()
 
 void CBrickBroken::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 {
-	
+	if (GetTickCount() - timeout > 4000)
+	{
+		if (timeout != -1)
+		{
+			SetState(BRICK_BROKEN_STATE_SHOW);
+			timeout = -1;
+		}
+	}
 }
 
 void CBrickBroken::GetBoundingBox(float& l, float& t, float& r, float& b)
@@ -34,7 +41,13 @@ void CBrickBroken::GetBoundingBox(float& l, float& t, float& r, float& b)
 }
 void CBrickBroken::Render()
 {
+	if (state == BRICK_BROKEN_STATE_SHOW)
 	{
 		animation_set->at(0)->Render(x, y);
+	}
+	else
+	{
+		if (state == BRICK_BROKEN_STATE_COIN)
+			animation_set->at(1)->Render(x, y);
 	}
 }
