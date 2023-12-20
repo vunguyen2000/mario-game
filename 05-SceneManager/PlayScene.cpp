@@ -209,6 +209,7 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 	case OBJECT_TYPE_FLOWER_GREEN:	  obj = new CFlowerAttack(FLOWER_GREEN); break;
 	case OBJECT_TYPE_FLOWER_NORMAL:	  obj = new CFlowerAttack(FLOWER_NORMAL); break;
 	case OBJECT_TYPE_BRICK_BROKEN:	  obj = new CBrickBroken(); break;
+	case OBJECT_TYPE_BRICK_QUESTION_EFFECT:	  obj = new CBrickQuestion(BRICK_QUESTION_STATUS_EFFECT); break;
 	default:
 		DebugOut(L"[ERR] Invalid object type: %d\n", object_type);
 		return;

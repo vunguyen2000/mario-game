@@ -298,8 +298,20 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 				{
 					if (effect->GetState() != EFFECT_P_STATE_AFTER)
 					{
-						effect->y += 20;
+						effect->y += 12;
 						effect->SetState(EFFECT_P_STATE_AFTER);
+						for (UINT i = 0; i < coObjects->size(); i++)
+						{
+							if (dynamic_cast<CBrickBroken*>(coObjects->at(i)))
+							{
+								CBrickBroken* brick = dynamic_cast<CBrickBroken*>(coObjects->at(i));
+								if (brick->GetState() != BRICK_BROKEN_STATE_HIDE)
+								{
+									brick->timeout = GetTickCount();
+									brick->SetState(BRICK_BROKEN_STATE_COIN);
+								}
+							}
+						}
 					}
 				}
 			}

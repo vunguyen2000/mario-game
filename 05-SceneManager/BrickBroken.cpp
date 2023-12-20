@@ -8,7 +8,7 @@ CBrickBroken::CBrickBroken()
 
 void CBrickBroken::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 {
-	if (GetTickCount() - timeout > 4000)
+	if (GetTickCount() - timeout > 5000)
 	{
 		if (timeout != -1)
 		{

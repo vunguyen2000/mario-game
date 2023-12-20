@@ -203,9 +203,9 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 				CBrickBroken* brick = dynamic_cast<CBrickBroken*>(e->obj);
 				if (nx != 0)
 				{
+					vx = -vx;
 					if (brick->GetState() == BRICK_BROKEN_STATE_SHOW)
 					{
-						vx = -vx;
 						brick->BrokenAnimation();
 						brick->SetState(BRICK_BROKEN_STATE_HIDE);
 					}
