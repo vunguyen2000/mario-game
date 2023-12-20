@@ -9,6 +9,7 @@
 #include "BrickQuestion.h"
 #include "Coin.h"
 #include "GoombaPara.h"
+#include "BrickBroken.h"
 CKoopas::CKoopas()
 {
 	SetState(KOOPAS_STATE_WALKING);
@@ -196,6 +197,21 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 					brickQuestion->SetState(BRICK_QUESTION_STATE_AFTER);
 					brickQuestion->SetBefore(false);
 				}
+			}
+			if (dynamic_cast<CBrickBroken*>(e->obj))
+			{
+				CBrickBroken* brick = dynamic_cast<CBrickBroken*>(e->obj);
+				if (nx != 0)
+				{
+					if (brick->GetState() == BRICK_BROKEN_STATE_SHOW)
+					{
+						vx = -vx;
+						brick->BrokenAnimation();
+						brick->SetState(BRICK_BROKEN_STATE_HIDE);
+					}
+				}
+			
+				
 			}
 		}
 	}

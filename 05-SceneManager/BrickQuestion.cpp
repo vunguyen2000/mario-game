@@ -78,31 +78,31 @@ void CBrickQuestion::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 
 	if (status_after && isJump)
 	{
-			if (check)
+		if (check)
+		{
+			if (timeAni > BRICK_QUESTION_COUNT_TIME)
 			{
-				if (timeAni > BRICK_QUESTION_COUNT_TIME)
-				{
-					timeAni = 0;
-					check = false;
-				}
-				else
-				{
-					y -= BRICK_QUESTION_COUNT_Y;
-					timeAni++;
-				}
+				timeAni = 0;
+				check = false;
 			}
 			else
 			{
-				if (timeAni <= BRICK_QUESTION_COUNT_TIME)
-				{
-					y += BRICK_QUESTION_COUNT_Y;
-					timeAni++;
-				}
-				else
-				{
-					status_before = false;
-				}
+				y -= BRICK_QUESTION_COUNT_Y;
+				timeAni++;
 			}
+		}
+		else
+		{
+			if (timeAni <= BRICK_QUESTION_COUNT_TIME)
+			{
+				y += BRICK_QUESTION_COUNT_Y;
+				timeAni++;
+			}
+			else
+			{
+				status_before = false;
+			}
+		}
 	}
 
 	// No collision occured, proceed normally
@@ -174,7 +174,7 @@ void CBrickQuestion::SetState(int state)
 		{
 			if (status_before == true) {
 				CLeaf* leaf = new CLeaf();
-				leaf->x = x-10;
+				leaf->x = x - 10;
 				leaf->vx = 0.02f;
 				leaf->vy = 0.015f;
 				leaf->timeVx = GetTickCount();
