@@ -98,6 +98,14 @@
 #define MARIO_ANI_SMALL_HOLDKOOPAS_WALK_RIGHT		70
 #define MARIO_ANI_SMALL_HOLDKOOPAS_WALK_LEFT		71 
 
+#define MARIO_STATE_DRAIN_1			503
+#define MARIO_STATE_DRAIN_2			504
+
+#define MARIO_ANI_BIG_DRAIN		72
+#define MARIO_ANI_FIRE_DRAIN		73 
+#define MARIO_ANI_FOX_DRAIN		74 
+#define MARIO_ANI_SMALL_DRAIN		75 
+
 #define MARIO_JUMP_DEFLECT_SPEED 0.3f
 #define MARIO_STATE_FLY				501
 #define MARIO_WALKING_FLY	0.1f 
@@ -113,12 +121,24 @@
 #define LANDING_LIMIT_SPEED 0.04
 #define MARIO_UNTOUCHABLE_TIME 3000
 
+#define MARIO_TIME_DRAIN 1000
+#define MARIO_TIME_DRAIN_1_SPEED	0.05f
+#define MARIO_TIME_DRAIN_2_SPEED	0.05f
+#define MARIO_TIME_DRAIN_1_X 2103
+#define MARIO_TIME_DRAIN_1_Y 270
+#define MARIO_TIME_DRAIN_1_Y_DEFAULT 298
+
+#define MARIO_TIME_DRAIN_2_X 2330
+#define MARIO_TIME_DRAIN_2_Y 118
+#define MARIO_TIME_DRAIN_2_Y_DEFAULT 90
+
 class CMario : public CGameObject
 {
 	int level;
 	float start_x;			
 	float start_y;
 	float camX_update = 0;
+	DWORD timeDrain = 0;
 	DWORD untouchable_start;
 	DWORD timeReset;
 
