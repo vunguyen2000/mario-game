@@ -493,55 +493,61 @@ void CPlayScenceKeyHandler::KeyState(BYTE* states)
 	{
 		if (mario->GetState() == MARIO_STATE_DIE) return;
 
-		if (game->IsKeyDown(DIK_RIGHT))
+		if (mario->GetState() != MARIO_STATE_DRAIN_1 && mario->GetState() != MARIO_STATE_DRAIN_2)
 		{
-			if (game->IsKeyDown(DIK_A))
+			if (game->IsKeyDown(DIK_RIGHT))
 			{
-				mario->SetState(MARIO_STATE_WALKING_RIGHT_FAST);
-				if (mario->vx != 0)
+				if (game->IsKeyDown(DIK_A))
 				{
-					if (mario->startRun == 0)
+					mario->SetState(MARIO_STATE_WALKING_RIGHT_FAST);
+					if (mario->vx != 0)
 					{
-						mario->startRun = GetTickCount();
-						mario->stopRun = 0;
+						if (mario->startRun == 0)
+						{
+							mario->startRun = GetTickCount();
+							mario->stopRun = 0;
+						}
 					}
-				}
-			}
-			else
-				mario->SetState(MARIO_STATE_WALKING_RIGHT);
-		}
-		else if (game->IsKeyDown(DIK_LEFT))
-		{
-			if (game->IsKeyDown(DIK_A))
-			{
-				mario->SetState(MARIO_STATE_WALKING_LEFT_FAST);
-				if (mario->vx != 0)
-				{
-					if (mario->startRun == 0)
-					{
-						mario->startRun = GetTickCount();
-						mario->stopRun = 0;
-					}
-				}
-			}
-			else
-				mario->SetState(MARIO_STATE_WALKING_LEFT);
-		}
-
-		else
-			mario->SetState(MARIO_STATE_IDLE);
-		if (game->IsKeyDown(DIK_S)) {
-			if (mario->flyCan == false) {
-				if (GetTickCount() - mario->timeLimitJump < 200 && mario->checkjumping == 0) {
-					mario->SetState(MARIO_STATE_JUMP_HIGH);
 				}
 				else
+					mario->SetState(MARIO_STATE_WALKING_RIGHT);
+			}
+			else if (game->IsKeyDown(DIK_LEFT))
+			{
+				if (game->IsKeyDown(DIK_A))
 				{
-					mario->checkjumping = 1;
-					mario->timeLimitJump = GetTickCount();
+					mario->SetState(MARIO_STATE_WALKING_LEFT_FAST);
+					if (mario->vx != 0)
+					{
+						if (mario->startRun == 0)
+						{
+							mario->startRun = GetTickCount();
+							mario->stopRun = 0;
+						}
+					}
+				}
+				else
+					mario->SetState(MARIO_STATE_WALKING_LEFT);
+			}
+
+			else
+				mario->SetState(MARIO_STATE_IDLE);
+			if (game->IsKeyDown(DIK_S)) {
+				if (mario->flyCan == false) {
+					if (GetTickCount() - mario->timeLimitJump < 200 && mario->checkjumping == 0) {
+						mario->SetState(MARIO_STATE_JUMP_HIGH);
+					}
+					else
+					{
+						mario->checkjumping = 1;
+						mario->timeLimitJump = GetTickCount();
+					}
 				}
 			}
+
 		}
+
+		
 	}
 
 

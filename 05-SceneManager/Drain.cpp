@@ -3,7 +3,7 @@
 
 void CDrain::Render()
 {
-	int ids = CGame::GetInstance()->GetCurrentScene()->GetId();
+	animation_set->at(0)->Render(x, y);
 }
 void CDrain::GetBoundingBox(float& l, float& t, float& r, float& b)
 {

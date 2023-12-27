@@ -741,6 +741,17 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		cy = -10;
 	else cy -= game->GetScreenHeight() / 2;
 
+	if (y > 250)
+	{
+		cx = 2030;
+		cy = 266;
+	}
+	if (x > 2625)
+	{
+		cx = 2445;
+		cy = -10;
+	}
+
 	CGame::GetInstance()->SetCamPos((int)cx, (int)cy);
 	if (x < camX_update)
 	{
