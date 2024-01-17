@@ -134,6 +134,14 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		Reset();
 	}
 
+	if (checkEnd == true)
+	{
+		nx = 1;
+		vx = MARIO_WALKING_SPEED_ENDMAP;
+		dx = vx * dt;
+	}
+
+
 	if (GetTickCount() - untouchable_start > MARIO_UNTOUCHABLE_TIME)
 	{
 		untouchable_start = 0;
