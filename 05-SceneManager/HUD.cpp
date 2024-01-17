@@ -14,7 +14,7 @@ CHUD::CHUD()
 
 	backgroundBlack = sprites->Get(HUD_BACKGROUND_SPRITE);
 	hudBoard = sprites->Get(HUD_BOARD_SPRITE);
-
+	marioLife = mario->GetLife();
 }
 
 
@@ -27,12 +27,36 @@ void CHUD::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 {
 	CGame* game = CGame::GetInstance();
 	SetPosition(game->GetCamPosX(), game->GetCamPosY() + 260);
+	CMario* mario = ((CPlayScene*)game->GetCurrentScene())->GetPlayer();
+	if (mario->GetState() == MARIO_STATE_DIE)
+	{
+		marioLife = mario->GetLife();
+		string stringLife = to_string(marioLife);
+		while (stringLife.length() < LIFE_LENGTH)
+		{
+			stringLife = "0" + stringLife;
+		}
+		life = StringToSprite(stringLife);
+		return;
+
+	}
+	marioLife = mario->GetLife();
+	string stringLife = to_string(marioLife);
+	while (stringLife.length() < LIFE_LENGTH)
+	{
+		stringLife = "0" + stringLife;
+	}
+	life = StringToSprite(stringLife);
 }
 
 void CHUD::Render()
 {
 	backgroundBlack->Draw(x, y - 84);
 	hudBoard->Draw(x + HUDBOARD_X, y - HUDBOARD_Y);
+	for (int i = 0; i < life.size(); i++)
+	{
+		life[i]->Draw(x + HUD_CHAR_WIDTH_L + HUD_CHAR_WIDTH * i, y - HUD_CHAR_HEIGHT_LTS);
+	}
 }
 
 vector<LPSPRITE> CHUD::StringToSprite(string str)

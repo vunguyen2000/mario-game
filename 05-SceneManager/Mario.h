@@ -141,6 +141,9 @@ class CMario : public CGameObject
 	DWORD timeDrain = 0;
 	DWORD untouchable_start;
 	DWORD timeReset;
+	int marioScore = 0;
+	int marioCoin = 0;
+	int marioLife = 3;
 
 public:
 	int checkjumping = 0;
@@ -177,8 +180,34 @@ public:
 	void SetLevel(int l) { level = l; }
 	virtual void GetBoundingBox(float& left, float& top, float& right, float& bottom);
 	void StartUntouchable() { untouchable = 1; untouchable_start = GetTickCount(); }
+	void SetLifeDown() { marioLife--; };
+	void SetLifeUp() { marioLife++; };
 	int GetSpeed()
 	{
 		return levelFly;
+	};
+	int GetCoin()
+	{
+		return marioCoin;
+	};
+	void CoinUp()
+	{
+		marioCoin++;
+	};
+	void ScoreUp()
+	{
+		marioScore += 100;
+	};
+	void LifeUp()
+	{
+		marioLife++;
+	};
+	double GetScore()
+	{
+		return marioScore;
+	};
+	double GetLife()
+	{
+		return marioLife;
 	};
 };

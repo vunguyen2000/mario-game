@@ -20,7 +20,7 @@
 #include "Card.h"
 CMario::CMario(float x, float y) : CGameObject()
 {
-	level = MARIO_LEVEL_FOX;
+	level = MARIO_LEVEL_SMALL;
 	untouchable = 0;
 	SetState(MARIO_STATE_IDLE);
 	start_x = x;
@@ -1162,6 +1162,7 @@ void CMario::SetState(int state)
 		vy = -MARIO_JUMP_SPEED_Y_HIGH;
 		break;
 	case MARIO_STATE_DIE:
+		marioLife--;
 		timeReset = GetTickCount();
 		vy = -MARIO_DIE_DEFLECT_SPEED;
 		vx = 0;

@@ -18,6 +18,15 @@
 #define HUDBOARD_X	55
 #define HUDBOARD_Y	81
 
+#define LIFE_LENGTH	2
+#define HUD_CHAR_WIDTH	8
+#define HUD_CHAR_HEIGHT_LTS	66
+#define HUD_CHAR_HEIGHT_CSS	74
+#define HUD_CHAR_WIDTH_S	107
+#define HUD_CHAR_WIDTH_L	84
+#define HUD_CHAR_WIDTH_T	179
+#define HUD_CHAR_WIDTH_C	187
+
 class CHUD : public CGameObject
 {
 	LPSPRITE backgroundBlack;	//Nền đen
