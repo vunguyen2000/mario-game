@@ -13,6 +13,11 @@ void CCard::Render()
 		animation_set->at(CARD_ANI_STAR)->Render(x, y);
 		break;
 	}
+	case CARD_STATE_TREE:
+	{
+		animation_set->at(CARD_ANI_TREE)->Render(x, y);
+		break;
+	}
 	default:
 		break;
 	}

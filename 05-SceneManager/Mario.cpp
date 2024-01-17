@@ -652,7 +652,45 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 				card = CCCard->GetState();
 				CCCard->SetState(CARD_STATE_HIDE);
 				checkEnd = true;
+				LPSCENE scene = CGame::GetInstance()->GetCurrentScene();
 				CAnimationSets* animation_sets = CAnimationSets::GetInstance();
+				CNoCollision* content = new CNoCollision();
+				content->SetPosition(2580, -20);
+				LPANIMATION_SET content_ani = animation_sets->Get(5030);
+				content->SetAnimationSet(content_ani);
+				((CPlayScene*)scene)->addObject(content);
+				switch (card)
+				{
+				case 1:
+				{
+					CNoCollision* item = new CNoCollision();
+					item->SetPosition(2753, 24);
+					LPANIMATION_SET item_ani = animation_sets->Get(5031);
+					item->SetAnimationSet(item_ani);
+					((CPlayScene*)scene)->addObject(item);
+					break;
+				}
+				case 2:
+				{
+					CNoCollision* item = new CNoCollision();
+					item->SetPosition(2753, 24);
+					LPANIMATION_SET item_ani = animation_sets->Get(5032);
+					item->SetAnimationSet(item_ani);
+					((CPlayScene*)scene)->addObject(item);
+					break;
+				}
+				case 3:
+				{
+					CNoCollision* item = new CNoCollision();
+					item->SetPosition(2753, 24);
+					LPANIMATION_SET item_ani = animation_sets->Get(5033);
+					item->SetAnimationSet(item_ani);
+					((CPlayScene*)scene)->addObject(item);
+					break;
+				}
+				default:
+					break;
+				}
 			}
 		}
 	}
