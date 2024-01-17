@@ -17,6 +17,7 @@
 #include "KoopasPara.h"
 #include "BrickBroken.h"
 #include "Drain.h"
+#include "Card.h"
 CMario::CMario(float x, float y) : CGameObject()
 {
 	level = MARIO_LEVEL_FOX;
@@ -644,6 +645,14 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 				{
 					SetState(MARIO_STATE_DRAIN_2);
 				}
+			}
+			if (dynamic_cast<CCard*>(e->obj))
+			{
+				CCard* CCCard = dynamic_cast<CCard*>(e->obj);
+				card = CCCard->GetState();
+				CCCard->SetState(CARD_STATE_HIDE);
+				checkEnd = true;
+				CAnimationSets* animation_sets = CAnimationSets::GetInstance();
 			}
 		}
 	}

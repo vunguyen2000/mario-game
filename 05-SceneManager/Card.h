@@ -8,6 +8,7 @@
 #define CARD_STATE_STAR  2
 #define CARD_ANI_MUSHROOM  0
 #define CARD_ANI_STAR  1
+#define CARD_STATE_HIDE  4
 
 class CCard : public CGameObject
 {

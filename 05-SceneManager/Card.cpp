@@ -20,26 +20,35 @@ void CCard::Render()
 
 void CCard::GetBoundingBox(float& l, float& t, float& r, float& b)
 {
+	if (state != CARD_STATE_HIDE)
+	{
 		l = x;
 		t = y;
 		r = x + CARD_BBOX_WIDTH;
 		b = y + CARD_BBOX_HEIGHT;
-
+	}
+	else
+	{
+		l = t = r = b = 0;
+	}
 }
 
 void CCard::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 {
-	if (GetTickCount() - timeChange >= 1000)
+	if (state != CARD_STATE_HIDE)
 	{
-		if (state < 3)
+		if (GetTickCount() - timeChange >= 1000)
 		{
-			state++;
+			if (state < 3)
+			{
+				state++;
+			}
+			else
+			{
+				state = CARD_STATE_MUSHROOM;
+			}
+			timeChange = GetTickCount();
 		}
-		else
-		{
-			state = CARD_STATE_MUSHROOM;
-		}
-		timeChange = GetTickCount();
 	}
 }
 
