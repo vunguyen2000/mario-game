@@ -2,6 +2,9 @@
 #include "GameObject.h"
 
 
+#define CARD_BBOX_WIDTH  26
+#define CARD_BBOX_HEIGHT  26
+
 class CCard : public CGameObject
 {
 public:

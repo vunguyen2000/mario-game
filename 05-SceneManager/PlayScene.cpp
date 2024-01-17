@@ -16,6 +16,7 @@
 #include "KoopasPara.h"
 #include "BrickBroken.h"
 #include "Drain.h"
+#include "Card.h"
 using namespace std;
 
 CPlayScene::CPlayScene(int id, LPCWSTR filePath) :
@@ -56,6 +57,7 @@ CPlayScene::CPlayScene(int id, LPCWSTR filePath) :
 #define OBJECT_TYPE_BOX_END	41
 #define OBJECT_TYPE_BRICK_MUSHROOM_GREEN	12
 #define MAX_SCENE_LINE 1024
+#define OBJECT_TYPE_CARD	28
 
 
 void CPlayScene::_ParseSection_TEXTURES(string line)
@@ -212,6 +214,7 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 	case OBJECT_TYPE_BRICK_BROKEN:	  obj = new CBrickBroken(); break;
 	case OBJECT_TYPE_BRICK_QUESTION_EFFECT:	  obj = new CBrickQuestion(BRICK_QUESTION_STATUS_EFFECT); break;
 	case OBJECT_TYPE_DRAIN: obj = new CDrain(); break;
+	case OBJECT_TYPE_CARD:	  obj = new CCard(); break;
 	default:
 		DebugOut(L"[ERR] Invalid object type: %d\n", object_type);
 		return;
