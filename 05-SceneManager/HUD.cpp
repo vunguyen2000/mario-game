@@ -15,6 +15,7 @@ CHUD::CHUD()
 	backgroundBlack = sprites->Get(HUD_BACKGROUND_SPRITE);
 	hudBoard = sprites->Get(HUD_BOARD_SPRITE);
 	marioLife = mario->GetLife();
+	marioCoin = mario->GetCoin();
 }
 
 
@@ -41,12 +42,16 @@ void CHUD::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 
 	}
 	marioLife = mario->GetLife();
+	marioCoin = mario->GetCoin();
 	string stringLife = to_string(marioLife);
+	string stringCoin = to_string(marioCoin);
+	string stringTime = to_string(marioTime);
 	while (stringLife.length() < LIFE_LENGTH)
 	{
 		stringLife = "0" + stringLife;
 	}
 	life = StringToSprite(stringLife);
+	coin = StringToSprite(stringCoin);
 }
 
 void CHUD::Render()
@@ -56,6 +61,10 @@ void CHUD::Render()
 	for (int i = 0; i < life.size(); i++)
 	{
 		life[i]->Draw(x + HUD_CHAR_WIDTH_L + HUD_CHAR_WIDTH * i, y - HUD_CHAR_HEIGHT_LTS);
+	}
+	for (int i = 0; i < coin.size(); i++)
+	{
+		coin[i]->Draw(x + HUD_CHAR_WIDTH_C + HUD_CHAR_WIDTH * i, y - HUD_CHAR_HEIGHT_CSS);
 	}
 }
 

@@ -20,7 +20,7 @@
 #include "Card.h"
 CMario::CMario(float x, float y) : CGameObject()
 {
-	level = MARIO_LEVEL_SMALL;
+	level = MARIO_LEVEL_FOX;
 	untouchable = 0;
 	SetState(MARIO_STATE_IDLE);
 	start_x = x;
@@ -313,6 +313,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 							}
 						}
 						brickQuestion->SetState(BRICK_QUESTION_STATE_AFTER);
+						marioCoin++;
 					}
 				}
 			}
@@ -603,6 +604,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 			{
 				CCoin* coin = dynamic_cast<CCoin*>(e->obj);
 				coin->SetState(COIN_STATE_HIDE);
+				marioCoin++;
 			}
 			if (dynamic_cast<CBrickBroken*>(e->obj))
 			{
@@ -610,6 +612,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 				if (brick->GetState() == BRICK_BROKEN_STATE_COIN)
 				{
 					brick->SetState(BRICK_BROKEN_STATE_HIDE);
+					marioCoin++;
 				}
 				else
 				{

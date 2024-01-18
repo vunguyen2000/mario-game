@@ -19,6 +19,7 @@
 #define HUDBOARD_Y	81
 
 #define LIFE_LENGTH	2
+#define COIN_LENGTH	3
 #define HUD_CHAR_WIDTH	8
 #define HUD_CHAR_HEIGHT_LTS	66
 #define HUD_CHAR_HEIGHT_CSS	74
