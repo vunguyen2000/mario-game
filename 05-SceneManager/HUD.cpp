@@ -33,6 +33,7 @@ CHUD::CHUD()
 	marioCoin = mario->GetCoin();
 	marioScore = mario->GetScore();
 	storePowerNullStack = mario->GetSpeed();
+	marioType = sprites->Get(HUD_MARIO_TYPE_SPRITE);
 	
 }
 
@@ -43,8 +44,10 @@ void CHUD::GetBoundingBox(float& l, float& t, float& r, float& b)
 }
 void CHUD::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 {
+
 	CGame* game = CGame::GetInstance();
-	SetPosition(game->GetCamPosX(), game->GetCamPosY() + 260);
+	int a = game->GetCamPosX();
+	SetPosition(game->GetCamPosX()+50, game->GetCamPosY() + 260);
 	CMario* mario = ((CPlayScene*)game->GetCurrentScene())->GetPlayer();
 	if (mario->GetState() == MARIO_STATE_DIE)
 	{
@@ -56,7 +59,6 @@ void CHUD::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		}
 		life = StringToSprite(stringLife);
 		return;
-
 	}
 
 	tempTime += dt;
@@ -96,8 +98,9 @@ void CHUD::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 
 void CHUD::Render()
 {
-	backgroundBlack->Draw(x, y - 84);
+	backgroundBlack->Draw(x-50, y - 84);
 	hudBoard->Draw(x + HUDBOARD_X, y - HUDBOARD_Y);
+	marioType->Draw(x + MARIOTYPE_X, y - HUD_CHAR_HEIGHT_LTS);
 	for (int i = 0; i < life.size(); i++)
 	{
 		life[i]->Draw(x + HUD_CHAR_WIDTH_L + HUD_CHAR_WIDTH * i, y - HUD_CHAR_HEIGHT_LTS);

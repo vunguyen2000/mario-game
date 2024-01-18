@@ -410,7 +410,7 @@ void CPlayScenceKeyHandler::OnKeyDown(int KeyCode)
 			case DIK_S:
 				if (mario->checkjumping == 1 && mario->GetState() != MARIO_STATE_DIE)
 				{
-					if (mario->GetSpeed() == 5 && mario->GetLevel() == MARIO_LEVEL_FOX)
+					if (mario->GetSpeed() == 7 && mario->GetLevel() == MARIO_LEVEL_FOX)
 					{
 						mario->flyCan = true;
 						mario->SetState(MARIO_STATE_FLY);
@@ -442,8 +442,14 @@ void CPlayScenceKeyHandler::OnKeyDown(int KeyCode)
 				break;
 			case DIK_Z:
 				if (mario->GetLevel() == MARIO_LEVEL_SMALL)
+				{
+					mario->y -= 12;
 					mario->SetLevel(MARIO_LEVEL_BIG);
-				mario->SetLevel(MARIO_LEVEL_FOX);
+				}
+				else {
+					mario->y -= 3;
+					mario->SetLevel(MARIO_LEVEL_FOX);
+				}
 				break;
 			}
 

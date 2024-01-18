@@ -4,7 +4,7 @@
 #define HUD_POWER_WHITE_SPRITE	90105
 #define HUD_ARROW_BLACK_SPRITE	90106
 #define HUD_POWER_BLACK_SPRITE	90107
-
+#define HUD_MARIO_TYPE_SPRITE	90102
 #define HUD_0_SPRITE	90112
 #define HUD_1_SPRITE	90113
 #define HUD_2_SPRITE	90114
@@ -34,6 +34,8 @@
 #define HUD_CHAR_WIDTH_T	179
 #define HUD_CHAR_WIDTH_C	187
 
+#define MARIOTYPE_X	59
+
 class CHUD : public CGameObject
 {
 	LPSPRITE backgroundBlack;	//Nền đen
@@ -50,6 +52,7 @@ class CHUD : public CGameObject
 	int marioCoin = 0;	//Tiền
 	int tempTime = 0;
 	int storePowerNullStack = 0;	//Tích tốc độ
+	LPSPRITE marioType;	//Loại nhân vật
 
 public:
 	CHUD();

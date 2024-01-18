@@ -139,6 +139,7 @@ class CMario : public CGameObject
 	float start_x;			
 	float start_y;
 	float camX_update = 0;
+	float camY_update = 0;
 	DWORD timeDrain = 0;
 	DWORD untouchable_start;
 	DWORD timeReset;
