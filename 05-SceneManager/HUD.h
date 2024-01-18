@@ -1,5 +1,10 @@
 ﻿#include "GameObject.h"
 
+#define HUD_ARROW_WHITE_SPRITE	90104
+#define HUD_POWER_WHITE_SPRITE	90105
+#define HUD_ARROW_BLACK_SPRITE	90106
+#define HUD_POWER_BLACK_SPRITE	90107
+
 #define HUD_0_SPRITE	90112
 #define HUD_1_SPRITE	90113
 #define HUD_2_SPRITE	90114
@@ -37,18 +42,20 @@ class CHUD : public CGameObject
 	vector<LPSPRITE> score;	//Điểm
 	LPSPRITE hudBoard;	//Khung HUD trái
 	vector<LPSPRITE> time;	//Thời gian chơi
+	vector<LPSPRITE> storePowerNull;	//Dòng tích tốc độ đen
+	vector<LPSPRITE> storePower;	//Dòng tích tốc độ trắng
 	int marioTime = 0;	//Thời gian chơi
 	int marioLife = 4;	//Mạng của mario
 	int marioScore = 0;	//Điểm
 	int marioCoin = 0;	//Tiền
 	int tempTime = 0;
+	int storePowerNullStack = 0;	//Tích tốc độ
 
 public:
 	CHUD();
 	virtual void Render();
 	virtual void GetBoundingBox(float& l, float& t, float& r, float& b);
 	virtual void Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects);
-	void resetHUD();
 	vector<LPSPRITE> StringToSprite(string str);
 	LPSPRITE getHUD(char temp);
 };

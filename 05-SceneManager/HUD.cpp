@@ -12,11 +12,28 @@ CHUD::CHUD()
 
 	CSprites* sprites = CSprites::GetInstance();
 
+	for (int i = 0; i < SCORE_LENGTH; i++)
+	{
+		if (i != 6)
+		{
+			storePowerNull.push_back(sprites->Get(HUD_ARROW_BLACK_SPRITE));
+			storePower.push_back(sprites->Get(HUD_ARROW_WHITE_SPRITE));
+		}
+		else
+		{
+			storePowerNull.push_back(sprites->Get(HUD_POWER_BLACK_SPRITE));
+			storePower.push_back(sprites->Get(HUD_POWER_WHITE_SPRITE));
+		}
+
+	}
+
 	backgroundBlack = sprites->Get(HUD_BACKGROUND_SPRITE);
 	hudBoard = sprites->Get(HUD_BOARD_SPRITE);
 	marioLife = mario->GetLife();
 	marioCoin = mario->GetCoin();
 	marioScore = mario->GetScore();
+	storePowerNullStack = mario->GetSpeed();
+	
 }
 
 
@@ -24,7 +41,6 @@ void CHUD::GetBoundingBox(float& l, float& t, float& r, float& b)
 {
 
 }
-
 void CHUD::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 {
 	CGame* game = CGame::GetInstance();
@@ -48,6 +64,14 @@ void CHUD::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	marioLife = mario->GetLife();
 	marioCoin = mario->GetCoin();
 	marioScore = mario->GetScore();
+	storePowerNullStack = mario->GetSpeed();
+
+	if (marioTime == 0)
+	{
+		mario->SetState(MARIO_STATE_DIE);
+	}
+
+
 	string stringLife = to_string(marioLife);
 	string stringCoin = to_string(marioCoin);
 	string stringTime = to_string(marioTime);
@@ -89,6 +113,15 @@ void CHUD::Render()
 	for (int i = 0; i < time.size(); i++)
 	{
 		time[i]->Draw(x + HUD_CHAR_WIDTH_T + HUD_CHAR_WIDTH * i, y - HUD_CHAR_HEIGHT_LTS);
+	}
+	for (int i = 0; i < storePowerNull.size(); i++)
+	{
+		storePowerNull[i]->Draw(x + HUD_CHAR_WIDTH_S + HUD_CHAR_WIDTH * i, y - HUD_CHAR_HEIGHT_CSS);
+	}
+
+	for (int i = 0; i < storePowerNullStack; i++)
+	{
+		storePower[i]->Draw(x + HUD_CHAR_WIDTH_S + HUD_CHAR_WIDTH * i, y - HUD_CHAR_HEIGHT_CSS);
 	}
 }
 
