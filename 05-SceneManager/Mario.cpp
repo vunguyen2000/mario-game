@@ -218,6 +218,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 							{
 								if (goomba->GetLevel() == GOOMBA_LEVEL_WALKING)
 								{
+									marioScore += MARIO_SCORE;
 									goomba->y -= 5;
 									goomba->SetState(GOOMBA_STATE_DIE);
 								}
@@ -269,6 +270,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 					{
 						if (goomba->GetState() != GOOMBA_STATE_DIE)
 						{
+							marioScore += MARIO_SCORE;
 							goomba->SetState(GOOMBA_STATE_DIE);
 							vy = -MARIO_JUMP_DEFLECT_SPEED;
 						}
@@ -306,14 +308,20 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 						brickQuestion->SetUp(true);
 						brickQuestion->SetBefore(false);
 						brickQuestion->SetAfter(true);
-						if (brickQuestion->GetStatus() == BRICK_MUSHROOM_GREEN) {
+						if (brickQuestion->GetStatus() == BRICK_QUESTION_STATUS_SPECIAL)
+						{
 							if (level == MARIO_LEVEL_SMALL)
 							{
 								brickQuestion->SetStatus(BRICK_QUESTION_STATUS_MUSHROOM);
 							}
+							else if (level == MARIO_LEVEL_BIG || level == MARIO_LEVEL_FOX)
+							{
+								brickQuestion->SetStatus(BRICK_QUESTION_STATUS_LEAF);
+							}
 						}
 						brickQuestion->SetState(BRICK_QUESTION_STATE_AFTER);
 						marioCoin++;
+						marioScore += MARIO_SCORE;
 					}
 				}
 			}
@@ -405,6 +413,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 				{
 					if (koopas->GetState() != KOOPAS_STATE_DIE)
 					{
+						marioScore += MARIO_SCORE;
 						koopas->SetState(KOOPAS_STATE_DIE);
 						vy = -MARIO_JUMP_DEFLECT_SPEED;
 					}
@@ -511,6 +520,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 									}
 									else if (koopas->GetState() == KOOPAS_STATE_WALKING)
 									{
+										marioScore += MARIO_SCORE;
 										koopas->SetState(KOOPAS_STATE_DIE);
 									}
 								}

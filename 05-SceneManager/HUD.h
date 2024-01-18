@@ -20,6 +20,7 @@
 
 #define LIFE_LENGTH	2
 #define COIN_LENGTH	3
+#define SCORE_LENGTH	7
 #define HUD_CHAR_WIDTH	8
 #define HUD_CHAR_HEIGHT_LTS	66
 #define HUD_CHAR_HEIGHT_CSS	74
@@ -35,11 +36,12 @@ class CHUD : public CGameObject
 	vector<LPSPRITE> coin;	//Tiền
 	vector<LPSPRITE> score;	//Điểm
 	LPSPRITE hudBoard;	//Khung HUD trái
-
+	vector<LPSPRITE> time;	//Thời gian chơi
 	int marioTime = 0;	//Thời gian chơi
 	int marioLife = 4;	//Mạng của mario
 	int marioScore = 0;	//Điểm
 	int marioCoin = 0;	//Tiền
+	int tempTime = 0;
 
 public:
 	CHUD();

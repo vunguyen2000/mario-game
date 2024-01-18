@@ -172,6 +172,7 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 
 				if (goomba->GetState() != GOOMBA_STATE_DIE)
 				{
+					mario->ScoreUp();
 					goomba->SetState(GOOMBA_STATE_DIE);
 				}
 			}
@@ -184,6 +185,7 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 					goombaPara->SetLevel(GOOMBA_LEVEL_WALKING);
 				}
 				else {
+					mario->ScoreUp();
 					goombaPara->SetState(GOOMBA_STATE_DIE);
 				}
 			}

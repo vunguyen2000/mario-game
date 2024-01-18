@@ -131,6 +131,7 @@
 #define MARIO_TIME_DRAIN_2_X 2330
 #define MARIO_TIME_DRAIN_2_Y 118
 #define MARIO_TIME_DRAIN_2_Y_DEFAULT 90
+#define MARIO_SCORE 100
 
 class CMario : public CGameObject
 {
