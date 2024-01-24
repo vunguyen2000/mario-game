@@ -440,9 +440,8 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 						if (this->nx > 0)
 						{
 							koopas->vx = KOOPAS_RUN_SPEED;
-							koopas->x = 16;
+							koopas->x += 16;
 						}
-
 						else
 						{
 							koopas->vx = -KOOPAS_RUN_SPEED;
