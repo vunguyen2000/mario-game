@@ -18,6 +18,8 @@
 #include "BrickBroken.h"
 #include "Drain.h"
 #include "Card.h"
+#include "MushRoom.h"
+#include "KoopasPara.h"
 CMario::CMario(float x, float y) : CGameObject()
 {
 	level = MARIO_LEVEL_SMALL;
@@ -102,6 +104,15 @@ void CMario::FilterCollision(vector<LPCOLLISIONEVENT>& coEvents, vector<LPCOLLIS
 				if (c->ny != 0)
 					ny = 0;
 			}
+		}
+		if (dynamic_cast<CMushRoom*>(c->obj))
+		{
+			nx = 0;
+		}
+		if (dynamic_cast<CKoopasPara*>(c->obj))
+		{
+			nx = 0;
+			ny = 0;
 		}
 
 	}
@@ -413,7 +424,8 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 				{
 					if (koopas->GetState() != KOOPAS_STATE_DIE)
 					{
-						marioScore += MARIO_SCORE;
+						if (koopas->GetState() != KOOPAS_STATE_THROW)
+							marioScore += MARIO_SCORE;
 						koopas->SetState(KOOPAS_STATE_DIE);
 						vy = -MARIO_JUMP_DEFLECT_SPEED;
 					}
@@ -666,6 +678,20 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 				{
 					SetState(MARIO_STATE_DRAIN_2);
 				}
+			}
+			if (dynamic_cast<CMushRoom*>(e->obj))
+			{
+				CMushRoom* mushroom = dynamic_cast<CMushRoom*>(e->obj);
+				if (level == MARIO_LEVEL_SMALL)
+				{
+					level = MARIO_LEVEL_BIG;
+					y -= MARIO_BIG_BBOX_HEIGHT;
+				}
+				if (mushroom->green)
+				{
+					marioLife++;
+				}
+				e->obj->isDisAppear = true;
 			}
 			if (dynamic_cast<CCard*>(e->obj))
 			{

@@ -10,7 +10,7 @@ void CBrickBroken::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 {
 	if (GetTickCount() - timeout > 5000)
 	{
-		if (timeout != -1)
+		if (timeout != -1 && state != BRICK_BROKEN_STATE_HIDE)
 		{
 			SetState(BRICK_BROKEN_STATE_SHOW);
 			timeout = -1;
