@@ -23,6 +23,7 @@ using namespace std;
 CPlayScene::CPlayScene(int id, LPCWSTR filePath) :
 	CScene(id, filePath)
 {
+	mergeObject = false;
 	key_handler = new CPlayScenceKeyHandler(this);
 }
 
@@ -54,8 +55,8 @@ CPlayScene::CPlayScene(int id, LPCWSTR filePath) :
 #define OBJECT_TYPE_BRICK_QUESTION_SPECIAL_GREEN	27
 #define OBJECT_TYPE_BRICK_QUESTION_SPECIAL	12
 #define OBJECT_TYPE_BRICK_QUESTION_LEAF	39
-#define OBJECT_TYPE_BOX_START	40
-#define OBJECT_TYPE_BOX_END	41
+//#define OBJECT_TYPE_BOX_START	40
+//#define OBJECT_TYPE_BOX_END	41
 #define OBJECT_TYPE_BRICK_MUSHROOM_GREEN	12
 #define MAX_SCENE_LINE 1024
 #define OBJECT_TYPE_CARD	28
@@ -164,78 +165,183 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 {
 	vector<string> tokens = split(line);
 
-	//DebugOut(L"--> %s\n",ToWSTR(line).c_str());
-
-	if (tokens.size() < 3) return; // skip invalid lines - an object set must have at least id, x, y
-
-	int object_type = atoi(tokens[0].c_str());
-	float x = atof(tokens[1].c_str());
-	float y = atof(tokens[2].c_str());
-
-	int ani_set_id = atoi(tokens[3].c_str());
-	int id = CGame::GetInstance()->GetCurrentScene()->GetId();
-
-	CAnimationSets* animation_sets = CAnimationSets::GetInstance();
-
-	CGameObject* obj = NULL;
-
-	CGameObject* objW = NULL;
-
-	switch (object_type)
+	// Check start merge
+	if (line[0] == '!')
 	{
-	case OBJECT_TYPE_MARIO:
-		if (player != NULL)
+		// false -> true and true -> false
+		if (mergeObject == false)
 		{
-			DebugOut(L"[ERROR] MARIO object was created before!\n");
+			mergeObject = true;				//Start merge
+			CGameObject* obj = new CBoxs();
+			objects.push_back(obj);
+		}
+		else {
+			mergeObject = false;			// End merge
+			for (size_t i = 0; i < objects.size(); i++)
+			{
+				if (dynamic_cast<CBoxs*>(objects[i]))
+				{
+					CBoxs* boxs = dynamic_cast<CBoxs *>(objects[i]);
+					if (boxs->getMergeComplete() == false)
+					{
+						boxs->setMergeComplete(true);
+						vector<CBox*> listBox = boxs->getListBox();
+						float xBoxs, yBoxs;
+						listBox[0]->GetPosition(xBoxs, yBoxs);
+						boxs->SetPosition(xBoxs, yBoxs);
+						boxs->setWidth(BOX_BBOX_WIDTH);
+						boxs->setHeight(BOX_BBOX_HEIGHT);
+
+
+						for (size_t i = 1; i < listBox.size(); i++)
+						{
+							float xItem, yItem;
+							listBox[i]->GetPosition(xItem, yItem);
+
+							// Set width
+							if (xItem >= xBoxs)
+							{
+								boxs->setWidth(xItem - xBoxs + BOX_BBOX_WIDTH);
+							}
+							else
+							{
+								double width = boxs->getWidth();
+								boxs->setWidth(xBoxs - xItem + width);
+								xBoxs = xItem;
+							}
+
+							// Set height
+							if (yItem < yBoxs)
+							{
+								double height = boxs->getHeight();
+								boxs->setHeight(yBoxs - yItem + height);
+								yBoxs = yItem;
+							}
+							else
+							{
+								boxs->setHeight(yItem - yBoxs + BOX_BBOX_HEIGHT);
+							}
+						}
+
+						boxs->SetPosition(xBoxs, yBoxs);
+						//objects.push_back(boxs);
+					}
+				}
+
+			}
+		}
+	}
+
+	// MERGE BOX
+	if (mergeObject)
+	{
+		if (tokens.size() < 3) return; // skip invalid lines - an object set must have at least id, x, y
+
+		int object_type = atoi(tokens[0].c_str());
+		double x = atof(tokens[1].c_str());
+		double y = atof(tokens[2].c_str());
+
+		int ani_set_id = atoi(tokens[3].c_str());
+
+		CAnimationSets* animation_sets = CAnimationSets::GetInstance();
+
+		CBox* obj = new CBox();
+
+		// General object setup
+		obj->SetPosition(x, y);
+
+		LPANIMATION_SET ani_set = animation_sets->Get(ani_set_id);
+
+		obj->SetAnimationSet(ani_set);
+
+		for (size_t i = 0; i < objects.size(); i++)
+		{
+			if (dynamic_cast<CBoxs*>(objects[i]))
+			{
+				CBoxs* boxs = dynamic_cast<CBoxs*>(objects[i]);
+				if (boxs->getMergeComplete() == false)
+				{
+					boxs->PushBox(obj);
+				}
+			}
+		}
+	}
+	else {
+
+		//DebugOut(L"--> %s\n",ToWSTR(line).c_str());
+
+		if (tokens.size() < 3) return; // skip invalid lines - an object set must have at least id, x, y
+
+		int object_type = atoi(tokens[0].c_str());
+		float x = atof(tokens[1].c_str());
+		float y = atof(tokens[2].c_str());
+
+		int ani_set_id = atoi(tokens[3].c_str());
+		int id = CGame::GetInstance()->GetCurrentScene()->GetId();
+
+		CAnimationSets* animation_sets = CAnimationSets::GetInstance();
+
+		CGameObject* obj = NULL;
+
+		CGameObject* objW = NULL;
+
+		switch (object_type)
+		{
+		case OBJECT_TYPE_MARIO:
+			if (player != NULL)
+			{
+				DebugOut(L"[ERROR] MARIO object was created before!\n");
+				return;
+			}
+			obj = new CMario(x, y);
+			player = (CMario*)obj;
+
+			DebugOut(L"[INFO] Player object created!\n");
+			break;
+		case OBJECT_TYPE_GOOMBA: obj = new CGoomba(); break;
+		case OBJECT_TYPE_BRICK: obj = new CBrick(); break;
+		case OBJECT_TYPE_NOCOLLISION: obj = new CNoCollision(); break;
+		case OBJECT_TYPE_BOX: obj = new CBox(BOX_STATUS_NORMAL); break;
+		//case OBJECT_TYPE_BOX_END: obj = new CBox(BOX_STATUS_END); break;
+		case OBJECT_TYPE_BRICK_QUESTION: obj = new CBrickQuestion(BRICK_QUESTION_STATUS_COIN); break;
+		//case OBJECT_TYPE_BOX_START: obj = new CBox(BOX_STATUS_START); break;
+		case OBJECT_TYPE_BRICK_QUESTION_LEAF: obj = new CBrickQuestion(BRICK_QUESTION_STATUS_LEAF); break;
+		case OBJECT_TYPE_BRICK_MUSHROOM_GREEN:obj = new CBrickQuestion(BRICK_MUSHROOM_GREEN); break;
+		case OBJECT_TYPE_FLOWER_RED:	  obj = new CFlowerAttack(FLOWER_RED); break;
+		case OBJECT_TYPE_FLOWER_FIRE:	  obj = new CFireFlower(); break;
+		case OBJECT_TYPE_KOOPAS: obj = new CKoopas(); break;
+		case OBJECT_TYPE_GOOMBAPARA:	  obj = new CGoombaPara(); break;
+		case OBJECT_TYPE_KOOPASPARA:	  obj = new CKoopasPara(); break;
+			break;
+		case OBJECT_TYPE_COIN: obj = new CCoin(COIN); break;
+		case OBJECT_TYPE_BRICK_QUESTION_SPECIAL_GREEN:	  obj = new CBrickQuestion(BRICK_QUESTION_STATUS_MUSHROOM_GREEN); break;
+		case OBJECT_TYPE_FLOWER_GREEN:	  obj = new CFlowerAttack(FLOWER_GREEN); break;
+		case OBJECT_TYPE_FLOWER_NORMAL:	  obj = new CFlowerAttack(FLOWER_NORMAL); break;
+		case OBJECT_TYPE_BRICK_BROKEN:	  obj = new CBrickBroken(); break;
+		case OBJECT_TYPE_BRICK_QUESTION_EFFECT:	  obj = new CBrickQuestion(BRICK_QUESTION_STATUS_EFFECT); break;
+		case OBJECT_TYPE_DRAIN: obj = new CDrain(); break;
+		case OBJECT_TYPE_CARD:	  obj = new CCard(); break;
+		case OBJECT_TYPE_HUD: obj = new CHUD(); break;
+		default:
+			DebugOut(L"[ERR] Invalid object type: %d\n", object_type);
 			return;
 		}
-		obj = new CMario(x, y);
-		player = (CMario*)obj;
 
-		DebugOut(L"[INFO] Player object created!\n");
-		break;
-	case OBJECT_TYPE_GOOMBA: obj = new CGoomba(); break;
-	case OBJECT_TYPE_BRICK: obj = new CBrick(); break;
-	case OBJECT_TYPE_NOCOLLISION: obj = new CNoCollision(); break;
-	case OBJECT_TYPE_BOX: obj = new CBox(BOX_STATUS_NORMAL); break;
-	case OBJECT_TYPE_BOX_END: obj = new CBox(BOX_STATUS_END); break;
-	case OBJECT_TYPE_BRICK_QUESTION: obj = new CBrickQuestion(BRICK_QUESTION_STATUS_COIN); break;
-	case OBJECT_TYPE_BOX_START: obj = new CBox(BOX_STATUS_START); break;
-	case OBJECT_TYPE_BRICK_QUESTION_LEAF: obj = new CBrickQuestion(BRICK_QUESTION_STATUS_LEAF); break;
-	case OBJECT_TYPE_BRICK_MUSHROOM_GREEN:obj = new CBrickQuestion(BRICK_MUSHROOM_GREEN); break;
-	case OBJECT_TYPE_FLOWER_RED:	  obj = new CFlowerAttack(FLOWER_RED); break;
-	case OBJECT_TYPE_FLOWER_FIRE:	  obj = new CFireFlower(); break;
-	case OBJECT_TYPE_KOOPAS: obj = new CKoopas(); break;
-	case OBJECT_TYPE_GOOMBAPARA:	  obj = new CGoombaPara(); break;
-	case OBJECT_TYPE_KOOPASPARA:	  obj = new CKoopasPara(); break;
-		break;
-	case OBJECT_TYPE_COIN: obj = new CCoin(COIN); break;
-	case OBJECT_TYPE_BRICK_QUESTION_SPECIAL_GREEN:	  obj = new CBrickQuestion(BRICK_QUESTION_STATUS_MUSHROOM_GREEN); break;
-	case OBJECT_TYPE_FLOWER_GREEN:	  obj = new CFlowerAttack(FLOWER_GREEN); break;
-	case OBJECT_TYPE_FLOWER_NORMAL:	  obj = new CFlowerAttack(FLOWER_NORMAL); break;
-	case OBJECT_TYPE_BRICK_BROKEN:	  obj = new CBrickBroken(); break;
-	case OBJECT_TYPE_BRICK_QUESTION_EFFECT:	  obj = new CBrickQuestion(BRICK_QUESTION_STATUS_EFFECT); break;
-	case OBJECT_TYPE_DRAIN: obj = new CDrain(); break;
-	case OBJECT_TYPE_CARD:	  obj = new CCard(); break;
-	case OBJECT_TYPE_HUD: obj = new CHUD(); break;
-	default:
-		DebugOut(L"[ERR] Invalid object type: %d\n", object_type);
-		return;
+		// General object setup
+
+		LPANIMATION_SET ani_set = animation_sets->Get(ani_set_id);
+		if (obj != NULL)
+		{
+			obj->SetPosition(x, y);
+			obj->SetAnimationSet(ani_set);
+			obj->SetOrigin(x, y, obj->GetState());
+			if (id == 4)
+				obj->SetRenderLayer(atoi(tokens[4].c_str()));
+			obj->SetisOriginObj(true);
+			objects.push_back(obj);
+		}
 	}
 
-	// General object setup
-
-	LPANIMATION_SET ani_set = animation_sets->Get(ani_set_id);
-	if (obj != NULL)
-	{
-		obj->SetPosition(x, y);
-		obj->SetAnimationSet(ani_set);
-		obj->SetOrigin(x, y, obj->GetState());
-		if (id == 4)
-			obj->SetRenderLayer(atoi(tokens[4].c_str()));
-		obj->SetisOriginObj(true);
-		objects.push_back(obj);
-	}
 }
 
 void CPlayScene::_ParseSection_MAP(string line)

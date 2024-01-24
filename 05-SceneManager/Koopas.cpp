@@ -130,27 +130,24 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 				{
 					x += dx;
 				}
-				else {
-					if (state != KOOPAS_STATE_DIE && state != KOOPAS_STATE_THROW)
+			}
+			if (dynamic_cast<CBoxs*>(e->obj))
+			{
+				if (state == KOOPAS_STATE_WALKING)
+				{
+					CBoxs* boxs = dynamic_cast<CBoxs*>(e->obj);
+					float xBox, yBox;
+					boxs->GetPosition(xBox, yBox);
+					if (x >= boxs->getWidth() + xBox - 14 || x <= xBox + BOX_BBOX_WIDTH / 2 - BOX_BBOX_WIDTH * 0.7)
 					{
-						if (box->GetStatus() == BOX_STATUS_START) {
-							if (x < box->x) {
-								x = box->x;
-								vx = -vx;
-							}
-							else {
-								/*		x += dx;*/
-							}
-						}
-						else if (box->GetStatus() == BOX_STATUS_END) {
-							if (x > box->x) {
-								x = box->x;
-								vx = -vx;
-							}
-							else {
-								/*		x += dx;*/
-							}
-						}
+						vx = -vx;
+					}
+					if (x > boxs->getWidth() + xBox - 14)
+					{
+						x = boxs->getWidth() + xBox - 14;
+					}
+					else if (x < xBox + BOX_BBOX_WIDTH / 2 - BOX_BBOX_WIDTH * 0.7) {
+						x = xBox + BOX_BBOX_WIDTH / 2- BOX_BBOX_WIDTH * 0.7;
 					}
 				}
 			}

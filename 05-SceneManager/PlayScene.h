@@ -23,6 +23,7 @@ protected:
 
 	Map* map;
 	CMario* player;
+	boolean mergeObject;
 
 	vector<LPGAMEOBJECT> objects;
 	vector<LPGAMEOBJECT> objectsW;

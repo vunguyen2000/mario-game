@@ -42,6 +42,11 @@ void CMario::CalcPotentialCollisions(vector<LPGAMEOBJECT>* coObjects, vector<LPC
 			if (e->ny > 0 || e->nx != 0)
 				continue;
 		}
+		if (dynamic_cast<CBoxs*>(coObjects->at(i)))
+		{
+			if (e->ny > 0 || e->nx != 0)
+				continue;
+		}
 		if (e->t > 0 && e->t <= 1.0f)
 		{
 			if (untouchable == 0)

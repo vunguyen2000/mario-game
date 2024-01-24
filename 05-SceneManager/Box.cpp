@@ -18,3 +18,29 @@ void CBox::GetBoundingBox(float& l, float& t, float& r, float& b)
 	b = y+BOX_BBOX_WIDTH;
 }
 
+// BOX (Merge box)
+void CBoxs::PushBox(CBox* box)
+{
+	listBox.push_back(box);
+}
+
+void CBoxs::Render()
+{
+	for (size_t i = 0; i < listBox.size(); i++)
+	{
+		listBox[i]->Render();
+	}
+}
+
+void CBoxs::GetBoundingBox(float& l, float& t, float& r, float& b)
+{
+	l = x;
+	t = y;
+	r = x + width;
+	b = y;
+}
+void CBoxs::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
+{
+
+}
+
