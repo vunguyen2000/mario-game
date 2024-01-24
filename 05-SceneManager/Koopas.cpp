@@ -97,17 +97,27 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	if (state != KOOPAS_STATE_HIDE)
 		CalcPotentialCollisions(coObjects, coEvents);
 
-	float tempy = y + dy;
 	if (coEvents.size() == 0)
 	{
 		x += dx;
 		y += dy;
+		if (y > tempbacky && tempbacky!=0) {
+			DebugOut(L"[ERROR] Sprite ID %d cannot be found!\n", y, tempbacky);
+			tempbacky = 0;
+			if (vx > 0) {
+				x -= 16;
+			}
+			else if (vx < 0) {
+				x += 16;
+			}
+			y -= dy;
+			vx = -vx;
+		}
 	}
 	else {
 		float min_tx, min_ty, nx = 0, ny;
 		float rdx = 0;
 		float rdy = 0;
-
 		FilterCollision(coEvents, coEventsResult, min_tx, min_ty, nx, ny, rdx, rdy);
 		if (state != KOOPAS_STATE_DIE && state != KOOPAS_STATE_THROW && state != KOOPAS_STATE_HIDE)
 		{
@@ -115,15 +125,13 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 			if (nx < 0)
 				y += min_ty * dy + ny * 0.4f;
 		}
-
-		if (ny != 0) {
-			vy = 0;
-		}
 		for (UINT i = 0; i < coEventsResult.size(); i++)
 		{
 			LPCOLLISIONEVENT e = coEventsResult[i];
-
-			if (dynamic_cast<CBox*>(e->obj))
+			if (ny != 0) {
+				vy = 0;
+			}
+			/*if (dynamic_cast<CBox*>(e->obj))
 			{
 				CBox* box = dynamic_cast<CBox*>(e->obj);
 				if (e->nx != 0)
@@ -133,27 +141,10 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 				else {
 					if (state != KOOPAS_STATE_DIE && state != KOOPAS_STATE_THROW)
 					{
-						if (box->GetStatus() == BOX_STATUS_START) {
-							if (x < box->x) {
-								x = box->x;
-								vx = -vx;
-							}
-							else {
-								/*		x += dx;*/
-							}
-						}
-						else if (box->GetStatus() == BOX_STATUS_END) {
-							if (x > box->x) {
-								x = box->x;
-								vx = -vx;
-							}
-							else {
-								/*		x += dx;*/
-							}
-						}
+						
 					}
 				}
-			}
+			}*/
 			if (dynamic_cast<CBrick*>(e->obj))
 			{
 				if (nx != 0)
@@ -164,7 +155,6 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 			if (!dynamic_cast<CMario*>(e->obj) && nx == 0)
 			{
 				tempbacky = y;
-				back = true;
 			}
 			if (dynamic_cast<CGoomba*>(e->obj)) // 
 			{
@@ -217,6 +207,7 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 			}
 		}
 	}
+	
 
 	for (UINT i = 0; i < coEvents.size(); i++) delete coEvents[i];
 	if (x < 0)

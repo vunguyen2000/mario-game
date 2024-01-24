@@ -440,6 +440,9 @@ void CPlayScenceKeyHandler::OnKeyDown(int KeyCode)
 				}
 				mario->holdKoopas = true;
 				break;
+			case DIK_R:
+				mario->Reset();
+				break;
 			case DIK_Z:
 				if (mario->GetLevel() == MARIO_LEVEL_SMALL)
 				{

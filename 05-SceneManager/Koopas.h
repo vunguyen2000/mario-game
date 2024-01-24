@@ -29,7 +29,7 @@
 
 class CKoopas : public CGameObject
 {
-	float tempbacky;
+	float tempbacky=0;
 	bool back = false;
 	bool flagBack = false;
 	DWORD isRevive;
