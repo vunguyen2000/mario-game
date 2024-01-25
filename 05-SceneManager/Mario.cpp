@@ -152,6 +152,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 
 	if (checkEnd == true)
 	{
+		vy += MARIO_GRAVITY * dt;
 		nx = 1;
 		vx = MARIO_WALKING_SPEED_ENDMAP;
 		dx = vx * dt;
@@ -513,7 +514,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 							}
 						}
 					}
-				//}
+				}
 			}
 			if (dynamic_cast<CKoopasPara*>(e->obj))
 			{
