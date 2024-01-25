@@ -25,6 +25,8 @@
 #define KOOPAS_ANI_DIE 3
 #define KOOPAS_ANI_TURN 2
 
+#define KOOPAS_ANI_BACK 5
+#define KOOPAS_STATE_BACK 204
 
 
 class CKoopas : public CGameObject
@@ -32,7 +34,11 @@ class CKoopas : public CGameObject
 	float tempbacky;
 	bool back = false;
 	bool flagBack = false;
+	bool isWhipped = false;
 	DWORD isRevive;
+	DWORD isBack;
+
+
 	void CalcPotentialCollisions(vector<LPGAMEOBJECT>* coObjects, vector<LPCOLLISIONEVENT>& coEvents);
 	virtual void GetBoundingBox(float& left, float& top, float& right, float& bottom);
 	virtual void Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects);
@@ -41,5 +47,7 @@ class CKoopas : public CGameObject
 public:
 	CKoopas();
 	virtual void SetState(int state);
-};
+	void setWhip(bool b) { isWhipped =b; }
+	DWORD getTimeWhip() { return isRevive; }
+};	
 

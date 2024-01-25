@@ -74,22 +74,36 @@ void CKoopas::GetBoundingBox(float& left, float& top, float& right, float& botto
 
 void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 {
-
 	LPSCENE scence = CGame::GetInstance()->GetCurrentScene();
 	CMario* mario = ((CPlayScene*)scence)->GetPlayer();
 
 	CGameObject::Update(dt);
 
+	if (isWhipped && vy == 0) {
+		if (vx > 0) {
+			vx = 0.05f;
+		}
+		else {
+			vx = -0.05f;
+		}
+		isWhipped = false;
+	}
+	if (!isWhipped && state == KOOPAS_STATE_DIE && vy == 0 && GetTickCount() - isRevive > 600) {
+		vx = 0;
+	}
 	if (state != KOOPAS_STATE_HOLD)
 		vy += dt * KOOPAS_GRAVITY;
-
 
 	vector<LPCOLLISIONEVENT> coEvents;
 	vector<LPCOLLISIONEVENT> coEventsResult;
 
 	coEvents.clear();
 
-	if ((state == KOOPAS_STATE_DIE || state == KOOPAS_STATE_HOLD) && GetTickCount() - isRevive > 6500) {
+	if ((state == KOOPAS_STATE_DIE || state == KOOPAS_STATE_HOLD) && GetTickCount() - isRevive > 3500) {
+		y -= 11;
+		SetState(KOOPAS_STATE_BACK);
+	}
+	if (state == KOOPAS_STATE_BACK && GetTickCount() - isBack > 1000) {
 		y -= 11;
 		SetState(KOOPAS_STATE_WALKING);
 	}
@@ -147,7 +161,7 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 						x = boxs->getWidth() + xBox - 14;
 					}
 					else if (x < xBox + BOX_BBOX_WIDTH / 2 - BOX_BBOX_WIDTH * 0.7) {
-						x = xBox + BOX_BBOX_WIDTH / 2- BOX_BBOX_WIDTH * 0.7;
+						x = xBox + BOX_BBOX_WIDTH / 2 - BOX_BBOX_WIDTH * 0.7;
 					}
 				}
 			}
@@ -209,8 +223,8 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 						brick->SetState(BRICK_BROKEN_STATE_HIDE);
 					}
 				}
-			
-				
+
+
 			}
 		}
 	}
@@ -318,6 +332,10 @@ void CKoopas::Render()
 	{
 		ani = KOOPAS_ANI_DIE;
 	}
+	else if (state == KOOPAS_STATE_BACK)
+	{
+		ani = KOOPAS_ANI_BACK;
+	}
 
 	animation_set->at(ani)->Render(x, y);
 
@@ -332,9 +350,10 @@ void CKoopas::SetState(int state)
 	switch (state)
 	{
 	case KOOPAS_STATE_DIE:
+		isRevive = GetTickCount();
 		vx = 0;
 		vy = 0;
-		isRevive = GetTickCount();
+		if (isWhipped) vy = -0.2f;
 		break;
 	case KOOPAS_STATE_WALKING:
 		vx = KOOPAS_WALKING_SPEED;
@@ -342,6 +361,11 @@ void CKoopas::SetState(int state)
 	case KOOPAS_STATE_HOLD:
 		vx = 0;
 		vy = 0;
+		break;
+	case KOOPAS_STATE_BACK:
+		vx = 0;
+		vy = 0;
+		isBack = GetTickCount();
 		break;
 	case KOOPAS_STATE_THROW:
 		if (mario->nx > 0)

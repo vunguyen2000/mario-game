@@ -422,7 +422,15 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 				{
 					if (koopas->GetState() != KOOPAS_STATE_HIDE)
 					{
-						koopas->SetState(KOOPAS_STATE_HIDE);
+						koopas->setWhip(true);
+						koopas->SetState(KOOPAS_STATE_DIE);
+						if (this->nx > 0) {
+							koopas->vx = 0.15f;
+						}
+						else {
+							koopas->vx = -0.15f;
+						}
+
 					}
 				}
 				else if (e->ny < 0)
@@ -505,7 +513,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 							}
 						}
 					}
-				}
+				//}
 			}
 			if (dynamic_cast<CKoopasPara*>(e->obj))
 			{
