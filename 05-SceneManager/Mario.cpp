@@ -132,7 +132,10 @@ void CMario::FilterCollision(vector<LPCOLLISIONEVENT>& coEvents, vector<LPCOLLIS
 void CMario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 {
 	CGameObject::Update(dt);
-
+	
+	flagDownDrain = false;
+	flagUpDrain = false;
+	//landingCheck = false;
 	if (flyCan == false && landingCheck == false && state != MARIO_STATE_DRAIN_1 && state != MARIO_STATE_DRAIN_2)
 		vy += MARIO_GRAVITY * dt;
 
@@ -421,7 +424,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 				}
 				else if (level == MARIO_LEVEL_FOX && attack == true)
 				{
-					if (koopas->GetState() != KOOPAS_STATE_HIDE)
+					if (koopas->GetState() != KOOPAS_STATE_HIDE &&  koopas->GetState() != KOOPAS_STATE_THROW)
 					{
 						koopas->setWhip(true);
 						koopas->SetState(KOOPAS_STATE_DIE);
@@ -431,7 +434,6 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 						else {
 							koopas->vx = -0.15f;
 						}
-
 					}
 				}
 				else if (e->ny < 0)
@@ -685,11 +687,14 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 			{
 				if (e->ny < 0)
 				{
-					SetState(MARIO_STATE_DRAIN_1);
+					flagDownDrain = true;
+					sit = false;
+					//SetState(MARIO_STATE_DRAIN_1);
 				}
 				else
 				{
-					SetState(MARIO_STATE_DRAIN_2);
+					flagUpDrain = true;
+					//SetState(MARIO_STATE_DRAIN_2);
 				}
 			}
 			if (dynamic_cast<CMushRoom*>(e->obj))

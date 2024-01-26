@@ -524,6 +524,10 @@ void CPlayScenceKeyHandler::OnKeyDown(int KeyCode)
 					}
 					else
 					{
+						if (mario->GetLevel() == MARIO_LEVEL_FOX) {
+							mario->landingCheck = true;
+						}
+						else
 						mario->SetState(MARIO_STATE_JUMP);
 					}
 				}
@@ -536,6 +540,9 @@ void CPlayScenceKeyHandler::OnKeyDown(int KeyCode)
 				}
 				break;
 			case DIK_DOWN:
+				if (mario->flagDownDrain == true) {
+					mario->SetState(MARIO_STATE_DRAIN_1);
+				}else
 				mario->sit = true;
 				break;
 			case DIK_A:
@@ -545,6 +552,21 @@ void CPlayScenceKeyHandler::OnKeyDown(int KeyCode)
 					mario->attack = true;
 				}
 				mario->holdKoopas = true;
+				break;
+			case DIK_1:
+				mario->SetPosition(540, 80);
+				break;
+			case DIK_2:
+				mario->SetPosition(1200, 80);
+				break;
+			case DIK_3:
+				mario->SetPosition(1410, -140);
+				break;
+			case DIK_4:
+				mario->SetPosition(1950, 80);
+				break;
+			case DIK_5:
+				mario->SetPosition(2265, -200);
 				break;
 			case DIK_Z:
 				if (mario->GetLevel() == MARIO_LEVEL_SMALL)
@@ -616,7 +638,6 @@ void CPlayScenceKeyHandler::KeyState(BYTE* states)
 	if (mario != NULL)
 	{
 		if (mario->GetState() == MARIO_STATE_DIE) return;
-
 		if (mario->GetState() != MARIO_STATE_DRAIN_1 && mario->GetState() != MARIO_STATE_DRAIN_2)
 		{
 			if (game->IsKeyDown(DIK_RIGHT))
@@ -653,7 +674,6 @@ void CPlayScenceKeyHandler::KeyState(BYTE* states)
 				else
 					mario->SetState(MARIO_STATE_WALKING_LEFT);
 			}
-
 			else
 				mario->SetState(MARIO_STATE_IDLE);
 			if (game->IsKeyDown(DIK_S) && mario->checkEnd == false) {
@@ -670,7 +690,11 @@ void CPlayScenceKeyHandler::KeyState(BYTE* states)
 			}
 
 		}
-
+		if (game->IsKeyDown(DIK_UP) && mario->flagUpDrain == true) {
+			if (game->IsKeyDown(DIK_S)) {
+				mario->SetState(MARIO_STATE_DRAIN_2);
+			}
+		}
 	}
 
 }

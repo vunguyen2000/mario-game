@@ -166,6 +166,8 @@ public:
 	bool attack = false;	//trạng thái tấn công
 	int card = 0;
 	bool checkEnd = false;
+	bool flagDownDrain = false;
+	bool flagUpDrain = false;
 	CMario(float x = 0.0f, float y = 0.0f);
 	virtual void Update(DWORD dt, vector<LPGAMEOBJECT>* colliable_objects = NULL);
 	virtual void Render();
