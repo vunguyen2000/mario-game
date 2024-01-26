@@ -99,7 +99,7 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 
 	coEvents.clear();
 
-	if ((state == KOOPAS_STATE_DIE || state == KOOPAS_STATE_HOLD) && GetTickCount() - isRevive > 7500) {
+	if ((state == KOOPAS_STATE_DIE || state == KOOPAS_STATE_HOLD) && GetTickCount() - isRevive > 4500) {
 		y -= 11;
 		SetState(KOOPAS_STATE_BACK);
 	}
@@ -200,7 +200,7 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 					goombaPara->SetState(GOOMBA_STATE_DIE);
 				}
 			}
-			if (dynamic_cast<CBrickQuestion*>(e->obj))
+			if (dynamic_cast<CBrickQuestion*>(e->obj) && state == KOOPAS_STATE_THROW)
 			{
 				if (nx != 0) vx = -vx;
 				CBrickQuestion* brickQuestion = dynamic_cast<CBrickQuestion*>(e->obj);
@@ -211,7 +211,7 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 					brickQuestion->SetBefore(false);
 				}
 			}
-			if (dynamic_cast<CBrickBroken*>(e->obj))
+			if (dynamic_cast<CBrickBroken*>(e->obj) && state == KOOPAS_STATE_THROW)
 			{
 				CBrickBroken* brick = dynamic_cast<CBrickBroken*>(e->obj);
 				if (nx != 0)

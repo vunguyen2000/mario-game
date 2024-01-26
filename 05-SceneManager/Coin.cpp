@@ -2,6 +2,7 @@
 #include "BrickQuestion.h"
 #include <algorithm>
 #include "Koopas.h"
+#include "Box.h"
 
 
 #define COIN_BBOX_WIDTH  10
@@ -90,6 +91,10 @@ void CCoin::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		{
 			LPCOLLISIONEVENT e = coEventsResult[i];
 			if (dynamic_cast<CBrickQuestion*>(e->obj))
+			{
+				state = COIN_STATE_HIDE;
+			}
+			if (dynamic_cast<CBoxs*>(e->obj))
 			{
 				state = COIN_STATE_HIDE;
 			}
